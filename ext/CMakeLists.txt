@@ -1,0 +1,5 @@
+if (USE_SFML)
+    add_subdirectory(sfml)
+endif ()
+add_subdirectory(tileson)
+add_subdirectory(box2d)

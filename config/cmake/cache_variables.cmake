@@ -1,0 +1,21 @@
+set(ENABLE_UNITTESTS ON CACHE BOOL "enable unittests")
+set(ENABLE_DEMOS ON CACHE BOOL "enable stresstests")
+set(ENABLE_PERFORMANCETESTS OFF CACHE BOOL "enable performance tests")
+set(ENABLE_COVERAGE OFF CACHE BOOL "enable coverage")
+set(ENABLE_WEB OFF CACHE BOOL "enable web build using SDL and em++")
+set(ENABLE_AUDIO_TESTS ON CACHE BOOL "enable unittests that require a display")
+set(ENABLE_CLANG_TIDY OFF CACHE BOOL "enable clang tidy checks")
+
+# if ENABLE_WEB is ON, it is required to use SDL
+if (ENABLE_WEB)
+    set(USE_SFML OFF CACHE BOOL "Used SFML as Library")
+    add_definitions(-DENABLE_WEB)
+else ()
+    set(USE_SFML ON CACHE BOOL "Used SFML as Library")
+endif ()
+
+if (USE_SFML)
+    add_definitions(-DUSE_SFML)
+else ()
+    add_definitions(-DUSE_SDL)
+endif ()
