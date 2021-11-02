@@ -1,6 +1,6 @@
 # JamTemplateCppSFML
 
-[![Build Status](https://github.com/Laguna1989/JamTemplateCpp/actions/workflows/test_verification.yml/badge.svg)](https://github.com/Laguna1989/JamTemplateCpp/actions/workflows/unittests.yml) [![Coverage Status](https://coveralls.io/repos/github/Laguna1989/JamTemplateCpp/badge.svg)](https://coveralls.io/github/Laguna1989/JamTemplateCpp)
+[![Build Status](https://github.com/runvs/FrankenGameJam2021/actions/workflows/test_verification.yml/badge.svg)](https://github.com/runvs/FrankenGameJam2021/actions/workflows/unittests.yml)
 
 ## About
 
@@ -11,7 +11,7 @@ Some games created with this JamTemplate are
 
 * [Quasar Rush](https://runvs.io/Games/quasarrush) (Native & Web, A Game By Its Cover 2021)
 * [Space Turtles](https://runvs.io/Games/spaceturtles) (Native, MultiplayerKajam 2021)
-* [Tricky Tracktor](https://runvs.io/Games/trickytractor) (Native, FrankenGameJam 2020)
+* [Tricky Tractor](https://runvs.io/Games/trickytractor) (Native, FrankenGameJam 2020)
 * [Burning Glyphs](https://runvs.io/Games/burningglyphs) (Web, 7DFPS 2020)
 * [Grounded](https://runvs.io/Games/grounded) (Native, FrankenGameJam 2019)
 
