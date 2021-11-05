@@ -69,10 +69,12 @@ jobs:
 
       - name: Copy files
         run: |
-          mkdir -p ${{github.workspace}}/release/release_linux
+          export RELEASE_NAME=$(echo "${GITHUB_REPOSITORY}" | sed 's/^[^\/]*\///g')
+          mkdir -p ${{github.workspace}}/release/${RELEASE_NAME}_linux
           cd ${{github.workspace}}/build/impl/game/
-          rsync -avr --exclude="Makefile" --exclude="CMakeFiles" --exclude="*.cmake" . ${{github.workspace}}/release/release_linux
-          (cd ${{github.workspace}}/release && tar -czvf ${{github.workspace}}/release/release_linux.tar.gz release_linux)
+          rsync -avr --exclude="Makefile" --exclude="CMakeFiles" --exclude="*.cmake" . ${{github.workspace}}/release/${RELEASE_NAME}_linux
+          cd ${{github.workspace}}/release
+          tar -czvf ${{github.workspace}}/release/release_linux-x86_64.tar.gz ${RELEASE_NAME}_linux)
 
       - name: Release
         uses: softprops/action-gh-release@v1
