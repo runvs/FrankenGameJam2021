@@ -52,7 +52,7 @@ jobs:
           files: ${{github.workspace}}/release/release_win.zip
   
   LinuxSFML:
-    runvs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Set up cmake
         uses: jwlawson/actions-setup-cmake@v1.10
