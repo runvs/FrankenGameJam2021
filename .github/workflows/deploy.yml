@@ -79,7 +79,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{github.workspace}}/release/release_linux.tar.gz
+          files: ${{github.workspace}}/release/release_linux-x86_64.tar.gz
 
   WebSDL:
     runs-on: ubuntu-latest
