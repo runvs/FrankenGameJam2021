@@ -72,7 +72,7 @@ jobs:
           mkdir -p ${{github.workspace}}/release/release_linux
           cd ${{github.workspace}}/build/impl/game/
           rsync -avr --exclude="Makefile" --exclude="CMakeFiles" --exclude="*.cmake" . ${{github.workspace}}/release/release_linux
-          tar -czvf ${{github.workspace}}/release/release_linux.tar.gz  ${{github.workspace}}/release/release_linux
+          (cd ${{github.workspace}}/release && tar -czvf ${{github.workspace}}/release/release_linux.tar.gz release_linux)
 
       - name: Release
         uses: softprops/action-gh-release@v1
