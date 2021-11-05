@@ -74,7 +74,7 @@ jobs:
           cd ${{github.workspace}}/build/impl/game/
           rsync -avr --exclude="Makefile" --exclude="CMakeFiles" --exclude="*.cmake" . ${{github.workspace}}/release/${RELEASE_NAME}_linux
           cd ${{github.workspace}}/release
-          tar -czvf ${{github.workspace}}/release/release_linux-x86_64.tar.gz ${RELEASE_NAME}_linux)
+          tar -czvf ${{github.workspace}}/release/release_linux-x86_64.tar.gz ${RELEASE_NAME}_linux
 
       - name: Release
         uses: softprops/action-gh-release@v1
