@@ -9,6 +9,7 @@ class Box2DWorldMock : public jt::Box2DWorldInterface {
 public:
     MOCK_METHOD(b2Body*, createBody, (const b2BodyDef*), (override));
     MOCK_METHOD(void, destroyBody, (b2Body*), (override));
+    MOCK_METHOD(void, step, (float, int, int), (override));
 };
 
 TEST(Box2DObjectTest, ConstructorCallsCreateBody)
