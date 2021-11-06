@@ -1,5 +1,6 @@
 ﻿#include "state_game.hpp"
 #include "Box2D/Box2D.h"
+#include "brick.hpp"
 #include "color.hpp"
 #include "game_interface.hpp"
 #include "game_properties.hpp"
@@ -11,7 +12,7 @@
 
 void StateGame::doInternalCreate()
 {
-    m_worldImpl = std::make_shared<b2World>(b2Vec2 { 0.0f, 0.0f });
+    m_worldImpl = std::make_shared<b2World>(b2Vec2 { 0.0f, 20.0f });
     m_world = std::make_shared<jt::Box2DWorldWrapper>(m_worldImpl);
 
     float const w = static_cast<float>(GP::GetWindowSize().x());
@@ -54,6 +55,9 @@ void StateGame::doInternalCreate()
     bodyDef.position.Set(135, 280.0f);
     m_platform = std::make_shared<Platform>(m_world, &bodyDef);
     add(m_platform);
+
+    m_bricks = std::make_shared<jt::ObjectGroup<Brick>>();
+    add(m_bricks);
 }
 
 void StateGame::doInternalUpdate(float const elapsed)
@@ -61,6 +65,17 @@ void StateGame::doInternalUpdate(float const elapsed)
     if (m_running) {
         m_world->step(elapsed, GP::PhysicVelocityIterations(), GP::PhysicPositionIterations());
         // update game logic here
+
+        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
+            b2BodyDef bodyDef;
+            bodyDef.fixedRotation = false;
+            bodyDef.type = b2_dynamicBody;
+            bodyDef.linearDamping = 0.5f;
+            bodyDef.position.Set(135, 20);
+            auto brick = std::make_shared<Brick>(m_world, &bodyDef);
+            add(brick);
+            m_bricks->push_back(brick);
+        }
     }
 
     m_background->update(elapsed);

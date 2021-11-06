@@ -24,6 +24,7 @@ void Platform::doCreate()
     fixtureDef.shape = &boxCollider;
     getB2Body()->CreateFixture(&fixtureDef);
 }
+
 void Platform::doUpdate(float const elapsed)
 {
     getB2Body()->SetLinearVelocity(vec(jt::Vector2 { 0.0f, 0.0f }));
