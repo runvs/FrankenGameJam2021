@@ -1,7 +1,3 @@
-//
-// Created by Laguna_HP on 06.11.2021.
-//
-
 #include "brick.hpp"
 #include "drawable_helpers.hpp"
 #include "game_interface.hpp"
@@ -37,7 +33,3 @@ void Brick::doUpdate(float const elapsed)
 }
 
 void Brick::doDraw() const { m_shape->draw(getGame()->getRenderTarget()); }
-
-void Brick::doKill() { }
-
-void Brick::doDestroy() { }

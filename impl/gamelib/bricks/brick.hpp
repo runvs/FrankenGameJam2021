@@ -14,8 +14,6 @@ private:
     void doCreate() override;
     void doUpdate(float const /*elapsed*/) override;
     void doDraw() const override;
-    void doKill() override;
-    void doDestroy() override;
 };
 
 #endif // MYAWESOMEGAME_BRICK_HPP

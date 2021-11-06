@@ -1,5 +1,4 @@
 ﻿#include "state_game.hpp"
-#include "Box2D/Box2D.h"
 #include "bricks/brick.hpp"
 #include "color.hpp"
 #include "game_interface.hpp"
@@ -56,7 +55,7 @@ void StateGame::doInternalCreate()
     m_platform = std::make_shared<Platform>(m_world, &bodyDef);
     add(m_platform);
 
-    m_bricks = std::make_shared<jt::ObjectGroup<Brick>>();
+    m_bricks = std::make_shared<jt::ObjectGroup<BrickInterface>>();
     add(m_bricks);
 }
 

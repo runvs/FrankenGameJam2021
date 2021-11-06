@@ -2,7 +2,7 @@
 #define GAME_STATE_GAME_HPP_INCLUDEGUARD
 
 #include "box2d_wrapper.hpp"
-#include "bricks/brick.hpp"
+#include "bricks/brick_interface.hpp"
 #include "game_state.hpp"
 #include "object_group.hpp"
 #include "platform.hpp"
@@ -29,7 +29,7 @@ private:
     std::shared_ptr<jt::Box2DWorldInterface> m_world { nullptr };
 
     std::shared_ptr<Platform> m_platform { nullptr };
-    std::shared_ptr<jt::ObjectGroup<Brick>> m_bricks;
+    std::shared_ptr<jt::ObjectGroup<BrickInterface>> m_bricks;
 
     bool m_running { false };
     bool m_hasEnded { false };
