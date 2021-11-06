@@ -65,16 +65,7 @@ void StateGame::doInternalUpdate(float const elapsed)
         m_world->step(elapsed, GP::PhysicVelocityIterations(), GP::PhysicPositionIterations());
         // update game logic here
 
-        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
-            auto brick = BrickFactory::createBrickQuadratic(m_world);
-            add(brick);
-            m_bricks->push_back(brick);
-        }
-        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::N)) {
-            auto brick = BrickFactory::createBrickRectangle2x1(m_world);
-            add(brick);
-            m_bricks->push_back(brick);
-        }
+        spawnBricks();
 
         // TODO: WIP: Revolute Joint with the platform
         if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::R)) {
@@ -92,18 +83,31 @@ void StateGame::doInternalUpdate(float const elapsed)
             }
         }
 
-        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::L)) {
-            auto brick = BrickFactory::createBrickL(m_world);
-            add(brick);
-            m_bricks->push_back(brick);
-        }
-
         removeBricksOutOfScreen();
     }
 
     m_background->update(elapsed);
     m_vignette->update(elapsed);
     m_overlay->update(elapsed);
+}
+
+void StateGame::spawnBricks()
+{
+    if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
+        m_currentBrick = BrickFactory::createBrickQuadratic(m_world);
+        add(m_currentBrick);
+        m_bricks->push_back(m_currentBrick);
+    }
+    if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::N)) {
+        m_currentBrick = BrickFactory::createBrickRectangle2x1(m_world);
+        add(m_currentBrick);
+        m_bricks->push_back(m_currentBrick);
+    }
+    if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::L)) {
+        m_currentBrick = BrickFactory::createBrickL(m_world);
+        add(m_currentBrick);
+        m_bricks->push_back(m_currentBrick);
+    }
 }
 
 void StateGame::doInternalDraw() const
