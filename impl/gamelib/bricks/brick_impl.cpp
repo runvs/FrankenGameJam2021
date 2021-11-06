@@ -25,3 +25,4 @@ void BrickImpl::drawPreview() const
     m_drawable->setPosition(initialPosition);
     m_drawable->setColor(initialColor);
 }
+std::shared_ptr<jt::DrawableInterface> BrickImpl::getDrawable() { return m_drawable; }

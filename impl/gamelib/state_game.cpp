@@ -63,7 +63,7 @@ void StateGame::doInternalCreate()
 
     auto contactListener = std::make_shared<BrickContactListener>();
     contactListener->addContactCallback(
-        [this](auto p1, auto p2) { handleCurrentBlockCollision(p1, p2); });
+        [this](auto p1, auto p2) { handleCurrentBrickCollision(p1, p2); });
     m_world->setContactListener(contactListener);
     m_brickProvider = std::make_shared<BrickProviderRandom>();
 
@@ -243,7 +243,7 @@ bool StateGame::isCurrentBrick(b2Body const* const bodyPtr) const
     return bodyPtr == m_currentBrick->getB2Body();
 }
 
-void StateGame::handleCurrentBlockCollision(b2Body* p1, b2Body* p2)
+void StateGame::handleCurrentBrickCollision(b2Body* p1, b2Body* p2)
 {
     if (isCurrentBrick(p1) || isCurrentBrick(p2)) {
         auto other = isCurrentBrick(p1) ? p2 : p1;
@@ -276,8 +276,7 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
     auto const l = jt::MathHelper::lengthSquared(v);
 
     if (l < 30) {
-        std::cout << "FIX\n";
-
+        currentPendingBrick->getDrawable()->flash(0.75f);
         addJointToPlatform(currentPendingBrick, m_platform->getB2Body());
         addJointToPlatform(currentPendingBrick, other);
     }
