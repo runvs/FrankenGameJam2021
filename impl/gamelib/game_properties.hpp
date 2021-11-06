@@ -34,6 +34,8 @@ public:
     static int PhysicVelocityIterations() { return 6; }
     static int PhysicPositionIterations() { return 10; }
 
+    static int RemoveBrickDeadzone() { return 16; }
+
     static float PlatformMovementSpeed() { return 20.0f; }
 };
 

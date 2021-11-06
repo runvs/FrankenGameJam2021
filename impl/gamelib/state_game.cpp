@@ -8,6 +8,7 @@
 #include "sprite.hpp"
 #include "state_menu.hpp"
 #include "tweens/tween_alpha.hpp"
+#include <iostream>
 
 void StateGame::doInternalCreate()
 {
@@ -80,6 +81,9 @@ void StateGame::doInternalUpdate(float const elapsed)
             add(brick);
             m_bricks->push_back(brick);
         }
+
+        removeBricksOutOfScreen();
+        std::cout << "Number of game objects: " << getNumberOfObjects() << std::endl;
     }
 
     m_background->update(elapsed);
@@ -94,6 +98,22 @@ void StateGame::doInternalDraw() const
     m_vignette->draw(getGame()->getRenderTarget());
     m_hud->draw();
     m_overlay->draw(getGame()->getRenderTarget());
+}
+
+void StateGame::removeBricksOutOfScreen()
+{
+    for (auto b : *m_bricks) {
+        if (b.expired()) {
+            continue;
+        }
+
+        auto brick = b.lock();
+        auto position = brick->getPosition();
+
+        if (position.y() > GP::GetScreenSize().y() + GP::RemoveBrickDeadzone()) {
+            brick->kill();
+        }
+    }
 }
 
 void StateGame::endGame()
