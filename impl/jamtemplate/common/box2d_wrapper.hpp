@@ -30,6 +30,13 @@ public:
     /// <param name="joint">Pointer to the joint to be destroyed</param>
     virtual void destroyJoint(b2Joint* joint) = 0;
 
+    /// <summary>
+    /// Sets the contact listener for this world. Use this to react to collisions.
+    /// </summary>
+    /// <param name="listener">The contact listener to wake up when things collide in the
+    /// world.</param>
+    virtual void setContactListener(std::shared_ptr<b2ContactListener> listener) = 0;
+
     virtual void step(float elapsed, int velocityIterations, int positionIterations) = 0;
 
     /// Destructor
@@ -72,6 +79,12 @@ public:
         m_world.lock()->DestroyJoint(joint);
     }
 
+    void setContactListener(std::shared_ptr<b2ContactListener> listener) override
+    {
+        m_contactListener = listener;
+        m_world.lock()->SetContactListener(m_contactListener.get());
+    }
+
     void step(float elapsed, int velocityIterations, int positionIterations) override
     {
         m_world.lock()->Step(elapsed, velocityIterations, positionIterations);
@@ -79,6 +92,7 @@ public:
 
 private:
     std::weak_ptr<b2World> m_world;
+    std::shared_ptr<b2ContactListener> m_contactListener;
 };
 } // namespace jt
 

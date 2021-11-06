@@ -1,4 +1,5 @@
 ﻿#include "state_game.hpp"
+#include "brick_contact_listener.hpp"
 #include "bricks/brick_factory.hpp"
 #include "color.hpp"
 #include "game_interface.hpp"
@@ -57,6 +58,8 @@ void StateGame::doInternalCreate()
 
     m_bricks = std::make_shared<jt::ObjectGroup<BrickInterface>>();
     add(m_bricks);
+
+    m_world->setContactListener(std::make_shared<BrickContactListener>());
 }
 
 void StateGame::doInternalUpdate(float const elapsed)
