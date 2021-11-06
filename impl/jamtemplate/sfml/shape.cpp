@@ -18,7 +18,7 @@ jt::Color Shape::getFlashColor() const { return m_flashShape->getFillColor(); }
 void Shape::setPosition(jt::Vector2 const& pos) { m_position = pos; }
 jt::Vector2 Shape::getPosition() const { return m_position; }
 
-// sf::Transform const getTransform() const  { return m_shape->getTransform(); }
+// sf::Transform const getTransform() const  { return m_sprite->getTransform(); }
 jt::Rect Shape::getGlobalBounds() const
 {
     if (!m_shape) {
