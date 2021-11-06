@@ -7,6 +7,7 @@
 #include "game_state.hpp"
 #include "object_group.hpp"
 #include "platform.hpp"
+#include "timer.hpp"
 #include <memory>
 #include <vector>
 
@@ -33,6 +34,7 @@ private:
 
     std::shared_ptr<jt::ObjectGroup<BrickInterface>> m_bricks { nullptr };
     std::shared_ptr<BrickInterface> m_currentBrick { nullptr };
+    std::shared_ptr<BrickInterface> m_currentPendingBrick { nullptr };
 
     std::shared_ptr<BrickProviderInterface> m_brickProvider { nullptr };
 
@@ -49,7 +51,13 @@ private:
 
     void endGame();
     void spawnBricks();
+    void spawnNewBrick();
     void rotateCurrentBrick(float const elapsed);
+
+    bool isCurrentBrick(b2Body const* const bodyPtr) const;
+
+    void handleCurrentBlockCollision(b2Body* p1, b2Body* p2);
+    void addJointToPlatform(std::shared_ptr<BrickInterface> brick);
 };
 
 #endif
