@@ -7,3 +7,6 @@ float GP::PlatformMovementSpeed() { return 55.0f; }
 float GP::PhysicsBrickDensity() { return 0.1f; }
 float const GP::BrickFixVelocityThreshold() { return 42.0f; }
 float GP::PhysicsBrickRestitution() { return -0.4f; }
+float GP::AtmosphericSoundBreakpoint1() { return 0.0f; }
+float GP::AtmosphericSoundBreakpoint2() { return -300.0f; }
+float GP::AtmosphericSoundBreakpoint3() { return -600.0f; }

@@ -11,7 +11,10 @@ BrickQuadratic::BrickQuadratic(std::shared_ptr<jt::Box2DWorldInterface> world, b
 
 void BrickQuadratic::doCreate()
 {
-    m_drawable = jt::dh::createRectShape(jt::Vector2 { 16, 16 }, jt::colors::Black);
+    auto sprite = std::make_shared<jt::Sprite>();
+    sprite->loadSprite("assets/brick_square.png");
+    m_drawable = sprite;
+
     m_drawable->setOrigin(jt::Vector2 { 8, 8 });
     b2FixtureDef fixtureDef;
     fixtureDef.density = GP::PhysicsBrickDensity();

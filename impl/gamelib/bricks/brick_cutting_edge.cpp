@@ -25,8 +25,8 @@ void BrickCuttingEdge::doCreate()
     vertices[0].Set(0.0f, 0.0f);
     vertices[1].Set(0.0f, 16.0f);
     vertices[2].Set(16.0f, 16.0f);
-    vertices[3].Set(16.0f, 8.0f);
-    vertices[4].Set(8.0f, 0.0f);
+    vertices[3].Set(16.0f, 10.0f);
+    vertices[4].Set(6.0f, 0.0f);
     int32 count = 5;
     boxCollider.Set(vertices, count);
 

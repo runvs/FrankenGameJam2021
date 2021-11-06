@@ -79,8 +79,23 @@ void StateGame::doInternalCreate()
     m_soundGameOver = std::make_shared<jt::Sound>();
     m_soundGameOver->load("assets/sfx/gameover.ogg");
 
-    m_soundAtmoFrogs = std::make_shared<jt::Sound>();
-    m_soundAtmoFrogs->load("assets/sfx/atmosphere/01_birds_and_frogs_at_forest_pond.ogg");
+    m_soundAtmospheric1 = std::make_shared<jt::Sound>();
+    m_soundAtmospheric1->load("assets/sfx/atmosphere/01_birds_and_frogs_at_forest_pond.ogg");
+    m_soundAtmospheric1->setLoop(true);
+    m_soundAtmospheric1->setVolume(50.0f);
+    m_soundAtmospheric1->play();
+
+    m_soundAtmospheric2 = std::make_shared<jt::Sound>();
+    m_soundAtmospheric2->load("assets/sfx/atmosphere/02_wind_in_forest.ogg");
+    m_soundAtmospheric2->setLoop(true);
+    m_soundAtmospheric2->setVolume(0.0f);
+    m_soundAtmospheric2->play();
+
+    m_soundAtmospheric3 = std::make_shared<jt::Sound>();
+    m_soundAtmospheric3->load("assets/sfx/atmosphere/03_strong_wind.ogg");
+    m_soundAtmospheric3->setLoop(true);
+    m_soundAtmospheric3->setVolume(0.0f);
+    m_soundAtmospheric3->play();
 
     auto t = std::make_shared<jt::Timer>(
         1.5f, [this]() { spawnNewBrick(); }, 1);
@@ -139,6 +154,18 @@ void StateGame::moveCamera(float const elapsed)
     if (camPosY > scrollTo) {
         getGame()->getCamera()->move(jt::Vector2 { 0.0f, -elapsed * 4.0f });
     }
+
+    float volume = (1.0f - fabs(GP::AtmosphericSoundBreakpoint1() - camPosY) / 300.0f) * 50.0f;
+    if(volume < 0.0f) volume = 0.0f;
+    m_soundAtmospheric1->setVolume(volume);
+
+    volume = (1.0f - fabs(GP::AtmosphericSoundBreakpoint2() - camPosY) / 300.0f) * 50.0f;
+    if(volume < 0.0f) volume = 0.0f;
+    m_soundAtmospheric2->setVolume(volume);
+
+    volume = (1.0f - fabs(GP::AtmosphericSoundBreakpoint3() - camPosY) / 300.0f) * 50.0f;
+    if(volume < 0.0f) volume = 0.0f;
+    m_soundAtmospheric3->setVolume(volume);
 }
 
 void StateGame::addDistanceJointsTo(std::shared_ptr<BrickInterface> brick, b2Body* other)

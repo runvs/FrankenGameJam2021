@@ -12,15 +12,18 @@ BrickRectangle2x1::BrickRectangle2x1(
 
 void BrickRectangle2x1::doCreate()
 {
-    m_drawable = jt::dh::createRectShape(jt::Vector2 { 32, 16 }, jt::colors::Black);
-    m_drawable->setOrigin(jt::Vector2 { 16, 8 });
+    auto sprite = std::make_shared<jt::Sprite>();
+    sprite->loadSprite("assets/brick_rect.png");
+    m_drawable = sprite;
+
+    m_drawable->setOrigin(jt::Vector2 { 8, 16 });
     b2FixtureDef fixtureDef;
     fixtureDef.density = GP::PhysicsBrickDensity() * 0.75f;
     fixtureDef.friction = 1.1f;
     fixtureDef.restitution = GP::PhysicsBrickRestitution();
 
     b2PolygonShape boxCollider {};
-    boxCollider.SetAsBox(16, 8);
+    boxCollider.SetAsBox(8, 16);
     fixtureDef.shape = &boxCollider;
     getB2Body()->CreateFixture(&fixtureDef);
 }
