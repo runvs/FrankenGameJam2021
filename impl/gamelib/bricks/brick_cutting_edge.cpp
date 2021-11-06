@@ -18,7 +18,7 @@ void BrickCuttingEdge::doCreate()
     b2FixtureDef fixtureDef;
     fixtureDef.density = GP::PhysicsBrickDensity();
     fixtureDef.friction = 1.1f;
-    fixtureDef.restitution = -0.1f;
+    fixtureDef.restitution = GP::PhysicsBrickRestitution();
 
     b2PolygonShape boxCollider {};
     b2Vec2 vertices[5];

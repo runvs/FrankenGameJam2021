@@ -296,17 +296,14 @@ void StateGame::handleCurrentBrickCollision(b2Body* p1, b2Body* p2)
 }
 void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBrick, b2Body* other)
 {
-
-    // TODO Move to l < 40 block
-    float const ypos = currentPendingBrick->getPosition().y();
-    if (ypos < m_maxHeight) {
-        m_maxHeight = ypos;
-    }
-
     auto const v = currentPendingBrick->getVelocity() - m_platform->getVelocity();
     auto const l = jt::MathHelper::lengthSquared(v);
 
-    if (l < 40) {
+    if (l < GP::BrickFixVelocityThreshold()) {
+        float const ypos = currentPendingBrick->getPosition().y();
+        if (ypos < m_maxHeight) {
+            m_maxHeight = ypos;
+        }
         currentPendingBrick->getDrawable()->flash(0.75f);
         addDistanceJointsTo(currentPendingBrick, m_platform->getB2Body());
         addDistanceJointsTo(currentPendingBrick, other);

@@ -5,3 +5,5 @@ int GP::PhysicPositionIterations() { return 10; }
 int GP::PhysicVelocityIterations() { return 6; }
 float GP::PlatformMovementSpeed() { return 55.0f; }
 float GP::PhysicsBrickDensity() { return 0.1f; }
+float const GP::BrickFixVelocityThreshold() { return 42.0f; }
+float GP::PhysicsBrickRestitution() { return -0.4f; }
