@@ -44,7 +44,9 @@ private:
     std::shared_ptr<jt::Sound> m_soundBrickSpawn;
     std::shared_ptr<jt::SoundGroup> m_soundGroupBrickContact;
     std::shared_ptr<jt::Sound> m_soundGameOver;
-    std::shared_ptr<jt::Sound> m_soundAtmoFrogs;
+    std::shared_ptr<jt::Sound> m_soundAtmospheric1;
+    std::shared_ptr<jt::Sound> m_soundAtmospheric2;
+    std::shared_ptr<jt::Sound> m_soundAtmospheric3;
 
     bool m_running { false };
     bool m_hasEnded { false };
