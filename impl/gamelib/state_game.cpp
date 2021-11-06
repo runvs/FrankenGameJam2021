@@ -1,5 +1,6 @@
 ﻿#include "state_game.hpp"
 #include "bricks/brick_factory.hpp"
+#include "bricks/brick_provider_random.hpp"
 #include "color.hpp"
 #include "game_interface.hpp"
 #include "game_properties.hpp"
@@ -57,6 +58,8 @@ void StateGame::doInternalCreate()
 
     m_bricks = std::make_shared<jt::ObjectGroup<BrickInterface>>();
     add(m_bricks);
+
+    m_brickProvider = std::make_shared<BrickProviderRandom>();
 }
 
 void StateGame::doInternalUpdate(float const elapsed)
@@ -123,7 +126,8 @@ void StateGame::rotateCurrentBrick(float const elapsed)
 void StateGame::spawnBricks()
 {
     if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
-        m_currentBrick = BrickFactory::createBrickQuadratic(m_world);
+
+        m_currentBrick = m_brickProvider->getNextBrickFunction()(m_world);
         add(m_currentBrick);
         m_bricks->push_back(m_currentBrick);
     }
