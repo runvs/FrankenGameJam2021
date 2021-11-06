@@ -26,7 +26,7 @@ void StateGame::doInternalCreate()
     m_background = std::make_shared<jt::Sprite>();
     m_background->loadSprite("assets/background.png");
 
-    m_background->setPosition(jt::Vector2 { 0.0f, -330.0f });
+    m_background->setPosition(jt::Vector2 { 0.0f, -600.0f });
     m_background->update(0.0f);
 
     m_overlay = std::make_shared<Shape>();
