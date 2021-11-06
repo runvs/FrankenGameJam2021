@@ -70,13 +70,10 @@ void StateGame::doInternalCreate()
     m_soundBrickSpawn = std::make_shared<jt::Sound>();
     m_soundBrickSpawn->load("assets/sfx/brick_spawn.ogg");
 
-    m_soundGroupBrickContact = std::make_shared<jt::SoundGroup>(std::vector<std::string>{
-        "assets/sfx/brick_contact_1.ogg",
-        "assets/sfx/brick_contact_2.ogg",
-        "assets/sfx/brick_contact_3.ogg",
-        "assets/sfx/brick_contact_4.ogg",
-        "assets/sfx/brick_contact_5.ogg"
-    });
+    m_soundGroupBrickContact = std::make_shared<jt::SoundGroup>(
+        std::vector<std::string> { "assets/sfx/brick_contact_1.ogg",
+            "assets/sfx/brick_contact_2.ogg", "assets/sfx/brick_contact_3.ogg",
+            "assets/sfx/brick_contact_4.ogg", "assets/sfx/brick_contact_5.ogg" });
 
     m_soundGameOver = std::make_shared<jt::Sound>();
     m_soundGameOver->load("assets/sfx/gameover.ogg");
@@ -257,7 +254,7 @@ void StateGame::handleCurrentBrickCollision(b2Body* p1, b2Body* p2)
         auto other = isCurrentBrick(p1) ? p2 : p1;
 
         auto t2 = std::make_shared<jt::Timer>(
-            1.5f,
+            0.9f,
             [this, currentPendingBrick = m_currentBrick, other]() {
                 fixCurrentBrick(currentPendingBrick, other);
             },
@@ -280,10 +277,10 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
         m_maxHeight = ypos;
     }
 
-    auto const v = currentPendingBrick->getVelocity();
+    auto const v = currentPendingBrick->getVelocity() - m_platform->getVelocity();
     auto const l = jt::MathHelper::lengthSquared(v);
 
-    if (l < 30) {
+    if (l < 40) {
         currentPendingBrick->getDrawable()->flash(0.75f);
         addJointToPlatform(currentPendingBrick, m_platform->getB2Body());
         addJointToPlatform(currentPendingBrick, other);
