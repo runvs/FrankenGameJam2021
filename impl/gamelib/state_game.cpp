@@ -82,27 +82,27 @@ void StateGame::doInternalUpdate(float const elapsed)
 
         moveCamera(elapsed);
 
-        // TODO: WIP: Revolute Joint with the platform
-        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::R)) {
-            for (auto b : *m_bricks) {
-                auto brick = b.lock();
-                addJointToPlatform(brick);
-            }
-        }
-
-        // TODO: WIP: Distance Joint with the platform
-        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::T)) {
-            for (auto brick : *m_bricks) {
-                b2DistanceJointDef jointDef;
-                jointDef.Initialize(m_platform->getB2Body(), brick.lock()->getB2Body(),
-                    m_platform->getB2Body()->GetWorldCenter(),
-                    brick.lock()->getB2Body()->GetWorldCenter());
-                jointDef.collideConnected = true;
-                jointDef.frequencyHz = 30.0f;
-                jointDef.dampingRatio = 0.001f;
-                m_world->createJoint(&jointDef);
-            }
-        }
+        //        // TODO: WIP: Revolute Joint with the platform
+        //        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::R)) {
+        //            for (auto b : *m_bricks) {
+        //                auto brick = b.lock();
+        //                addJointToPlatform(brick);
+        //            }
+        //        }
+        //
+        //        // TODO: WIP: Distance Joint with the platform
+        //        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::T)) {
+        //            for (auto brick : *m_bricks) {
+        //                b2DistanceJointDef jointDef;
+        //                jointDef.Initialize(m_platform->getB2Body(), brick.lock()->getB2Body(),
+        //                    m_platform->getB2Body()->GetWorldCenter(),
+        //                    brick.lock()->getB2Body()->GetWorldCenter());
+        //                jointDef.collideConnected = true;
+        //                jointDef.frequencyHz = 30.0f;
+        //                jointDef.dampingRatio = 0.001f;
+        //                m_world->createJoint(&jointDef);
+        //            }
+        //        }
 
         checkForGameOver();
     }
@@ -171,7 +171,7 @@ void StateGame::spawnBricks()
 }
 void StateGame::spawnNewBrick()
 {
-    m_currentBrick = m_brickProvider->getNextBrickFunction()(m_world, 20.0f);
+    m_currentBrick = m_brickProvider->getNextBrickFunction()(m_world, m_maxHeight - 280);
     add(m_currentBrick);
     m_bricks->push_back(m_currentBrick);
 }
