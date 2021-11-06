@@ -1,4 +1,8 @@
-﻿#include "Box2D/Box2D.h"
+﻿#ifndef GUARD_JAMTEMPLATE_BOX2DWRAPPER_HPP_GUARD
+#define GUARD_JAMTEMPLATE_BOX2DWRAPPER_HPP_GUARD
+
+
+#include "Box2D/Box2D.h"
 #include <cassert>
 
 namespace jt {
@@ -13,6 +17,8 @@ public:
     /// Destroy a physics body
     /// \param body pointer to the body to be destroyed
     virtual void destroyBody(b2Body* body) = 0;
+
+    virtual void step(float elapsed, int velocityIterations, int positionIterations) = 0;
 
     /// Destructor
     virtual ~Box2DWorldInterface() = default;
@@ -40,7 +46,14 @@ public:
         m_world.lock()->DestroyBody(body);
     }
 
+    void step(float elapsed, int velocityIterations, int positionIterations) override
+    {
+        m_world.lock()->Step(elapsed,velocityIterations,positionIterations);
+    }
+
 private:
     std::weak_ptr<b2World> m_world;
 };
 } // namespace jt
+
+#endif
