@@ -26,3 +26,9 @@ void BrickImpl::drawPreview() const
     m_drawable->setColor(initialColor);
 }
 std::shared_ptr<jt::DrawableInterface> BrickImpl::getDrawable() { return m_drawable; }
+
+bool BrickImpl::isFrozen() const { return m_isFrozen; }
+void BrickImpl::freeze() { m_isFrozen = true; }
+
+bool BrickImpl::isFixated() const { return m_isFixated; }
+void BrickImpl::fixate() { m_isFixated = true; }

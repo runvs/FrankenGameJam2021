@@ -64,19 +64,17 @@ void StateGame::doInternalCreate()
     auto contactListener = std::make_shared<BrickContactListener>();
     contactListener->addContactCallback(
         [this](auto p1, auto p2) { handleCurrentBrickCollision(p1, p2); });
+
     m_world->setContactListener(contactListener);
     m_brickProvider = std::make_shared<BrickProviderRandom>();
 
     m_soundBrickSpawn = std::make_shared<jt::Sound>();
     m_soundBrickSpawn->load("assets/sfx/brick_spawn.ogg");
 
-    m_soundGroupBrickContact = std::make_shared<jt::SoundGroup>(std::vector<std::string>{
-        "assets/sfx/brick_contact_1.ogg",
-        "assets/sfx/brick_contact_2.ogg",
-        "assets/sfx/brick_contact_3.ogg",
-        "assets/sfx/brick_contact_4.ogg",
-        "assets/sfx/brick_contact_5.ogg"
-    });
+    m_soundGroupBrickContact = std::make_shared<jt::SoundGroup>(
+        std::vector<std::string> { "assets/sfx/brick_contact_1.ogg",
+            "assets/sfx/brick_contact_2.ogg", "assets/sfx/brick_contact_3.ogg",
+            "assets/sfx/brick_contact_4.ogg", "assets/sfx/brick_contact_5.ogg" });
 
     m_soundGameOver = std::make_shared<jt::Sound>();
     m_soundGameOver->load("assets/sfx/gameover.ogg");
@@ -104,6 +102,32 @@ void StateGame::doInternalCreate()
     add(t);
 }
 
+void StateGame::freezeBricks()
+{
+    for (auto const b : *m_bricks) {
+        if (b.expired()) {
+            continue;
+        }
+        auto brick = b.lock();
+        if (brick->isFrozen()) {
+            continue;
+        }
+        if (!brick->isFixated()) {
+            continue;
+        }
+        if (brick == m_currentBrick || brick == m_currentPendingBrick) {
+            continue;
+        }
+
+        auto const pos = brick->getPosition();
+        if (pos.y() > m_maxHeight + 64.0f) {
+            std::cout << "freeze brick at: " << pos.y() << std::endl;
+            addRevoluteJointTo(brick);
+            brick->freeze();
+        }
+    }
+}
+
 void StateGame::doInternalUpdate(float const elapsed)
 {
     if (m_running) {
@@ -114,6 +138,7 @@ void StateGame::doInternalUpdate(float const elapsed)
         rotateCurrentBrick(elapsed);
         moveCamera(elapsed);
         checkForGameOver();
+        freezeBricks();
     }
 
     m_background->update(elapsed);
@@ -143,32 +168,16 @@ void StateGame::moveCamera(float const elapsed)
     m_soundAtmospheric3->setVolume(volume);
 }
 
-void StateGame::addJointToPlatform(std::shared_ptr<BrickInterface> brick, b2Body* other)
+void StateGame::addDistanceJointsTo(std::shared_ptr<BrickInterface> brick, b2Body* other)
 {
-    // RevolutionJoint
-#if false
-        b2RevoluteJointDef jointDef;
-        jointDef.Initialize(
-            m_platform->getB2Body(), brick->getB2Body(),
-            m_platform->getB2Body()->GetWorldCenter());
-        jointDef.lowerAngle = -0.001f;
-        jointDef.upperAngle = 0.001f;
-        jointDef.enableLimit = true;
-        jointDef.maxMotorTorque = 10.0f;
-        jointDef.motorSpeed = 0.0f;
-        jointDef.enableMotor = true;
-        m_world->createJoint(&jointDef);
-#else
-
-    // two DistanceJoints
     {
         b2DistanceJointDef jointDef;
         jointDef.Initialize(other, brick->getB2Body(),
             other->GetWorldCenter() + b2Vec2 { 16.0f, 0.0f },
             brick->getB2Body()->GetWorldCenter() + b2Vec2 { -16.0f, 0.0f });
         jointDef.collideConnected = true;
-        jointDef.frequencyHz = 10.0f;
-        jointDef.dampingRatio = 0.02f;
+        jointDef.frequencyHz = 15.0f;
+        jointDef.dampingRatio = 0.04f;
         m_world->createJoint(&jointDef);
     }
 
@@ -178,11 +187,24 @@ void StateGame::addJointToPlatform(std::shared_ptr<BrickInterface> brick, b2Body
             other->GetWorldCenter() + b2Vec2 { -16.0f, 0.0f },
             brick->getB2Body()->GetWorldCenter() + b2Vec2 { 16.0f, 0.0f });
         jointDef.collideConnected = true;
-        jointDef.frequencyHz = 10.0f;
-        jointDef.dampingRatio = 0.02f;
+        jointDef.frequencyHz = 15.0f;
+        jointDef.dampingRatio = 0.04f;
         m_world->createJoint(&jointDef);
     }
-#endif
+}
+
+void StateGame::addRevoluteJointTo(std::shared_ptr<BrickInterface> brick)
+{
+    b2RevoluteJointDef jointDef;
+    jointDef.Initialize(
+        m_platform->getB2Body(), brick->getB2Body(), m_platform->getB2Body()->GetWorldCenter());
+    jointDef.lowerAngle = -0.001f;
+    jointDef.upperAngle = 0.001f;
+    jointDef.enableLimit = true;
+    jointDef.maxMotorTorque = 10.0f;
+    jointDef.motorSpeed = 0.0f;
+    jointDef.enableMotor = true;
+    m_world->createJoint(&jointDef);
 }
 
 void StateGame::rotateCurrentBrick(float const elapsed)
@@ -284,7 +306,7 @@ void StateGame::handleCurrentBrickCollision(b2Body* p1, b2Body* p2)
         auto other = isCurrentBrick(p1) ? p2 : p1;
 
         auto t2 = std::make_shared<jt::Timer>(
-            1.5f,
+            0.9f,
             [this, currentPendingBrick = m_currentBrick, other]() {
                 fixCurrentBrick(currentPendingBrick, other);
             },
@@ -302,18 +324,20 @@ void StateGame::handleCurrentBrickCollision(b2Body* p1, b2Body* p2)
 void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBrick, b2Body* other)
 {
 
+    // TODO Move to l < 40 block
     float const ypos = currentPendingBrick->getPosition().y();
     if (ypos < m_maxHeight) {
         m_maxHeight = ypos;
     }
 
-    auto const v = currentPendingBrick->getVelocity();
+    auto const v = currentPendingBrick->getVelocity() - m_platform->getVelocity();
     auto const l = jt::MathHelper::lengthSquared(v);
 
-    if (l < 30) {
+    if (l < 40) {
         currentPendingBrick->getDrawable()->flash(0.75f);
-        addJointToPlatform(currentPendingBrick, m_platform->getB2Body());
-        addJointToPlatform(currentPendingBrick, other);
+        addDistanceJointsTo(currentPendingBrick, m_platform->getB2Body());
+        addDistanceJointsTo(currentPendingBrick, other);
+        currentPendingBrick->fixate();
     }
 
     else {

@@ -1,22 +1,21 @@
 #include "brick_provider_random.hpp"
 #include "brick_factory.hpp"
-#include "system_helper.hpp"
 #include "random.hpp"
+#include "system_helper.hpp"
 
 BrickProviderRandom::BrickProviderRandom()
 {
     m_functions.emplace_back([](std::shared_ptr<jt::Box2DWorldInterface> world, float yPos) {
-
-        jt::Vector2 spawnPosition { jt::Random::getFloat(20.0f, 220.0f), yPos};
+        jt::Vector2 spawnPosition { jt::Random::getFloat(40.0f, 200.0f), yPos };
 
         return BrickFactory::createBrickQuadratic(world, spawnPosition);
     });
     m_functions.emplace_back([](std::shared_ptr<jt::Box2DWorldInterface> world, float yPos) {
-        jt::Vector2 spawnPosition { jt::Random::getFloat(20.0f, 220.0f), yPos};
+        jt::Vector2 spawnPosition { jt::Random::getFloat(40.0f, 200.0f), yPos };
         return BrickFactory::createBrickCuttingEdge(world, spawnPosition);
     });
     m_functions.emplace_back([](std::shared_ptr<jt::Box2DWorldInterface> world, float yPos) {
-        jt::Vector2 spawnPosition { jt::Random::getFloat(20.0f, 220.0f), yPos};
+        jt::Vector2 spawnPosition { jt::Random::getFloat(40.0f, 200.0f), yPos };
         return BrickFactory::createBrickRectangle2x1(world, spawnPosition);
     });
 }
