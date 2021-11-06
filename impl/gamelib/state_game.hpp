@@ -29,13 +29,14 @@ private:
     std::shared_ptr<jt::Box2DWorldInterface> m_world { nullptr };
 
     std::shared_ptr<Platform> m_platform { nullptr };
-    std::shared_ptr<jt::ObjectGroup<BrickInterface>> m_bricks;
+
+    std::shared_ptr<jt::ObjectGroup<BrickInterface>> m_bricks { nullptr };
+    std::shared_ptr<BrickInterface> m_currentBrick { nullptr };
 
     bool m_running { false };
     bool m_hasEnded { false };
 
-    int m_scoreP1 { 0 };
-    int m_scoreP2 { 0 };
+    int m_score { 0 };
 
     void doInternalCreate() override;
     void doInternalUpdate(float const elapsed) override;
@@ -44,6 +45,7 @@ private:
     void removeBricksOutOfScreen();
 
     void endGame();
+    void spawnBricks();
 };
 
 #endif

@@ -65,16 +65,7 @@ void StateGame::doInternalUpdate(float const elapsed)
         m_world->step(elapsed, GP::PhysicVelocityIterations(), GP::PhysicPositionIterations());
         // update game logic here
 
-        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
-            auto brick = BrickFactory::createBrickQuadratic(m_world);
-            add(brick);
-            m_bricks->push_back(brick);
-        }
-        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::N)) {
-            auto brick = BrickFactory::createBrickRectangle2x1(m_world);
-            add(brick);
-            m_bricks->push_back(brick);
-        }
+        spawnBricks();
 
         // TODO: WIP: Revolute Joint with the platform
         if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::R)) {
