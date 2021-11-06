@@ -8,7 +8,7 @@ BrickProviderRandom::BrickProviderRandom()
         return BrickFactory::createBrickQuadratic(world);
     });
     m_functions.emplace_back([](std::shared_ptr<jt::Box2DWorldInterface> world) {
-        return BrickFactory::createBrickL(world);
+        return BrickFactory::createBrickCuttingEdge(world);
     });
     m_functions.emplace_back([](std::shared_ptr<jt::Box2DWorldInterface> world) {
         return BrickFactory::createBrickRectangle2x1(world);

@@ -2,26 +2,17 @@
 #include "game_interface.hpp"
 #include "math_helper.hpp"
 
-BrickCuttingEdge::BrickCuttingEdge(std::shared_ptr<jt::Box2DWorldInterface> world, b2BodyDef const* def)
-    : BrickInterface(world, def)
+BrickCuttingEdge::BrickCuttingEdge(
+    std::shared_ptr<jt::Box2DWorldInterface> world, b2BodyDef const* def)
+    : BrickImpl(world, def)
 {
 }
 
-/*
- *  _
- * | |
- * | |_
- * |___|
- *
- *
- *
- *
- */
-
 void BrickCuttingEdge::doCreate()
 {
-    m_sprite = std::make_shared<jt::Sprite>();
-    m_sprite->loadSprite("assets/brick_l.png");
+    auto sprite = std::make_shared<jt::Sprite>();
+    sprite->loadSprite("assets/brick_l.png");
+    m_drawable = sprite;
 
     b2FixtureDef fixtureDef;
     fixtureDef.density = 0.01f;
@@ -44,9 +35,9 @@ void BrickCuttingEdge::doCreate()
 
 void BrickCuttingEdge::doUpdate(float const elapsed)
 {
-    m_sprite->setPosition(getPosition());
-    m_sprite->setRotation(-jt::MathHelper::rad2deg(getRotation()));
-    m_sprite->update(elapsed);
+    m_drawable->setPosition(getPosition());
+    m_drawable->setRotation(-jt::MathHelper::rad2deg(getRotation()));
+    m_drawable->update(elapsed);
 }
 
-void BrickCuttingEdge::doDraw() const { m_sprite->draw(getGame()->getRenderTarget()); }
+void BrickCuttingEdge::doDraw() const { m_drawable->draw(getGame()->getRenderTarget()); }

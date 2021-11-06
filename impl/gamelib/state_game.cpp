@@ -109,7 +109,7 @@ void StateGame::doInternalUpdate(float const elapsed)
             }
         }
 
-        removeBricksOutOfScreen();
+        checkForGameOver();
     }
 
     m_background->update(elapsed);
@@ -143,7 +143,7 @@ void StateGame::spawnBricks()
         m_bricks->push_back(m_currentBrick);
     }
     if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::L)) {
-        m_currentBrick = BrickFactory::createBrickL(m_world);
+        m_currentBrick = BrickFactory::createBrickCuttingEdge(m_world);
         add(m_currentBrick);
         m_bricks->push_back(m_currentBrick);
     }
@@ -159,12 +159,15 @@ void StateGame::doInternalDraw() const
 {
     m_background->draw(getGame()->getRenderTarget());
     drawObjects();
+    if (m_currentBrick != nullptr) {
+        m_currentBrick->drawPreview();
+    }
     m_vignette->draw(getGame()->getRenderTarget());
     m_hud->draw();
     m_overlay->draw(getGame()->getRenderTarget());
 }
 
-void StateGame::removeBricksOutOfScreen()
+void StateGame::checkForGameOver()
 {
     for (auto b : *m_bricks) {
         if (b.expired()) {
@@ -175,7 +178,7 @@ void StateGame::removeBricksOutOfScreen()
         auto position = brick->getPosition();
 
         if (position.y() > GP::GetScreenSize().y() + GP::RemoveBrickDeadzone()) {
-            brick->kill();
+            endGame();
         }
     }
 }

@@ -5,14 +5,14 @@
 
 BrickRectangle2x1::BrickRectangle2x1(
     std::shared_ptr<jt::Box2DWorldInterface> world, b2BodyDef const* def)
-    : BrickInterface(world, def)
+    : BrickImpl(world, def)
 {
 }
 
 void BrickRectangle2x1::doCreate()
 {
-    m_shape = jt::dh::createRectShape(jt::Vector2 { 32, 16 }, jt::colors::Black);
-    m_shape->setOrigin(jt::Vector2 { 16, 8 });
+    m_drawable = jt::dh::createRectShape(jt::Vector2 { 32, 16 }, jt::colors::Black);
+    m_drawable->setOrigin(jt::Vector2 { 16, 8 });
     b2FixtureDef fixtureDef;
     fixtureDef.density = 0.01f;
     fixtureDef.friction = 1.1f;
@@ -26,8 +26,8 @@ void BrickRectangle2x1::doCreate()
 
 void BrickRectangle2x1::doUpdate(float const elapsed)
 {
-    m_shape->setPosition(getPosition());
-    m_shape->setRotation(-jt::MathHelper::rad2deg(getRotation()));
-    m_shape->update(elapsed);
+    m_drawable->setPosition(getPosition());
+    m_drawable->setRotation(-jt::MathHelper::rad2deg(getRotation()));
+    m_drawable->update(elapsed);
 }
-void BrickRectangle2x1::doDraw() const { m_shape->draw(getGame()->getRenderTarget()); }
+void BrickRectangle2x1::doDraw() const { m_drawable->draw(getGame()->getRenderTarget()); }
