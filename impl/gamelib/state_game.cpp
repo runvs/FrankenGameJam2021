@@ -67,13 +67,13 @@ void StateGame::doInternalCreate()
     m_brickProvider = std::make_shared<BrickProviderRandom>();
 
     m_soundBrickSpawn = std::make_shared<jt::Sound>();
-    m_soundBrickSpawn->load("assets/sfx/block_spawn.wav");
+    m_soundBrickSpawn->load("assets/sfx/block_spawn.ogg");
 
     m_soundBrickContact = std::make_shared<jt::Sound>();
-    m_soundBrickContact->load("assets/sfx/block_contact.wav");
+    m_soundBrickContact->load("assets/sfx/block_contact.ogg");
 
     m_soundGameOver = std::make_shared<jt::Sound>();
-    m_soundGameOver->load("assets/sfx/gameover.wav");
+    m_soundGameOver->load("assets/sfx/gameover.ogg");
 
     auto t = std::make_shared<jt::Timer>(
         1.5f, [this]() { spawnNewBrick(); }, 1);
