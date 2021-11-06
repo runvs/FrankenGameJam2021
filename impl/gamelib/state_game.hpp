@@ -34,10 +34,9 @@ private:
 
     std::shared_ptr<jt::ObjectGroup<BrickInterface>> m_bricks { nullptr };
     std::shared_ptr<BrickInterface> m_currentBrick { nullptr };
+    std::shared_ptr<BrickInterface> m_currentPendingBrick { nullptr };
 
     std::shared_ptr<BrickProviderInterface> m_brickProvider { nullptr };
-
-    std::shared_ptr<jt::Timer> m_spawnTimer;
 
     bool m_running { false };
     bool m_hasEnded { false };
@@ -58,6 +57,7 @@ private:
     bool isCurrentBrick(b2Body const* const bodyPtr) const;
 
     void handleCurrentBlockCollision(b2Body* p1, b2Body* p2);
+    void addJointToPlatform(std::shared_ptr<BrickInterface> brick);
 };
 
 #endif

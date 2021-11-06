@@ -66,8 +66,9 @@ void StateGame::doInternalCreate()
     m_world->setContactListener(contactListener);
     m_brickProvider = std::make_shared<BrickProviderRandom>();
 
-    m_spawnTimer = std::make_shared<jt::Timer>(5.5f, [this]() { spawnNewBrick(); });
-    add(m_spawnTimer);
+    auto t = std::make_shared<jt::Timer>(
+        1.5f, [this]() { spawnNewBrick(); }, 1);
+    add(t);
 }
 
 void StateGame::doInternalUpdate(float const elapsed)
@@ -81,17 +82,9 @@ void StateGame::doInternalUpdate(float const elapsed)
 
         // TODO: WIP: Revolute Joint with the platform
         if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::R)) {
-            for (auto brick : *m_bricks) {
-                b2RevoluteJointDef jointDef;
-                jointDef.Initialize(m_platform->getB2Body(), brick.lock()->getB2Body(),
-                    m_platform->getB2Body()->GetWorldCenter());
-                jointDef.lowerAngle = -0.001f;
-                jointDef.upperAngle = 0.001f;
-                jointDef.enableLimit = true;
-                jointDef.maxMotorTorque = 10.0f;
-                jointDef.motorSpeed = 0.0f;
-                jointDef.enableMotor = true;
-                m_world->createJoint(&jointDef);
+            for (auto b : *m_bricks) {
+                auto brick = b.lock();
+                addJointToPlatform(brick);
             }
         }
 
@@ -115,6 +108,20 @@ void StateGame::doInternalUpdate(float const elapsed)
     m_background->update(elapsed);
     m_vignette->update(elapsed);
     m_overlay->update(elapsed);
+}
+
+void StateGame::addJointToPlatform(std::shared_ptr<BrickInterface> brick)
+{
+    b2RevoluteJointDef jointDef;
+    jointDef.Initialize(
+        m_platform->getB2Body(), brick->getB2Body(), m_platform->getB2Body()->GetWorldCenter());
+    jointDef.lowerAngle = -0.001f;
+    jointDef.upperAngle = 0.001f;
+    jointDef.enableLimit = true;
+    jointDef.maxMotorTorque = 10.0f;
+    jointDef.motorSpeed = 0.0f;
+    jointDef.enableMotor = true;
+    m_world->createJoint(&jointDef);
 }
 
 void StateGame::rotateCurrentBrick(float const elapsed)
@@ -205,9 +212,23 @@ bool StateGame::isCurrentBrick(b2Body const* const bodyPtr) const
     }
     return bodyPtr == m_currentBrick->getB2Body();
 }
+
 void StateGame::handleCurrentBlockCollision(b2Body* p1, b2Body* p2)
 {
     if (isCurrentBrick(p1) || isCurrentBrick(p2)) {
+
+        auto t2 = std::make_shared<jt::Timer>(
+            1.5f,
+            [this, currentPendingBrick = m_currentBrick]() {
+                addJointToPlatform(currentPendingBrick);
+            },
+            1);
+        add(t2);
+
         m_currentBrick = nullptr;
+
+        auto t = std::make_shared<jt::Timer>(
+            1.5f, [this]() { spawnNewBrick(); }, 1);
+        add(t);
     }
 }
