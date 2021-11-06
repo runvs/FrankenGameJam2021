@@ -92,15 +92,9 @@ void StateGame::doInternalUpdate(float const elapsed)
                     brick.lock()->getB2Body()->GetWorldCenter());
                 jointDef.collideConnected = true;
                 jointDef.frequencyHz = 30.0f;
-                jointDef.dampingRatio = 0.f;
+                jointDef.dampingRatio = 0.001f;
                 m_world->createJoint(&jointDef);
             }
-        }
-
-        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::L)) {
-            auto brick = BrickFactory::createBrickL(m_world);
-            add(brick);
-            m_bricks->push_back(brick);
         }
 
         removeBricksOutOfScreen();
