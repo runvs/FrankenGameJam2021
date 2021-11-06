@@ -10,12 +10,12 @@
 class BrickProviderRandom : public BrickProviderInterface {
 public:
     BrickProviderRandom();
-    std::function<std::shared_ptr<BrickInterface>(std::shared_ptr<jt::Box2DWorldInterface>)>
+    std::function<std::shared_ptr<BrickInterface>(std::shared_ptr<jt::Box2DWorldInterface>, float)>
     getNextBrickFunction() override;
 
 private:
     std::vector<
-        std::function<std::shared_ptr<BrickInterface>(std::shared_ptr<jt::Box2DWorldInterface>)>>
+        std::function<std::shared_ptr<BrickInterface>(std::shared_ptr<jt::Box2DWorldInterface>, float)>>
         m_functions;
 };
 

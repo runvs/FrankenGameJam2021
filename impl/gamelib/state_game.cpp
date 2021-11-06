@@ -128,17 +128,17 @@ void StateGame::spawnBricks()
 {
     if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
 
-        m_currentBrick = m_brickProvider->getNextBrickFunction()(m_world);
+        m_currentBrick = m_brickProvider->getNextBrickFunction()(m_world, 20.0f);
         add(m_currentBrick);
         m_bricks->push_back(m_currentBrick);
     }
     if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::N)) {
-        m_currentBrick = BrickFactory::createBrickRectangle2x1(m_world);
+        m_currentBrick = BrickFactory::createBrickRectangle2x1(m_world, jt::Vector2{250.0f, 20.0f});
         add(m_currentBrick);
         m_bricks->push_back(m_currentBrick);
     }
     if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::L)) {
-        m_currentBrick = BrickFactory::createBrickCuttingEdge(m_world);
+        m_currentBrick = BrickFactory::createBrickCuttingEdge(m_world, jt::Vector2{250.0f, 20.0f});
         add(m_currentBrick);
         m_bricks->push_back(m_currentBrick);
     }

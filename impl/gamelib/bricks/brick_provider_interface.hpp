@@ -8,7 +8,7 @@ class BrickProviderInterface {
 public:
     virtual ~BrickProviderInterface() = default;
 
-    virtual std::function<std::shared_ptr<BrickInterface>(std::shared_ptr<jt::Box2DWorldInterface>)>
+    virtual std::function<std::shared_ptr<BrickInterface>(std::shared_ptr<jt::Box2DWorldInterface>, float)>
     getNextBrickFunction() = 0;
 };
 
