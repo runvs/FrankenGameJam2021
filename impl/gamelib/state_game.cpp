@@ -156,15 +156,18 @@ void StateGame::moveCamera(float const elapsed)
     }
 
     float volume = (1.0f - fabs(GP::AtmosphericSoundBreakpoint1() - camPosY) / 300.0f) * 50.0f;
-    if(volume < 0.0f) volume = 0.0f;
+    if (volume < 0.0f)
+        volume = 0.0f;
     m_soundAtmospheric1->setVolume(volume);
 
     volume = (1.0f - fabs(GP::AtmosphericSoundBreakpoint2() - camPosY) / 300.0f) * 50.0f;
-    if(volume < 0.0f) volume = 0.0f;
+    if (volume < 0.0f)
+        volume = 0.0f;
     m_soundAtmospheric2->setVolume(volume);
 
     volume = (1.0f - fabs(GP::AtmosphericSoundBreakpoint3() - camPosY) / 300.0f) * 50.0f;
-    if(volume < 0.0f) volume = 0.0f;
+    if (volume < 0.0f)
+        volume = 0.0f;
     m_soundAtmospheric3->setVolume(volume);
 }
 
@@ -321,6 +324,7 @@ void StateGame::handleCurrentBrickCollision(b2Body* p1, b2Body* p2)
         add(t);
     }
 }
+
 void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBrick, b2Body* other)
 {
     auto const v = currentPendingBrick->getVelocity() - m_platform->getVelocity();
@@ -330,6 +334,8 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
         float const ypos = currentPendingBrick->getPosition().y();
         if (ypos < m_maxHeight) {
             m_maxHeight = ypos;
+            m_score = 280 - m_maxHeight;
+            m_hud->getObserverScore()->notify(m_score);
         }
         currentPendingBrick->getDrawable()->flash(0.75f);
         addDistanceJointsTo(currentPendingBrick, m_platform->getB2Body());
