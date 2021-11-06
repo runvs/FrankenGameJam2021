@@ -23,7 +23,7 @@ class Hud;
 class StateGame : public jt::GameState {
 
 private:
-    std::shared_ptr<jt::Shape> m_background;
+    std::shared_ptr<jt::Sprite> m_background;
     std::shared_ptr<jt::Shape> m_overlay;
     std::shared_ptr<jt::Sprite> m_vignette;
     std::shared_ptr<Hud> m_hud;
@@ -43,6 +43,8 @@ private:
 
     int m_score { 0 };
 
+    float m_maxHeight { 300 };
+
     void doInternalCreate() override;
     void doInternalUpdate(float const elapsed) override;
     void doInternalDraw() const override;
@@ -58,6 +60,8 @@ private:
 
     void handleCurrentBlockCollision(b2Body* p1, b2Body* p2);
     void addJointToPlatform(std::shared_ptr<BrickInterface> brick);
+    void fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBrick);
+    void moveCamera(float const elapsed);
 };
 
 #endif

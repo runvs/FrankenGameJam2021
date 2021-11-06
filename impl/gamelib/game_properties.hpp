@@ -31,12 +31,12 @@ public:
     static jt::Color PaletteColor7() { return jt::Color { 64, 23, 58 }; }
     static jt::Color PaletteColor8() { return jt::Color { 157, 64, 43 }; }
 
-    static int PhysicVelocityIterations() { return 6; }
-    static int PhysicPositionIterations() { return 10; }
+    static int PhysicVelocityIterations();
+    static int PhysicPositionIterations();
 
-    static int RemoveBrickDeadzone() { return 16; }
+    static int RemoveBrickDeadzone();
 
-    static float PlatformMovementSpeed() { return 20.0f; }
+    static float PlatformMovementSpeed();
 };
 
 #endif

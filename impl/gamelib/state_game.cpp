@@ -22,10 +22,10 @@ void StateGame::doInternalCreate()
     using jt::Shape;
     using jt::TweenAlpha;
 
-    m_background = std::make_shared<Shape>();
-    m_background->makeRect({ w, h });
-    m_background->setColor(GP::PaletteBackground());
-    m_background->setIgnoreCamMovement(true);
+    m_background = std::make_shared<jt::Sprite>();
+    m_background->loadSprite("assets/background.png");
+
+    m_background->setPosition(jt::Vector2 { 0.0f, -330.0f });
     m_background->update(0.0f);
 
     m_overlay = std::make_shared<Shape>();
@@ -80,6 +80,8 @@ void StateGame::doInternalUpdate(float const elapsed)
         spawnBricks();
         rotateCurrentBrick(elapsed);
 
+        moveCamera(elapsed);
+
         // TODO: WIP: Revolute Joint with the platform
         if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::R)) {
             for (auto b : *m_bricks) {
@@ -108,6 +110,16 @@ void StateGame::doInternalUpdate(float const elapsed)
     m_background->update(elapsed);
     m_vignette->update(elapsed);
     m_overlay->update(elapsed);
+}
+
+void StateGame::moveCamera(float const elapsed)
+{
+    float const camPosY = getGame()->getCamera()->getCamOffset().y();
+    float const scrollTo = m_maxHeight - 250;
+    std::cout << camPosY << " " << scrollTo << std::endl;
+    if (camPosY > scrollTo) {
+        getGame()->getCamera()->move(jt::Vector2 { 0.0f, -elapsed * 4.0f });
+    }
 }
 
 void StateGame::addJointToPlatform(std::shared_ptr<BrickInterface> brick)
@@ -145,12 +157,14 @@ void StateGame::spawnBricks()
         spawnNewBrick();
     }
     if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::N)) {
-        m_currentBrick = BrickFactory::createBrickRectangle2x1(m_world, jt::Vector2{250.0f, 20.0f});
+        m_currentBrick
+            = BrickFactory::createBrickRectangle2x1(m_world, jt::Vector2 { 250.0f, 20.0f });
         add(m_currentBrick);
         m_bricks->push_back(m_currentBrick);
     }
     if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::L)) {
-        m_currentBrick = BrickFactory::createBrickCuttingEdge(m_world, jt::Vector2{250.0f, 20.0f});
+        m_currentBrick
+            = BrickFactory::createBrickCuttingEdge(m_world, jt::Vector2 { 250.0f, 20.0f });
         add(m_currentBrick);
         m_bricks->push_back(m_currentBrick);
     }
@@ -220,7 +234,7 @@ void StateGame::handleCurrentBlockCollision(b2Body* p1, b2Body* p2)
         auto t2 = std::make_shared<jt::Timer>(
             1.5f,
             [this, currentPendingBrick = m_currentBrick]() {
-                addJointToPlatform(currentPendingBrick);
+                fixCurrentBrick(currentPendingBrick);
             },
             1);
         add(t2);
@@ -231,4 +245,15 @@ void StateGame::handleCurrentBlockCollision(b2Body* p1, b2Body* p2)
             1.5f, [this]() { spawnNewBrick(); }, 1);
         add(t);
     }
+}
+void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBrick)
+{
+
+    float const ypos = currentPendingBrick->getPosition().y();
+    if (ypos < m_maxHeight) {
+
+        m_maxHeight = ypos;
+    }
+    // TODO Add check for velocity of brick
+    addJointToPlatform(currentPendingBrick);
 }
