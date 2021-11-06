@@ -16,8 +16,9 @@ void Platform::doCreate()
     m_shape = jt::dh::createRectShape(m_platformSize);
 
     b2FixtureDef fixtureDef;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 5.0f;
+    fixtureDef.density = 1000.0f;
+    fixtureDef.friction = 0.99f;
+    fixtureDef.restitution = 0.0f;
 
     b2PolygonShape boxCollider {};
     boxCollider.SetAsBox(m_platformSize.x() * 0.5f, m_platformSize.y() * 0.5f);

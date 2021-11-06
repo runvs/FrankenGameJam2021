@@ -12,7 +12,7 @@
 
 void StateGame::doInternalCreate()
 {
-    m_worldImpl = std::make_shared<b2World>(b2Vec2 { 0.0f, 20.0f });
+    m_worldImpl = std::make_shared<b2World>(b2Vec2 { 0.0f, 100.0f });
     m_world = std::make_shared<jt::Box2DWorldWrapper>(m_worldImpl);
 
     float const w = static_cast<float>(GP::GetWindowSize().x());

@@ -32,7 +32,7 @@ public:
     static jt::Color PaletteColor8() { return jt::Color { 157, 64, 43 }; }
 
     static int PhysicVelocityIterations() { return 6; }
-    static int PhysicPositionIterations() { return 2; }
+    static int PhysicPositionIterations() { return 10; }
 
     static float PlatformMovementSpeed() { return 20.0f; }
 };

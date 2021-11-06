@@ -17,7 +17,8 @@ void Brick::doCreate()
 
     b2FixtureDef fixtureDef;
     fixtureDef.density = 20.0f;
-    fixtureDef.friction = 1.0f;
+    fixtureDef.friction = 1.1f;
+    fixtureDef.restitution = -0.1f;
 
     b2PolygonShape boxCollider {};
     boxCollider.SetAsBox(8, 8);
