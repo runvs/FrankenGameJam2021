@@ -8,7 +8,6 @@
 #include "sprite.hpp"
 #include "state_menu.hpp"
 #include "tweens/tween_alpha.hpp"
-#include <iostream>
 
 void StateGame::doInternalCreate()
 {
@@ -76,6 +75,23 @@ void StateGame::doInternalUpdate(float const elapsed)
             add(brick);
             m_bricks->push_back(brick);
         }
+
+        // TODO: WIP: Revolute Joint with the platform
+        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::R)) {
+            for (auto brick : *m_bricks) {
+                b2RevoluteJointDef jointDef;
+                jointDef.Initialize(m_platform->getB2Body(), brick.lock()->getB2Body(),
+                    m_platform->getB2Body()->GetWorldCenter());
+                jointDef.lowerAngle = -0.001f;
+                jointDef.upperAngle = 0.001f;
+                jointDef.enableLimit = true;
+                jointDef.maxMotorTorque = 10.0f;
+                jointDef.motorSpeed = 0.0f;
+                jointDef.enableMotor = true;
+                m_world->createJoint(&jointDef);
+            }
+        }
+
         if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::L)) {
             auto brick = BrickFactory::createBrickL(m_world);
             add(brick);
@@ -83,7 +99,6 @@ void StateGame::doInternalUpdate(float const elapsed)
         }
 
         removeBricksOutOfScreen();
-        std::cout << "Number of game objects: " << getNumberOfObjects() << std::endl;
     }
 
     m_background->update(elapsed);
