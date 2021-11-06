@@ -2,8 +2,10 @@
 #define GAME_STATE_GAME_HPP_INCLUDEGUARD
 
 #include "game_state.hpp"
+#include "platform.hpp"
 #include <memory>
 #include <vector>
+#include "box2d_wrapper.hpp"
 
 // fwd decls
 namespace jt {
@@ -21,7 +23,10 @@ private:
     std::shared_ptr<jt::Shape> m_overlay;
     std::shared_ptr<jt::Sprite> m_vignette;
     std::shared_ptr<Hud> m_hud;
-    std::shared_ptr<b2World> m_world { nullptr };
+    std::shared_ptr<b2World> m_worldImpl {nullptr};
+    std::shared_ptr<jt::Box2DWorldInterface> m_world { nullptr };
+
+    std::shared_ptr<Platform> m_platform{nullptr};
 
     bool m_running { false };
     bool m_hasEnded { false };

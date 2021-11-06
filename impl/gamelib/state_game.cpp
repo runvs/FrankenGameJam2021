@@ -11,7 +11,8 @@
 
 void StateGame::doInternalCreate()
 {
-    m_world = std::make_shared<b2World>(b2Vec2 { 0.0f, 0.0f });
+    m_worldImpl = std::make_shared<b2World>(b2Vec2 { 0.0f, 0.0f });
+    m_world = std::make_shared<jt::Box2DWorldWrapper>(m_worldImpl);
 
     float const w = static_cast<float>(GP::GetWindowSize().x());
     float const h = static_cast<float>(GP::GetWindowSize().y());
@@ -46,21 +47,20 @@ void StateGame::doInternalCreate()
 
     // StateGame will call drawObjects itself.
     setAutoDraw(false);
+
+    b2BodyDef bodyDef;
+    bodyDef.fixedRotation = true;
+    bodyDef.type = b2_kinematicBody;
+    bodyDef.position.Set(135, 280.0f);
+    m_platform = std::make_shared<Platform>(m_world, &bodyDef);
+    add(m_platform);
 }
 
 void StateGame::doInternalUpdate(float const elapsed)
 {
     if (m_running) {
-        m_world->Step(elapsed, GP::PhysicVelocityIterations(), GP::PhysicPositionIterations());
+        m_world->step(elapsed, GP::PhysicVelocityIterations(), GP::PhysicPositionIterations());
         // update game logic here
-        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::A)) {
-            m_scoreP1++;
-            m_hud->getObserverScoreP1()->notify(m_scoreP1);
-        }
-        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::D)) {
-            m_scoreP2++;
-            m_hud->getObserverScoreP2()->notify(m_scoreP2);
-        }
     }
 
     m_background->update(elapsed);
