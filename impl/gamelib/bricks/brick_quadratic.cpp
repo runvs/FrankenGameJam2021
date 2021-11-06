@@ -25,9 +25,7 @@ void BrickQuadratic::doCreate()
 
 void BrickQuadratic::doUpdate(float const elapsed)
 {
-    auto pos = getPosition();
-    //    pos -= jt::Vector2 { 8.0f, 8.0f };
-    m_shape->setPosition(pos);
+    m_shape->setPosition(getPosition());
     m_shape->setRotation(-jt::MathHelper::rad2deg(getRotation()));
     m_shape->update(elapsed);
 }

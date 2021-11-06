@@ -70,6 +70,11 @@ void StateGame::doInternalUpdate(float const elapsed)
             add(brick);
             m_bricks->push_back(brick);
         }
+        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::N)) {
+            auto brick = BrickFactory::createBrickRectangle2x1(m_world);
+            add(brick);
+            m_bricks->push_back(brick);
+        }
     }
 
     m_background->update(elapsed);
