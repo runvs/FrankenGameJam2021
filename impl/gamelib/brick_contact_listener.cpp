@@ -16,5 +16,14 @@ void BrickContactListener::BeginContact(b2Contact* contact)
 {
     std::cout << "Collision detected between " << contact->GetFixtureA()->GetBody() << " and "
               << contact->GetFixtureB()->GetBody() << std::endl;
+
+    for (auto const& f : m_callbacks) {
+        f(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody());
+    }
     // TODO: Call callback with the two body ptrs
+}
+
+void BrickContactListener::addContactCallback(std::function<void(b2Body*, b2Body*)> cb)
+{
+    m_callbacks.push_back(cb);
 }

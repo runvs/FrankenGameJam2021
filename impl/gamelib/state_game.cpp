@@ -59,8 +59,15 @@ void StateGame::doInternalCreate()
 
     m_bricks = std::make_shared<jt::ObjectGroup<BrickInterface>>();
     add(m_bricks);
-    m_world->setContactListener(std::make_shared<BrickContactListener>());
+
+    auto contactListener = std::make_shared<BrickContactListener>();
+    contactListener->addContactCallback(
+        [this](auto p1, auto p2) { handleCurrentBlockCollision(p1, p2); });
+    m_world->setContactListener(contactListener);
     m_brickProvider = std::make_shared<BrickProviderRandom>();
+
+    m_spawnTimer = std::make_shared<jt::Timer>(5.5f, [this]() { spawnNewBrick(); });
+    add(m_spawnTimer);
 }
 
 void StateGame::doInternalUpdate(float const elapsed)
@@ -128,9 +135,7 @@ void StateGame::spawnBricks()
 {
     if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
 
-        m_currentBrick = m_brickProvider->getNextBrickFunction()(m_world);
-        add(m_currentBrick);
-        m_bricks->push_back(m_currentBrick);
+        spawnNewBrick();
     }
     if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::N)) {
         m_currentBrick = BrickFactory::createBrickRectangle2x1(m_world);
@@ -142,6 +147,12 @@ void StateGame::spawnBricks()
         add(m_currentBrick);
         m_bricks->push_back(m_currentBrick);
     }
+}
+void StateGame::spawnNewBrick()
+{
+    m_currentBrick = m_brickProvider->getNextBrickFunction()(m_world);
+    add(m_currentBrick);
+    m_bricks->push_back(m_currentBrick);
 }
 
 void StateGame::doInternalDraw() const
@@ -182,4 +193,19 @@ void StateGame::endGame()
     tw->setSkipFrames();
     tw->addCompleteCallback([this]() { getGame()->switchState(std::make_shared<StateMenu>()); });
     add(tw);
+}
+
+bool StateGame::isCurrentBrick(b2Body const* const bodyPtr) const
+{
+    if (!m_currentBrick) {
+        return false;
+    }
+    return bodyPtr == m_currentBrick->getB2Body();
+}
+void StateGame::handleCurrentBlockCollision(b2Body* p1, b2Body* p2)
+{
+    if (isCurrentBrick(p1) || isCurrentBrick(p2)) {
+        std::cout << "current brick collided\n";
+        m_currentBrick == nullptr;
+    }
 }
