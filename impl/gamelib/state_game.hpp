@@ -59,8 +59,8 @@ private:
     bool isCurrentBrick(b2Body const* const bodyPtr) const;
 
     void handleCurrentBlockCollision(b2Body* p1, b2Body* p2);
-    void addJointToPlatform(std::shared_ptr<BrickInterface> brick);
-    void fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBrick);
+    void addJointToPlatform(std::shared_ptr<BrickInterface> brick, b2Body* other);
+    void fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBrick, b2Body* other);
     void moveCamera(float const elapsed);
 };
 

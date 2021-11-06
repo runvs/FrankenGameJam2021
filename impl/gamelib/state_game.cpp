@@ -79,31 +79,7 @@ void StateGame::doInternalUpdate(float const elapsed)
 
         spawnBricks();
         rotateCurrentBrick(elapsed);
-
         moveCamera(elapsed);
-
-        //        // TODO: WIP: Revolute Joint with the platform
-        //        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::R)) {
-        //            for (auto b : *m_bricks) {
-        //                auto brick = b.lock();
-        //                addJointToPlatform(brick);
-        //            }
-        //        }
-        //
-        //        // TODO: WIP: Distance Joint with the platform
-        //        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::T)) {
-        //            for (auto brick : *m_bricks) {
-        //                b2DistanceJointDef jointDef;
-        //                jointDef.Initialize(m_platform->getB2Body(), brick.lock()->getB2Body(),
-        //                    m_platform->getB2Body()->GetWorldCenter(),
-        //                    brick.lock()->getB2Body()->GetWorldCenter());
-        //                jointDef.collideConnected = true;
-        //                jointDef.frequencyHz = 30.0f;
-        //                jointDef.dampingRatio = 0.001f;
-        //                m_world->createJoint(&jointDef);
-        //            }
-        //        }
-
         checkForGameOver();
     }
 
@@ -115,25 +91,53 @@ void StateGame::doInternalUpdate(float const elapsed)
 void StateGame::moveCamera(float const elapsed)
 {
     float const camPosY = getGame()->getCamera()->getCamOffset().y();
-    float const scrollTo = m_maxHeight - 250;
+    float const scrollTo = m_maxHeight - 220;
     std::cout << camPosY << " " << scrollTo << std::endl;
     if (camPosY > scrollTo) {
         getGame()->getCamera()->move(jt::Vector2 { 0.0f, -elapsed * 4.0f });
     }
 }
 
-void StateGame::addJointToPlatform(std::shared_ptr<BrickInterface> brick)
+void StateGame::addJointToPlatform(std::shared_ptr<BrickInterface> brick, b2Body* other)
 {
-    b2RevoluteJointDef jointDef;
-    jointDef.Initialize(
-        m_platform->getB2Body(), brick->getB2Body(), m_platform->getB2Body()->GetWorldCenter());
-    jointDef.lowerAngle = -0.001f;
-    jointDef.upperAngle = 0.001f;
-    jointDef.enableLimit = true;
-    jointDef.maxMotorTorque = 10.0f;
-    jointDef.motorSpeed = 0.0f;
-    jointDef.enableMotor = true;
-    m_world->createJoint(&jointDef);
+    // RevolutionJoint
+#if false
+        b2RevoluteJointDef jointDef;
+        jointDef.Initialize(
+            m_platform->getB2Body(), brick->getB2Body(),
+            m_platform->getB2Body()->GetWorldCenter());
+        jointDef.lowerAngle = -0.001f;
+        jointDef.upperAngle = 0.001f;
+        jointDef.enableLimit = true;
+        jointDef.maxMotorTorque = 10.0f;
+        jointDef.motorSpeed = 0.0f;
+        jointDef.enableMotor = true;
+        m_world->createJoint(&jointDef);
+#else
+
+    // two DistanceJoints
+    {
+        b2DistanceJointDef jointDef;
+        jointDef.Initialize(other, brick->getB2Body(),
+            other->GetWorldCenter() + b2Vec2 { 16.0f, 0.0f },
+            brick->getB2Body()->GetWorldCenter() + b2Vec2 { -16.0f, 0.0f });
+        jointDef.collideConnected = true;
+        jointDef.frequencyHz = 10.0f;
+        jointDef.dampingRatio = 0.01f;
+        m_world->createJoint(&jointDef);
+    }
+
+    {
+        b2DistanceJointDef jointDef;
+        jointDef.Initialize(other, brick->getB2Body(),
+            other->GetWorldCenter() + b2Vec2 { -16.0f, 0.0f },
+            brick->getB2Body()->GetWorldCenter() + b2Vec2 { 16.0f, 0.0f });
+        jointDef.collideConnected = true;
+        jointDef.frequencyHz = 10.0f;
+        jointDef.dampingRatio = 0.01f;
+        m_world->createJoint(&jointDef);
+    }
+#endif
 }
 
 void StateGame::rotateCurrentBrick(float const elapsed)
@@ -230,11 +234,12 @@ bool StateGame::isCurrentBrick(b2Body const* const bodyPtr) const
 void StateGame::handleCurrentBlockCollision(b2Body* p1, b2Body* p2)
 {
     if (isCurrentBrick(p1) || isCurrentBrick(p2)) {
+        auto other = isCurrentBrick(p1) ? p2 : p1;
 
         auto t2 = std::make_shared<jt::Timer>(
             1.5f,
-            [this, currentPendingBrick = m_currentBrick]() {
-                fixCurrentBrick(currentPendingBrick);
+            [this, currentPendingBrick = m_currentBrick, other]() {
+                fixCurrentBrick(currentPendingBrick, other);
             },
             1);
         add(t2);
@@ -246,14 +251,14 @@ void StateGame::handleCurrentBlockCollision(b2Body* p1, b2Body* p2)
         add(t);
     }
 }
-void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBrick)
+void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBrick, b2Body* other)
 {
 
     float const ypos = currentPendingBrick->getPosition().y();
     if (ypos < m_maxHeight) {
-
         m_maxHeight = ypos;
     }
     // TODO Add check for velocity of brick
-    addJointToPlatform(currentPendingBrick);
+    addJointToPlatform(currentPendingBrick, m_platform->getB2Body());
+    addJointToPlatform(currentPendingBrick, other);
 }

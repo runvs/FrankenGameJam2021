@@ -37,6 +37,7 @@ public:
     static int RemoveBrickDeadzone();
 
     static float PlatformMovementSpeed();
+    static float PhysicsBrickDensity();
 };
 
 #endif
