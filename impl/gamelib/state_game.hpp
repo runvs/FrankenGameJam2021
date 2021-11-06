@@ -11,6 +11,8 @@
 #include "timer.hpp"
 #include <memory>
 #include <vector>
+#include "sound.hpp"
+#include "sound_group.hpp"
 
 // fwd decls
 namespace jt {
@@ -40,8 +42,9 @@ private:
     std::shared_ptr<BrickProviderInterface> m_brickProvider { nullptr };
 
     std::shared_ptr<jt::Sound> m_soundBrickSpawn;
-    std::shared_ptr<jt::Sound> m_soundBrickContact;
+    std::shared_ptr<jt::SoundGroup> m_soundGroupBrickContact;
     std::shared_ptr<jt::Sound> m_soundGameOver;
+    std::shared_ptr<jt::Sound> m_soundAtmoFrogs;
 
     bool m_running { false };
     bool m_hasEnded { false };

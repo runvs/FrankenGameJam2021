@@ -68,13 +68,21 @@ void StateGame::doInternalCreate()
     m_brickProvider = std::make_shared<BrickProviderRandom>();
 
     m_soundBrickSpawn = std::make_shared<jt::Sound>();
-    m_soundBrickSpawn->load("assets/sfx/block_spawn.ogg");
+    m_soundBrickSpawn->load("assets/sfx/brick_spawn.ogg");
 
-    m_soundBrickContact = std::make_shared<jt::Sound>();
-    m_soundBrickContact->load("assets/sfx/block_contact.ogg");
+    m_soundGroupBrickContact = std::make_shared<jt::SoundGroup>(std::vector<std::string>{
+        "assets/sfx/brick_contact_1.ogg",
+        "assets/sfx/brick_contact_2.ogg",
+        "assets/sfx/brick_contact_3.ogg",
+        "assets/sfx/brick_contact_4.ogg",
+        "assets/sfx/brick_contact_5.ogg"
+    });
 
     m_soundGameOver = std::make_shared<jt::Sound>();
     m_soundGameOver->load("assets/sfx/gameover.ogg");
+
+    m_soundAtmoFrogs = std::make_shared<jt::Sound>();
+    m_soundAtmoFrogs->load("assets/sfx/atmosphere/01_birds_and_frogs_at_forest_pond.ogg");
 
     auto t = std::make_shared<jt::Timer>(
         1.5f, [this]() { spawnNewBrick(); }, 1);
@@ -257,7 +265,7 @@ void StateGame::handleCurrentBrickCollision(b2Body* p1, b2Body* p2)
         add(t2);
 
         m_currentBrick = nullptr;
-        m_soundBrickContact->play();
+        m_soundGroupBrickContact->play();
 
         auto t = std::make_shared<jt::Timer>(
             1.5f, [this]() { spawnNewBrick(); }, 1);
