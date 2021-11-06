@@ -128,6 +128,9 @@ void StateGame::doInternalDraw() const
 {
     m_background->draw(getGame()->getRenderTarget());
     drawObjects();
+    if (m_currentBrick != nullptr) {
+        m_currentBrick->drawPreview();
+    }
     m_vignette->draw(getGame()->getRenderTarget());
     m_hud->draw();
     m_overlay->draw(getGame()->getRenderTarget());
