@@ -91,11 +91,17 @@ void StateGame::doInternalUpdate(float const elapsed)
                 m_world->createJoint(&jointDef);
             }
         }
-    }
 
-    m_background->update(elapsed);
-    m_vignette->update(elapsed);
-    m_overlay->update(elapsed);
+        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::L)) {
+            auto brick = BrickFactory::createBrickL(m_world);
+            add(brick);
+            m_bricks->push_back(brick);
+        }
+
+        m_background->update(elapsed);
+        m_vignette->update(elapsed);
+        m_overlay->update(elapsed);
+    }
 }
 
 void StateGame::doInternalDraw() const
