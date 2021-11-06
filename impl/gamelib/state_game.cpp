@@ -66,6 +66,15 @@ void StateGame::doInternalCreate()
     m_world->setContactListener(contactListener);
     m_brickProvider = std::make_shared<BrickProviderRandom>();
 
+    m_soundBrickSpawn = std::make_shared<jt::Sound>();
+    m_soundBrickSpawn->load("assets/sfx/block_spawn.wav");
+
+    m_soundBrickContact = std::make_shared<jt::Sound>();
+    m_soundBrickContact->load("assets/sfx/block_contact.wav");
+
+    m_soundGameOver = std::make_shared<jt::Sound>();
+    m_soundGameOver->load("assets/sfx/gameover.wav");
+
     auto t = std::make_shared<jt::Timer>(
         1.5f, [this]() { spawnNewBrick(); }, 1);
     add(t);
@@ -157,7 +166,6 @@ void StateGame::rotateCurrentBrick(float const elapsed)
 void StateGame::spawnBricks()
 {
     if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
-
         spawnNewBrick();
     }
     if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::N)) {
@@ -178,6 +186,8 @@ void StateGame::spawnNewBrick()
     m_currentBrick = m_brickProvider->getNextBrickFunction()(m_world, m_maxHeight - 280);
     add(m_currentBrick);
     m_bricks->push_back(m_currentBrick);
+
+    m_soundBrickSpawn->play();
 }
 
 void StateGame::doInternalDraw() const
@@ -214,10 +224,11 @@ void StateGame::endGame()
         // trigger this function only once
         return;
     }
+    m_soundGameOver->play();
     m_hasEnded = true;
     m_running = false;
 
-    auto tw = jt::TweenAlpha::create(m_overlay, 0.5f, std::uint8_t { 0 }, std::uint8_t { 255 });
+    auto tw = jt::TweenAlpha::create(m_overlay, 3.2f, std::uint8_t { 0 }, std::uint8_t { 255 });
     tw->setSkipFrames();
     tw->addCompleteCallback([this]() { getGame()->switchState(std::make_shared<StateMenu>()); });
     add(tw);
@@ -245,6 +256,7 @@ void StateGame::handleCurrentBlockCollision(b2Body* p1, b2Body* p2)
         add(t2);
 
         m_currentBrick = nullptr;
+        m_soundBrickContact->play();
 
         auto t = std::make_shared<jt::Timer>(
             1.5f, [this]() { spawnNewBrick(); }, 1);
