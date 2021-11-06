@@ -46,6 +46,7 @@ private:
 
     void endGame();
     void spawnBricks();
+    void rotateCurrentBrick(float const elapsed);
 };
 
 #endif

@@ -69,6 +69,7 @@ void StateGame::doInternalUpdate(float const elapsed)
         // update game logic here
 
         spawnBricks();
+        rotateCurrentBrick(elapsed);
 
         // TODO: WIP: Revolute Joint with the platform
         if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::R)) {
@@ -106,6 +107,20 @@ void StateGame::doInternalUpdate(float const elapsed)
     m_background->update(elapsed);
     m_vignette->update(elapsed);
     m_overlay->update(elapsed);
+}
+
+void StateGame::rotateCurrentBrick(float const elapsed)
+{
+    if (!m_currentBrick) {
+        return;
+    }
+
+    if (getGame()->input()->keyboard()->pressed(jt::KeyCode::Q)) {
+        m_currentBrick->getB2Body()->ApplyTorque(-5000000.0f * elapsed, true);
+    }
+    if (getGame()->input()->keyboard()->pressed(jt::KeyCode::E)) {
+        m_currentBrick->getB2Body()->ApplyTorque(5000000.0f * elapsed, true);
+    }
 }
 
 void StateGame::spawnBricks()

@@ -87,10 +87,14 @@ public:
 
     void step(float elapsed, int velocityIterations, int positionIterations) override
     {
+        if (m_world.expired()) {
+            return;
+        }
         m_world.lock()->Step(elapsed, velocityIterations, positionIterations);
     }
 
 private:
+    // TODO
     std::weak_ptr<b2World> m_world;
     std::shared_ptr<b2ContactListener> m_contactListener;
 };
