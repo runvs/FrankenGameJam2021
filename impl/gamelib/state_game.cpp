@@ -1,6 +1,5 @@
 ﻿#include "state_game.hpp"
-#include "Box2D/Box2D.h"
-#include "brick.hpp"
+#include "bricks/brick_factory.hpp"
 #include "color.hpp"
 #include "game_interface.hpp"
 #include "game_properties.hpp"
@@ -56,7 +55,7 @@ void StateGame::doInternalCreate()
     m_platform = std::make_shared<Platform>(m_world, &bodyDef);
     add(m_platform);
 
-    m_bricks = std::make_shared<jt::ObjectGroup<Brick>>();
+    m_bricks = std::make_shared<jt::ObjectGroup<BrickInterface>>();
     add(m_bricks);
 }
 
@@ -67,13 +66,12 @@ void StateGame::doInternalUpdate(float const elapsed)
         // update game logic here
 
         if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
-            b2BodyDef bodyDef;
-            bodyDef.fixedRotation = false;
-            bodyDef.type = b2_dynamicBody;
-            bodyDef.linearDamping = 0.9f;
-            bodyDef.angularDamping = 1.0f;
-            bodyDef.position.Set(135, 20);
-            auto brick = std::make_shared<Brick>(m_world, &bodyDef);
+            auto brick = BrickFactory::createBrickQuadratic(m_world);
+            add(brick);
+            m_bricks->push_back(brick);
+        }
+        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::N)) {
+            auto brick = BrickFactory::createBrickRectangle2x1(m_world);
             add(brick);
             m_bricks->push_back(brick);
         }
