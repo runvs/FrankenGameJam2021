@@ -12,7 +12,7 @@ public:
     static std::shared_ptr<BrickInterface> createBrickRectangle2x1(
         std::shared_ptr<jt::Box2DWorldInterface> world);
 
-    static std::shared_ptr<BrickInterface> createBrickL(
+    static std::shared_ptr<BrickInterface> createBrickCuttingEdge(
         std::shared_ptr<jt::Box2DWorldInterface> world);
 };
 

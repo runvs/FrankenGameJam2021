@@ -118,7 +118,7 @@ void StateGame::spawnBricks()
         m_bricks->push_back(m_currentBrick);
     }
     if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::L)) {
-        m_currentBrick = BrickFactory::createBrickL(m_world);
+        m_currentBrick = BrickFactory::createBrickCuttingEdge(m_world);
         add(m_currentBrick);
         m_bricks->push_back(m_currentBrick);
     }
