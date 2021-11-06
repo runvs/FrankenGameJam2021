@@ -13,26 +13,28 @@ Platform::Platform(std::shared_ptr<jt::Box2DWorldInterface> world, b2BodyDef con
 
 void Platform::doCreate()
 {
-    jt::Vector2 const boxSize { 48, 6 };
-    m_shape = jt::dh::createRectShape(jt::Vector2 { 48, 6 });
+    m_shape = jt::dh::createRectShape(m_platformSize);
 
     b2FixtureDef fixtureDef;
-    fixtureDef.density = 0.001f;
+    fixtureDef.density = 1.0f;
     fixtureDef.friction = 5.0f;
 
     b2PolygonShape boxCollider {};
-    boxCollider.SetAsBox(boxSize.x(), boxSize.y());
+    boxCollider.SetAsBox(m_platformSize.x() * 0.5f, m_platformSize.y() * 0.5f);
     fixtureDef.shape = &boxCollider;
     getB2Body()->CreateFixture(&fixtureDef);
 }
 void Platform::doUpdate(float const elapsed)
 {
+    getB2Body()->SetLinearVelocity(vec(jt::Vector2 { 0.0f, 0.0f }));
     if (getGame()->input()->keyboard()->pressed(jt::KeyCode::A)) {
-        getB2Body()->SetLinearVelocity(vec(jt::Vector2 { -GP::PlatformMovementSpeed(), 0 }));
+        getB2Body()->SetLinearVelocity(vec(jt::Vector2 { -GP::PlatformMovementSpeed(), 0.0f }));
     } else if (getGame()->input()->keyboard()->pressed(jt::KeyCode::D)) {
-        getB2Body()->SetLinearVelocity(vec(jt::Vector2 { GP::PlatformMovementSpeed(), 0 }));
+        getB2Body()->SetLinearVelocity(vec(jt::Vector2 { GP::PlatformMovementSpeed(), 0.0f }));
     }
-    m_shape->setPosition(getPosition());
+    auto pos = getPosition();
+    pos -= m_platformSize * 0.5f;
+    m_shape->setPosition(pos);
     m_shape->update(elapsed);
 }
 
