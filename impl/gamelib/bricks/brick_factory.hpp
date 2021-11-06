@@ -14,6 +14,8 @@ public:
 
     static std::shared_ptr<BrickInterface> createBrickCuttingEdge(
         std::shared_ptr<jt::Box2DWorldInterface> world);
+
+    static b2BodyDef getBodyDef();
 };
 
 #endif // MYAWESOMEGAME_BRICK_FACTORY_HPP

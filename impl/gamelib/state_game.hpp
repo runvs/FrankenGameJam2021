@@ -3,6 +3,7 @@
 
 #include "box2d_wrapper.hpp"
 #include "bricks/brick_interface.hpp"
+#include "bricks/brick_provider_interface.hpp"
 #include "game_state.hpp"
 #include "object_group.hpp"
 #include "platform.hpp"
@@ -33,6 +34,8 @@ private:
     std::shared_ptr<jt::ObjectGroup<BrickInterface>> m_bricks { nullptr };
     std::shared_ptr<BrickInterface> m_currentBrick { nullptr };
 
+    std::shared_ptr<BrickProviderInterface> m_brickProvider { nullptr };
+
     bool m_running { false };
     bool m_hasEnded { false };
 
@@ -46,6 +49,7 @@ private:
 
     void endGame();
     void spawnBricks();
+    void rotateCurrentBrick(float const elapsed);
 };
 
 #endif
