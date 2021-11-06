@@ -6,6 +6,7 @@
 #include "game_interface.hpp"
 #include "game_properties.hpp"
 #include "hud/hud.hpp"
+#include "math_helper.hpp"
 #include "shape.hpp"
 #include "sprite.hpp"
 #include "state_menu.hpp"
@@ -270,7 +271,24 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
     if (ypos < m_maxHeight) {
         m_maxHeight = ypos;
     }
-    // TODO Add check for velocity of brick
-    addJointToPlatform(currentPendingBrick, m_platform->getB2Body());
-    addJointToPlatform(currentPendingBrick, other);
+
+    auto const v = currentPendingBrick->getVelocity();
+    auto const l = jt::MathHelper::lengthSquared(v);
+
+    if (l < 30) {
+        std::cout << "FIX\n";
+
+        addJointToPlatform(currentPendingBrick, m_platform->getB2Body());
+        addJointToPlatform(currentPendingBrick, other);
+    }
+
+    else {
+        auto t = std::make_shared<jt::Timer>(
+            0.1f,
+            [this, currentPendingBrick = currentPendingBrick, other]() {
+                fixCurrentBrick(currentPendingBrick, other);
+            },
+            1);
+        add(t);
+    }
 }
