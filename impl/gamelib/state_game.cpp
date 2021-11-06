@@ -1,5 +1,5 @@
 ﻿#include "state_game.hpp"
-#include "bricks/brick.hpp"
+#include "bricks/brick_factory.hpp"
 #include "color.hpp"
 #include "game_interface.hpp"
 #include "game_properties.hpp"
@@ -66,13 +66,7 @@ void StateGame::doInternalUpdate(float const elapsed)
         // update game logic here
 
         if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
-            b2BodyDef bodyDef;
-            bodyDef.fixedRotation = false;
-            bodyDef.type = b2_dynamicBody;
-            bodyDef.linearDamping = 0.9f;
-            bodyDef.angularDamping = 1.0f;
-            bodyDef.position.Set(135, 20);
-            auto brick = std::make_shared<Brick>(m_world, &bodyDef);
+            auto brick = BrickFactory::createBrickQuadratic(m_world);
             add(brick);
             m_bricks->push_back(brick);
         }

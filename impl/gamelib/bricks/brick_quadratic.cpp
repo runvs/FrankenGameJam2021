@@ -1,14 +1,14 @@
-#include "brick.hpp"
+#include "brick_quadratic.hpp"
 #include "drawable_helpers.hpp"
 #include "game_interface.hpp"
 #include "math_helper.hpp"
 
-Brick::Brick(std::shared_ptr<jt::Box2DWorldInterface> world, b2BodyDef const* def)
+BrickQuadratic::BrickQuadratic(std::shared_ptr<jt::Box2DWorldInterface> world, b2BodyDef const* def)
     : BrickInterface(world, def)
 {
 }
 
-void Brick::doCreate()
+void BrickQuadratic::doCreate()
 {
     m_shape = jt::dh::createRectShape(jt::Vector2 { 16, 16 }, jt::colors::Black);
     m_shape->setOrigin(jt::Vector2 { 8, 8 });
@@ -23,7 +23,7 @@ void Brick::doCreate()
     getB2Body()->CreateFixture(&fixtureDef);
 }
 
-void Brick::doUpdate(float const elapsed)
+void BrickQuadratic::doUpdate(float const elapsed)
 {
     auto pos = getPosition();
     //    pos -= jt::Vector2 { 8.0f, 8.0f };
@@ -32,4 +32,4 @@ void Brick::doUpdate(float const elapsed)
     m_shape->update(elapsed);
 }
 
-void Brick::doDraw() const { m_shape->draw(getGame()->getRenderTarget()); }
+void BrickQuadratic::doDraw() const { m_shape->draw(getGame()->getRenderTarget()); }
