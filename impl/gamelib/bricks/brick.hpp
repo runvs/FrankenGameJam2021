@@ -1,10 +1,10 @@
 #ifndef MYAWESOMEGAME_BRICK_HPP
 #define MYAWESOMEGAME_BRICK_HPP
 
-#include "box2d_object.hpp"
+#include "brick_interface.hpp"
 #include "shape.hpp"
 
-class Brick : public jt::Box2DObject {
+class Brick : public BrickInterface {
 public:
     Brick(std::shared_ptr<jt::Box2DWorldInterface> world, const b2BodyDef* def);
 

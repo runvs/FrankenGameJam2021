@@ -2,7 +2,7 @@
 #define GAME_STATE_GAME_HPP_INCLUDEGUARD
 
 #include "box2d_wrapper.hpp"
-#include "brick.hpp"
+#include "bricks/brick.hpp"
 #include "game_state.hpp"
 #include "object_group.hpp"
 #include "platform.hpp"

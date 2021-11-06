@@ -1,6 +1,6 @@
 ﻿#include "state_game.hpp"
 #include "Box2D/Box2D.h"
-#include "brick.hpp"
+#include "bricks/brick.hpp"
 #include "color.hpp"
 #include "game_interface.hpp"
 #include "game_properties.hpp"

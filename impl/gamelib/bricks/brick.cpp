@@ -8,7 +8,7 @@
 #include "math_helper.hpp"
 
 Brick::Brick(std::shared_ptr<jt::Box2DWorldInterface> world, b2BodyDef const* def)
-    : Box2DObject(world, def)
+    : BrickInterface(world, def)
 {
 }
 
