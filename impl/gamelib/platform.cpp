@@ -29,9 +29,10 @@ void Platform::doCreate()
 void Platform::doUpdate(float const elapsed)
 {
     getB2Body()->SetLinearVelocity(vec(jt::Vector2 { 0.0f, 0.0f }));
-    if (getGame()->input()->keyboard()->pressed(jt::KeyCode::A)) {
+    auto kbd = getGame()->input()->keyboard();
+    if (kbd->pressed(jt::KeyCode::A) || kbd->pressed(jt::KeyCode::Left)) {
         getB2Body()->SetLinearVelocity(vec(jt::Vector2 { -GP::PlatformMovementSpeed(), 0.0f }));
-    } else if (getGame()->input()->keyboard()->pressed(jt::KeyCode::D)) {
+    } else if (kbd->pressed(jt::KeyCode::D) || kbd->pressed(jt::KeyCode::Right)) {
         getB2Body()->SetLinearVelocity(vec(jt::Vector2 { GP::PlatformMovementSpeed(), 0.0f }));
     }
     auto pos = getPosition();
