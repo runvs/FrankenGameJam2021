@@ -84,6 +84,20 @@ void StateGame::doInternalUpdate(float const elapsed)
             }
         }
 
+        // TODO: WIP: Distance Joint with the platform
+        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::T)) {
+            for (auto brick : *m_bricks) {
+                b2DistanceJointDef jointDef;
+                jointDef.Initialize(m_platform->getB2Body(), brick.lock()->getB2Body(),
+                    m_platform->getB2Body()->GetWorldCenter(),
+                    brick.lock()->getB2Body()->GetWorldCenter());
+                jointDef.collideConnected = true;
+                jointDef.frequencyHz = 30.0f;
+                jointDef.dampingRatio = 0.001f;
+                m_world->createJoint(&jointDef);
+            }
+        }
+
         removeBricksOutOfScreen();
     }
 
