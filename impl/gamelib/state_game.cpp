@@ -7,6 +7,7 @@
 #include "game_properties.hpp"
 #include "hud/hud.hpp"
 #include "math_helper.hpp"
+#include "random.hpp"
 #include "shape.hpp"
 #include "sprite.hpp"
 #include "state_menu.hpp"
@@ -97,8 +98,14 @@ void StateGame::doInternalCreate()
     m_soundAtmospheric3->setVolume(0.0f);
     m_soundAtmospheric3->play();
 
-    m_soundBrickFreeze = std::make_shared<jt::Sound>();
-    m_soundBrickFreeze->load("assets/sfx/block_freeze.wav");
+    m_soundBrickFreeze1 = std::make_shared<jt::Sound>();
+    m_soundBrickFreeze1->load("assets/sfx/block_freeze_1.wav");
+    m_soundBrickFreeze2 = std::make_shared<jt::Sound>();
+    m_soundBrickFreeze2->load("assets/sfx/block_freeze_2.wav");
+    m_soundBrickFreeze3 = std::make_shared<jt::Sound>();
+    m_soundBrickFreeze3->load("assets/sfx/block_freeze_3.wav");
+    m_soundBrickFreeze4 = std::make_shared<jt::Sound>();
+    m_soundBrickFreeze4->load("assets/sfx/block_freeze_4.wav");
 
     auto t = std::make_shared<jt::Timer>(
         1.5f, [this]() { spawnNewBrick(); }, 1);
@@ -344,7 +351,25 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
         addDistanceJointsTo(currentPendingBrick, m_platform->getB2Body());
         addDistanceJointsTo(currentPendingBrick, other);
         currentPendingBrick->fixate();
-        m_soundBrickFreeze->play();
+
+        // Sorry, can't be bothered to do this right right now.
+        int rnd = jt::Random::getInt(0, 3);
+        switch (rnd) {
+        case 0:
+            m_soundBrickFreeze1->play();
+            break;
+        case 1:
+            m_soundBrickFreeze2->play();
+            break;
+        case 2:
+            m_soundBrickFreeze3->play();
+            break;
+        case 3:
+            m_soundBrickFreeze4->play();
+            break;
+        default:
+            break;
+        }
     }
 
     else {
