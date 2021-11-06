@@ -2,6 +2,8 @@
 #include "brick_cutting_edge.hpp"
 #include "brick_quadratic.hpp"
 #include "brick_rectangle2x1.hpp"
+#include "random.hpp"
+#include "math_helper.hpp"
 
 std::shared_ptr<BrickInterface> BrickFactory::createBrickQuadratic(
     std::shared_ptr<jt::Box2DWorldInterface> world, jt::Vector2 const& spawnPosition)
@@ -31,5 +33,6 @@ b2BodyDef BrickFactory::getBodyDef(jt::Vector2 const& spawnPosition)
     bodyDef.linearDamping = 0.9f;
     bodyDef.angularDamping = 4.0f;
     bodyDef.position.Set(spawnPosition.x(), spawnPosition.y());
+    bodyDef.angle = jt::Random::getFloat(0, jt::MathHelper::deg2rad(360.0f));
     return bodyDef;
 }
