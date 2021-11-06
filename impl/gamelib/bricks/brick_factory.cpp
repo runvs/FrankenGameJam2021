@@ -26,7 +26,7 @@ std::shared_ptr<BrickInterface> BrickFactory::createBrickRectangle2x1(
     bodyDef.position.Set(135, 20);
     return std::make_shared<BrickRectangle2x1>(world, &bodyDef);
 }
-std::shared_ptr<BrickInterface> BrickFactory::createBrickL(
+std::shared_ptr<BrickInterface> BrickFactory::createBrickCuttingEdge(
     std::shared_ptr<jt::Box2DWorldInterface> world)
 {
     b2BodyDef bodyDef;
