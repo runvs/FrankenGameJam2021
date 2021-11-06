@@ -13,6 +13,15 @@ public:
 
 protected:
     std::shared_ptr<jt::DrawableInterface> m_drawable;
+    bool m_isFrozen { false };
+    bool m_isFixated { false };
+
+public:
+    bool isFixated() const override;
+    void fixate() override;
+
+    void freeze() override;
+    bool isFrozen() const override;
 };
 
 #endif MYAWESOMEGAME_BRICK_IMPL_HPP

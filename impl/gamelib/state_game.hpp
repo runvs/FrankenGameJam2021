@@ -8,11 +8,10 @@
 #include "object_group.hpp"
 #include "platform.hpp"
 #include "sound.hpp"
+#include "sound_group.hpp"
 #include "timer.hpp"
 #include <memory>
 #include <vector>
-#include "sound.hpp"
-#include "sound_group.hpp"
 
 // fwd decls
 namespace jt {
@@ -67,9 +66,11 @@ private:
     bool isCurrentBrick(b2Body const* const bodyPtr) const;
 
     void handleCurrentBrickCollision(b2Body* p1, b2Body* p2);
-    void addJointToPlatform(std::shared_ptr<BrickInterface> brick, b2Body* other);
+    void addDistanceJointsTo(std::shared_ptr<BrickInterface> brick, b2Body* other);
     void fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBrick, b2Body* other);
     void moveCamera(float const elapsed);
+    void addRevoluteJointTo(std::shared_ptr<BrickInterface> brick);
+    void freezeBricks();
 };
 
 #endif

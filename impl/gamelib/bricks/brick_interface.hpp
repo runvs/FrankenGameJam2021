@@ -10,6 +10,10 @@ public:
     virtual ~BrickInterface() = default;
     virtual void drawPreview() const = 0;
     virtual std::shared_ptr<jt::DrawableInterface> getDrawable() = 0;
+    virtual bool isFrozen() const = 0;
+    virtual bool isFixated() const = 0;
+    virtual void freeze() = 0;
+    virtual void fixate() = 0;
 };
 
 #endif // MYAWESOMEGAME_BRICK_INTERFACE_HPP
