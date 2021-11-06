@@ -137,8 +137,8 @@ void StateGame::addJointToPlatform(std::shared_ptr<BrickInterface> brick, b2Body
             other->GetWorldCenter() + b2Vec2 { 16.0f, 0.0f },
             brick->getB2Body()->GetWorldCenter() + b2Vec2 { -16.0f, 0.0f });
         jointDef.collideConnected = true;
-        jointDef.frequencyHz = 10.0f;
-        jointDef.dampingRatio = 0.02f;
+        jointDef.frequencyHz = 15.0f;
+        jointDef.dampingRatio = 0.04f;
         m_world->createJoint(&jointDef);
     }
 
@@ -148,8 +148,8 @@ void StateGame::addJointToPlatform(std::shared_ptr<BrickInterface> brick, b2Body
             other->GetWorldCenter() + b2Vec2 { -16.0f, 0.0f },
             brick->getB2Body()->GetWorldCenter() + b2Vec2 { 16.0f, 0.0f });
         jointDef.collideConnected = true;
-        jointDef.frequencyHz = 10.0f;
-        jointDef.dampingRatio = 0.02f;
+        jointDef.frequencyHz = 15.0f;
+        jointDef.dampingRatio = 0.04f;
         m_world->createJoint(&jointDef);
     }
 #endif
