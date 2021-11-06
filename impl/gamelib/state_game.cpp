@@ -101,7 +101,7 @@ void StateGame::moveCamera(float const elapsed)
 {
     float const camPosY = getGame()->getCamera()->getCamOffset().y();
     float const scrollTo = m_maxHeight - 220;
-    std::cout << camPosY << " " << scrollTo << std::endl;
+    //    std::cout << camPosY << " " << scrollTo << std::endl;
     if (camPosY > scrollTo) {
         getGame()->getCamera()->move(jt::Vector2 { 0.0f, -elapsed * 4.0f });
     }
@@ -132,7 +132,7 @@ void StateGame::addJointToPlatform(std::shared_ptr<BrickInterface> brick, b2Body
             brick->getB2Body()->GetWorldCenter() + b2Vec2 { -16.0f, 0.0f });
         jointDef.collideConnected = true;
         jointDef.frequencyHz = 10.0f;
-        jointDef.dampingRatio = 0.01f;
+        jointDef.dampingRatio = 0.02f;
         m_world->createJoint(&jointDef);
     }
 
@@ -143,7 +143,7 @@ void StateGame::addJointToPlatform(std::shared_ptr<BrickInterface> brick, b2Body
             brick->getB2Body()->GetWorldCenter() + b2Vec2 { 16.0f, 0.0f });
         jointDef.collideConnected = true;
         jointDef.frequencyHz = 10.0f;
-        jointDef.dampingRatio = 0.01f;
+        jointDef.dampingRatio = 0.02f;
         m_world->createJoint(&jointDef);
     }
 #endif
