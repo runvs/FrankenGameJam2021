@@ -102,7 +102,7 @@ void StateGame::doInternalUpdate(float const elapsed)
             }
         }
 
-        removeBricksOutOfScreen();
+        checkForGameOver();
     }
 
     m_background->update(elapsed);
@@ -156,7 +156,7 @@ void StateGame::doInternalDraw() const
     m_overlay->draw(getGame()->getRenderTarget());
 }
 
-void StateGame::removeBricksOutOfScreen()
+void StateGame::checkForGameOver()
 {
     for (auto b : *m_bricks) {
         if (b.expired()) {
@@ -167,7 +167,7 @@ void StateGame::removeBricksOutOfScreen()
         auto position = brick->getPosition();
 
         if (position.y() > GP::GetScreenSize().y() + GP::RemoveBrickDeadzone()) {
-            brick->kill();
+            endGame();
         }
     }
 }

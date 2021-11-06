@@ -45,7 +45,7 @@ private:
     void doInternalUpdate(float const elapsed) override;
     void doInternalDraw() const override;
 
-    void removeBricksOutOfScreen();
+    void checkForGameOver();
 
     void endGame();
     void spawnBricks();
