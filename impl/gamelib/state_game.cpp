@@ -208,7 +208,6 @@ bool StateGame::isCurrentBrick(b2Body const* const bodyPtr) const
 void StateGame::handleCurrentBlockCollision(b2Body* p1, b2Body* p2)
 {
     if (isCurrentBrick(p1) || isCurrentBrick(p2)) {
-        std::cout << "current brick collided\n";
-        m_currentBrick == nullptr;
+        m_currentBrick = nullptr;
     }
 }
