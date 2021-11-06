@@ -70,7 +70,8 @@ void StateGame::doInternalUpdate(float const elapsed)
             b2BodyDef bodyDef;
             bodyDef.fixedRotation = false;
             bodyDef.type = b2_dynamicBody;
-            bodyDef.linearDamping = 0.5f;
+            bodyDef.linearDamping = 0.9f;
+            bodyDef.angularDamping = 1.0f;
             bodyDef.position.Set(135, 20);
             auto brick = std::make_shared<Brick>(m_world, &bodyDef);
             add(brick);
