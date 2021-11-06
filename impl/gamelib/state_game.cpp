@@ -97,6 +97,9 @@ void StateGame::doInternalCreate()
     m_soundAtmospheric3->setVolume(0.0f);
     m_soundAtmospheric3->play();
 
+    m_soundBrickFreeze = std::make_shared<jt::Sound>();
+    m_soundBrickFreeze->load("assets/sfx/block_freeze.wav");
+
     auto t = std::make_shared<jt::Timer>(
         1.5f, [this]() { spawnNewBrick(); }, 1);
     add(t);
@@ -334,13 +337,14 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
         float const ypos = currentPendingBrick->getPosition().y();
         if (ypos < m_maxHeight) {
             m_maxHeight = ypos;
-            m_score = 280 - m_maxHeight;
+            m_score = 280 - (int)m_maxHeight;
             m_hud->getObserverScore()->notify(m_score);
         }
         currentPendingBrick->getDrawable()->flash(0.75f);
         addDistanceJointsTo(currentPendingBrick, m_platform->getB2Body());
         addDistanceJointsTo(currentPendingBrick, other);
         currentPendingBrick->fixate();
+        m_soundBrickFreeze->play();
     }
 
     else {

@@ -7,7 +7,6 @@ BrickProviderRandom::BrickProviderRandom()
 {
     m_functions.emplace_back([](std::shared_ptr<jt::Box2DWorldInterface> world, float yPos) {
         jt::Vector2 spawnPosition { jt::Random::getFloat(40.0f, 200.0f), yPos };
-
         return BrickFactory::createBrickQuadratic(world, spawnPosition);
     });
     m_functions.emplace_back([](std::shared_ptr<jt::Box2DWorldInterface> world, float yPos) {
@@ -17,6 +16,26 @@ BrickProviderRandom::BrickProviderRandom()
     m_functions.emplace_back([](std::shared_ptr<jt::Box2DWorldInterface> world, float yPos) {
         jt::Vector2 spawnPosition { jt::Random::getFloat(40.0f, 200.0f), yPos };
         return BrickFactory::createBrickRectangle2x1(world, spawnPosition);
+    });
+    m_functions.emplace_back([](std::shared_ptr<jt::Box2DWorldInterface> world, float yPos) {
+        jt::Vector2 spawnPosition { jt::Random::getFloat(40.0f, 200.0f), yPos };
+        return BrickFactory::createBrickTriangle(world, spawnPosition);
+    });
+    m_functions.emplace_back([](std::shared_ptr<jt::Box2DWorldInterface> world, float yPos) {
+        jt::Vector2 spawnPosition { jt::Random::getFloat(40.0f, 200.0f), yPos };
+        return BrickFactory::createBrickDroplet(world, spawnPosition);
+    });
+    m_functions.emplace_back([](std::shared_ptr<jt::Box2DWorldInterface> world, float yPos) {
+        jt::Vector2 spawnPosition { jt::Random::getFloat(40.0f, 200.0f), yPos };
+        return BrickFactory::createBrickDiamond(world, spawnPosition);
+    });
+    m_functions.emplace_back([](std::shared_ptr<jt::Box2DWorldInterface> world, float yPos) {
+        jt::Vector2 spawnPosition { jt::Random::getFloat(40.0f, 200.0f), yPos };
+        return BrickFactory::createBrickOctagon(world, spawnPosition);
+    });
+    m_functions.emplace_back([](std::shared_ptr<jt::Box2DWorldInterface> world, float yPos) {
+        jt::Vector2 spawnPosition { jt::Random::getFloat(40.0f, 200.0f), yPos };
+        return BrickFactory::createBrickHexagon(world, spawnPosition);
     });
 }
 

@@ -15,6 +15,21 @@ public:
     static std::shared_ptr<BrickInterface> createBrickCuttingEdge(
         std::shared_ptr<jt::Box2DWorldInterface> world, jt::Vector2 const& spawnPosition);
 
+    static std::shared_ptr<BrickInterface> createBrickTriangle(
+        std::shared_ptr<jt::Box2DWorldInterface> world, jt::Vector2 const& spawnPosition);
+
+    static std::shared_ptr<BrickInterface> createBrickDroplet(
+        std::shared_ptr<jt::Box2DWorldInterface> world, jt::Vector2 const& spawnPosition);
+
+    static std::shared_ptr<BrickInterface> createBrickDiamond(
+        std::shared_ptr<jt::Box2DWorldInterface> world, jt::Vector2 const& spawnPosition);
+
+    static std::shared_ptr<BrickInterface> createBrickOctagon(
+        std::shared_ptr<jt::Box2DWorldInterface> world, jt::Vector2 const& spawnPosition);
+
+    static std::shared_ptr<BrickInterface> createBrickHexagon(
+        std::shared_ptr<jt::Box2DWorldInterface> world, jt::Vector2 const& spawnPosition);
+
     static b2BodyDef getBodyDef(jt::Vector2 const& spawnPosition);
 };
 

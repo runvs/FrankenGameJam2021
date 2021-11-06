@@ -46,6 +46,7 @@ private:
     std::shared_ptr<jt::Sound> m_soundAtmospheric1;
     std::shared_ptr<jt::Sound> m_soundAtmospheric2;
     std::shared_ptr<jt::Sound> m_soundAtmospheric3;
+    std::shared_ptr<jt::Sound> m_soundBrickFreeze;
 
     bool m_running { false };
     bool m_hasEnded { false };
