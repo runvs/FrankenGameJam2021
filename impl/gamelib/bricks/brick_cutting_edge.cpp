@@ -1,5 +1,6 @@
 #include "brick_cutting_edge.hpp"
 #include "game_interface.hpp"
+#include "game_properties.hpp"
 #include "math_helper.hpp"
 
 BrickCuttingEdge::BrickCuttingEdge(
@@ -15,7 +16,7 @@ void BrickCuttingEdge::doCreate()
     m_drawable = sprite;
 
     b2FixtureDef fixtureDef;
-    fixtureDef.density = 0.01f;
+    fixtureDef.density = GP::PhysicsBrickDensity();
     fixtureDef.friction = 1.1f;
     fixtureDef.restitution = -0.1f;
 

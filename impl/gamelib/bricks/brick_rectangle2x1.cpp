@@ -1,5 +1,6 @@
 #include "brick_rectangle2x1.hpp"
 #include "game_interface.hpp"
+#include "game_properties.hpp"
 #include <drawable_helpers.hpp>
 #include <math_helper.hpp>
 
@@ -14,7 +15,7 @@ void BrickRectangle2x1::doCreate()
     m_drawable = jt::dh::createRectShape(jt::Vector2 { 32, 16 }, jt::colors::Black);
     m_drawable->setOrigin(jt::Vector2 { 16, 8 });
     b2FixtureDef fixtureDef;
-    fixtureDef.density = 0.01f;
+    fixtureDef.density = GP::PhysicsBrickDensity();
     fixtureDef.friction = 1.1f;
     fixtureDef.restitution = -0.1f;
 
