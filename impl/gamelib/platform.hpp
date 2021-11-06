@@ -11,7 +11,7 @@ public:
     Platform(std::shared_ptr<jt::Box2DWorldInterface> world, const b2BodyDef* def);
 
 private:
-    jt::Vector2 m_platformSize { 48, 6 };
+    jt::Vector2 m_platformSize { 64, 6 };
     std::shared_ptr<jt::Shape> m_shape;
 
     void doCreate() override;
