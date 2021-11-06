@@ -17,7 +17,7 @@ void BrickImpl::drawPreview() const
         m_drawable->setPosition(
             jt::Vector2 { initialPosition.x(), initialPosition.y() + i * previewOffset });
         m_drawable->setColor(jt::Color { initialColor.r(), initialColor.g(), initialColor.b(),
-            static_cast<uint8_t>(128u * 1.0f / i) });
+            static_cast<uint8_t>(80u * 1.0f / i) });
         m_drawable->update(0.0f);
         m_drawable->draw(getGame()->getRenderTarget());
     }
