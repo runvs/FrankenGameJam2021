@@ -18,6 +18,7 @@
 namespace jt {
 class Shape;
 class Sprite;
+class Animation;
 } // namespace jt
 class b2World;
 
@@ -27,6 +28,7 @@ class StateGame : public jt::GameState {
 
 private:
     std::shared_ptr<jt::Sprite> m_background;
+    std::shared_ptr<jt::Sprite> m_tiledBackground;
     std::shared_ptr<jt::Shape> m_overlay;
     std::shared_ptr<jt::Sprite> m_vignette;
     std::shared_ptr<Hud> m_hud;
@@ -66,6 +68,8 @@ private:
     float m_maxHeight { 300 };
 
     bool m_canSpawnNewBrick { true };
+
+    std::shared_ptr<jt::Animation> m_frog;
 
     void doInternalCreate() override;
     void doInternalUpdate(float const elapsed) override;
