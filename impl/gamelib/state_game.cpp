@@ -44,6 +44,24 @@ void StateGame::doInternalCreate()
     m_tiledBackground2->setPosition(jt::Vector2 { 0.0f, -1560.0f - 480.0f });
     m_tiledBackground2->update(0.0f);
 
+    m_miniBirds = std::make_shared<jt::Animation>();
+    m_miniBirds->add(
+        "assets/minibirds.png", "idle", jt::Vector2u { 32, 32 }, { 0, 1, 2, 3 }, 0.25f);
+    m_miniBirds->play("idle");
+    m_miniBirds->setPosition(jt::Vector2 { 45.0f, -240.0f });
+
+    m_singleBird1 = std::make_shared<jt::Animation>();
+    m_singleBird1->add(
+        "assets/singlebird.png", "idle", jt::Vector2u { 6, 7 }, { 0, 1, 2, 3 }, 0.25f);
+    m_singleBird1->play("idle");
+    m_singleBird1->setPosition(jt::Vector2 { 185.0f, -200.0f });
+
+    m_singleBird2 = std::make_shared<jt::Animation>();
+    m_singleBird2->add(
+        "assets/singlebird.png", "idle", jt::Vector2u { 6, 7 }, { 0, 1, 2, 3 }, 0.25f);
+    m_singleBird2->play("idle");
+    m_singleBird2->setPosition(jt::Vector2 { 25.0f, -170.0f });
+
     m_frog = std::make_shared<jt::Animation>();
     m_frog->add("assets/frog.png", "idle", jt::Vector2u { 14, 7 },
         jt::MathHelper::vectorBetween<unsigned int>(0U, 6U), 0.2f);
@@ -284,6 +302,9 @@ void StateGame::doInternalUpdate(float const elapsed)
     m_tiledBackground1->update(elapsed);
     m_tiledBackground2->update(elapsed);
     m_frog->update(elapsed);
+    m_miniBirds->update(elapsed);
+    m_singleBird1->update(elapsed);
+    m_singleBird2->update(elapsed);
     m_vignette->update(elapsed);
     m_overlay->update(elapsed);
 }
@@ -387,6 +408,9 @@ void StateGame::doInternalDraw() const
     m_tiledBackground2->draw(getGame()->getRenderTarget());
     m_background->draw(getGame()->getRenderTarget());
     m_frog->draw(getGame()->getRenderTarget());
+    m_miniBirds->draw(getGame()->getRenderTarget());
+    m_singleBird1->draw(getGame()->getRenderTarget());
+    m_singleBird2->draw(getGame()->getRenderTarget());
     drawObjects();
     m_brickFixateParticles->draw();
     if (m_currentBrick != nullptr) {
