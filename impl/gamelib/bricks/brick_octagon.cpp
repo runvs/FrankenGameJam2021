@@ -10,9 +10,11 @@ BrickOctagon::BrickOctagon(std::shared_ptr<jt::Box2DWorldInterface> world, b2Bod
 
 void BrickOctagon::doCreate()
 {
-    auto sprite = std::make_shared<jt::Sprite>();
-    sprite->loadSprite("assets/brick_octagon.png");
-    m_drawable = sprite;
+    m_drawable = std::make_shared<jt::Animation>();
+    m_drawable->add("assets/gems/citrin.png", "idle", jt::Vector2u { 32, 32 }, { 0 }, 0.1f);
+    m_drawable->add(
+        "assets/gems/citrin.png", "shine", jt::Vector2u { 32, 32 }, { 0, 1, 2, 3, 4, 5, 6 }, 0.1f);
+    m_drawable->play("idle");
 
     b2FixtureDef fixtureDef;
     fixtureDef.density = GP::PhysicsBrickDensity() * 0.15f;

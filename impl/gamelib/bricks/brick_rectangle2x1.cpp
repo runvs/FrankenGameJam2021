@@ -12,9 +12,11 @@ BrickRectangle2x1::BrickRectangle2x1(
 
 void BrickRectangle2x1::doCreate()
 {
-    auto sprite = std::make_shared<jt::Sprite>();
-    sprite->loadSprite("assets/brick_rect.png");
-    m_drawable = sprite;
+    m_drawable = std::make_shared<jt::Animation>();
+    m_drawable->add("assets/gems/emerald.png", "idle", jt::Vector2u { 16, 32 }, { 0 }, 0.1f);
+    m_drawable->add(
+        "assets/gems/emerald.png", "shine", jt::Vector2u { 16, 32 }, { 0, 1, 2, 3, 4, 5, 6 }, 0.1f);
+    m_drawable->play("idle");
 
     b2FixtureDef fixtureDef;
     fixtureDef.density = GP::PhysicsBrickDensity() * 0.75f;
