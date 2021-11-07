@@ -127,6 +127,7 @@ void StateGame::doInternalCreate()
     m_sound1Up->load("assets/sfx/1up_pling.ogg");
 
     createParticleSystems();
+    m_gameOverCamDone = false;
 
     auto t = std::make_shared<jt::Timer>(
         1.5f, [this]() { spawnNewBrick(); }, -1);
@@ -168,19 +169,22 @@ void StateGame::createVisualCandy()
     m_frog->update(0.0f);
 
     m_sparklyStar1 = std::make_shared<jt::Animation>();
-    m_sparklyStar1->add("assets/sparkle1.png", "idle", jt::Vector2u{7, 15}, {0,1,2,3}, 0.25f);
+    m_sparklyStar1->add(
+        "assets/sparkle1.png", "idle", jt::Vector2u { 7, 15 }, { 0, 1, 2, 3 }, 0.25f);
     m_sparklyStar1->play("idle");
-    m_sparklyStar1->setPosition(jt::Vector2{130, -500});
+    m_sparklyStar1->setPosition(jt::Vector2 { 130, -500 });
 
     m_sparklyStar2 = std::make_shared<jt::Animation>();
-    m_sparklyStar2->add("assets/sparkle2.png", "idle", jt::Vector2u{7, 15}, {0,1,2,3}, 0.25f);
+    m_sparklyStar2->add(
+        "assets/sparkle2.png", "idle", jt::Vector2u { 7, 15 }, { 0, 1, 2, 3 }, 0.25f);
     m_sparklyStar2->play("idle");
-    m_sparklyStar2->setPosition(jt::Vector2{70, -630});
+    m_sparklyStar2->setPosition(jt::Vector2 { 70, -630 });
 
     m_sparklyStar3 = std::make_shared<jt::Animation>();
-    m_sparklyStar3->add("assets/sparkle3.png", "idle", jt::Vector2u{7, 15}, {0,1,2,3}, 0.25f);
+    m_sparklyStar3->add(
+        "assets/sparkle3.png", "idle", jt::Vector2u { 7, 15 }, { 0, 1, 2, 3 }, 0.25f);
     m_sparklyStar3->play("idle");
-    m_sparklyStar3->setPosition(jt::Vector2{230, -700});
+    m_sparklyStar3->setPosition(jt::Vector2 { 230, -700 });
 }
 
 void StateGame::createParticleSystems()
@@ -302,15 +306,14 @@ void StateGame::doInternalUpdate(float const elapsed)
         m_loseLifeTimer -= elapsed;
     } else if (m_hasEnded) {
         auto camOff = getGame()->getCamera()->getCamOffset().y();
-        static bool first = true;
-        if (camOff >= -32.0f && first) {
+        if (camOff >= -32.0f && !m_gameOverCamDone) {
             auto tw
-                = jt::TweenAlpha::create(m_overlay, 3.2f, std::uint8_t { 0 }, std::uint8_t { 255 });
+                = jt::TweenAlpha::create(m_overlay, 1.6f, std::uint8_t { 0 }, std::uint8_t { 255 });
             tw->setSkipFrames();
             tw->addCompleteCallback(
                 [this]() { getGame()->switchState(std::make_shared<StateMenu>()); });
             add(tw);
-            first = false;
+            m_gameOverCamDone = true;
         }
     }
     moveCamera(elapsed);
@@ -353,7 +356,7 @@ void StateGame::moveCamera(float const elapsed)
     float const camPosY = getGame()->getCamera()->getCamOffset().y();
     float const scrollTo = m_maxHeight - 120;
 
-    if (m_hasEnded && camPosY < 0.0f) {
+    if (m_hasEnded && camPosY <= 0.0f) {
         getGame()->getCamera()->move(jt::Vector2 { 0.0f, -elapsed * 4.0f + elapsed * 40.0f });
     } else if (!m_hasEnded && camPosY > scrollTo) {
         getGame()->getCamera()->move(jt::Vector2 { 0.0f, -elapsed * 4.0f });
