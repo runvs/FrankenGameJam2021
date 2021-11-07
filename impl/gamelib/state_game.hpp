@@ -6,6 +6,7 @@
 #include "bricks/brick_provider_interface.hpp"
 #include "game_state.hpp"
 #include "object_group.hpp"
+#include "particle_system.hpp"
 #include "platform.hpp"
 #include "sound.hpp"
 #include "sound_group.hpp"
@@ -51,6 +52,8 @@ private:
     std::shared_ptr<jt::Sound> m_soundBrickFreeze2;
     std::shared_ptr<jt::Sound> m_soundBrickFreeze3;
     std::shared_ptr<jt::Sound> m_soundBrickFreeze4;
+
+    std::shared_ptr<jt::ParticleSystem<jt::Shape, 64>> m_brickFixateParticles;
 
     bool m_running { false };
     bool m_hasEnded { false };

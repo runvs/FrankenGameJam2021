@@ -3,6 +3,7 @@
 #include "bricks/brick_factory.hpp"
 #include "bricks/brick_provider_random.hpp"
 #include "color.hpp"
+#include "conversions.hpp"
 #include "game_interface.hpp"
 #include "game_properties.hpp"
 #include "hud/hud.hpp"
@@ -12,6 +13,8 @@
 #include "sprite.hpp"
 #include "state_menu.hpp"
 #include "tweens/tween_alpha.hpp"
+#include "tweens/tween_position.hpp"
+#include "tweens/tween_scale.hpp"
 
 void StateGame::doInternalCreate()
 {
@@ -106,6 +109,37 @@ void StateGame::doInternalCreate()
     m_soundBrickFreeze3->load("assets/sfx/block_freeze_3_high.wav");
     m_soundBrickFreeze4 = std::make_shared<jt::Sound>();
     m_soundBrickFreeze4->load("assets/sfx/block_freeze_4_high.wav");
+
+    m_brickFixateParticles = jt::ParticleSystem<jt::Shape, 64>::createPS(
+        []() {
+            auto s = std::make_shared<jt::Shape>();
+            s->makeRect(jt::Vector2 { 4, 4 });
+            s->setOrigin({ 2, 2 });
+            // TODO: Color of corresponding brick? Random rainbowy color?
+            return s;
+        },
+        [this](auto s) {
+            s->setPosition(m_currentPendingBrick->getPosition());
+
+            auto twa = jt::TweenAlpha::create(s, 0.5, 255, 0);
+            twa->setSkipFrames(1);
+            add(twa);
+
+            auto center = jt::Conversion::vec(m_currentPendingBrick->getB2Body()->GetWorldCenter());
+            float particleRadius = 3200.0f;
+            auto twp = jt::TweenPosition::create(s, 5, center,
+                center
+                    + jt::Random::getRandomPointIn(jt::Rect(-particleRadius / 2.0f,
+                        -particleRadius / 2.0f, particleRadius, particleRadius)));
+            add(twp);
+
+            auto tws = jt::TweenScale::create(
+                s, 0.5, jt::Vector2 { 2.0f, 2.0f }, jt::Vector2 { 0.0f, 0.0f });
+            tws->setSkipFrames(1);
+            add(tws);
+        });
+
+    add(m_brickFixateParticles);
 
     auto t = std::make_shared<jt::Timer>(
         1.5f, [this]() { spawnNewBrick(); }, 1);
@@ -268,6 +302,7 @@ void StateGame::doInternalDraw() const
 {
     m_background->draw(getGame()->getRenderTarget());
     drawObjects();
+    m_brickFixateParticles->draw();
     if (m_currentBrick != nullptr) {
         m_currentBrick->drawPreview();
     }
@@ -353,6 +388,7 @@ void StateGame::handleCurrentBrickCollision(b2Body* p1, b2Body* p2)
 
 void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBrick, b2Body* other)
 {
+    m_currentPendingBrick = currentPendingBrick;
     auto const v = currentPendingBrick->getVelocity() - m_platform->getVelocity();
     auto const l = jt::MathHelper::lengthSquared(v);
 
@@ -386,6 +422,8 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
         default:
             break;
         }
+
+        m_brickFixateParticles->Fire(20);
     }
 
     else {

@@ -16,14 +16,20 @@ void BrickRectangle2x1::doCreate()
     sprite->loadSprite("assets/brick_rect.png");
     m_drawable = sprite;
 
-    m_drawable->setOrigin(jt::Vector2 { 8, 16 });
     b2FixtureDef fixtureDef;
     fixtureDef.density = GP::PhysicsBrickDensity() * 0.75f;
     fixtureDef.friction = 1.1f;
     fixtureDef.restitution = GP::PhysicsBrickRestitution();
 
     b2PolygonShape boxCollider {};
-    boxCollider.SetAsBox(8, 16);
+    b2Vec2 vertices[4];
+    vertices[0].Set(0.0f, 0.0f);
+    vertices[1].Set(0.0f, 32.0f);
+    vertices[2].Set(16.0f, 32.0f);
+    vertices[3].Set(16.0f, 0.0f);
+    int32 count = 4;
+    boxCollider.Set(vertices, count);
+
     fixtureDef.shape = &boxCollider;
     getB2Body()->CreateFixture(&fixtureDef);
 }
