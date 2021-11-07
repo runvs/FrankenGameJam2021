@@ -22,6 +22,7 @@ void StateMenu::doInternalCreate()
 {
     createMenuText();
     createShapes();
+    createBackground();
     createVignette();
 
     createTweens();
@@ -35,6 +36,11 @@ void StateMenu::createVignette()
 
 void StateMenu::createShapes()
 {
+    m_overlay = jt::dh::createRectShape(GP::GetScreenSize(), jt::colors::Black);
+}
+
+void StateMenu::createBackground()
+{
     m_backgroundSprites = {};
     std::vector<std::string> backgroundSpriteList = { "assets/menu_bg/01_background.png",
         "assets/menu_bg/02_trees_back.png", "assets/menu_bg/03_trees_mid.png",
@@ -46,13 +52,11 @@ void StateMenu::createShapes()
         sprite->loadSprite(backgroundSprite);
         m_backgroundSprites.emplace_back(sprite);
     }
-
-    m_overlay = jt::dh::createRectShape(GP::GetScreenSize(), jt::colors::Black);
 }
 
 void StateMenu::createMenuText()
 {
-    createTextTitle();
+    createLogo();
     createTextExplanation();
     createTextCredits();
 }
@@ -78,19 +82,19 @@ void StateMenu::createTextExplanation()
     m_text_Explanation->setShadow(GP::PaletteFontShadow(), jt::Vector2 { 3, 3 });
 }
 
-void StateMenu::createTextTitle()
+void StateMenu::createLogo()
 {
     float half_width = GP::GetScreenSize().x() / 2;
-    m_text_Title = jt::dh::createText(
-        getGame()->getRenderTarget(), GP::GameName(), 32U, GP::PaletteFontFront());
-    m_text_Title->setPosition({ half_width, 20 });
-    m_text_Title->setShadow(GP::PaletteFontShadow(), jt::Vector2 { 3, 3 });
+
+    m_logo = std::make_shared<jt::Animation>();
+    m_logo->add("assets/logo.png", "idle", jt::Vector2u { 125, 50 }, { 0, 1, 2, 3, 4, 5, 6 }, 0.2f);
+    m_logo->play("idle");
+    m_logo->setPosition({ half_width - 62.5f, 20 });
 }
 
 void StateMenu::createTweens()
 {
     createTweenOverlayAlpha();
-    createTweenTitleAlpha();
     createTweenCreditsPosition();
     createTweenExplanationScale();
 }
@@ -126,14 +130,6 @@ void StateMenu::createTweenExplanationScale()
     tween->setSkipFrames();
 
     tween->addCompleteCallback([this]() { createInstructionTweenScaleUp(); });
-    add(tween);
-}
-
-void StateMenu::createTweenTitleAlpha()
-{
-    auto tween = jt::TweenAlpha::create(m_text_Title, 0.55f, 0, 255);
-    tween->setStartDelay(0.2f);
-    tween->setSkipFrames();
     add(tween);
 }
 
@@ -173,7 +169,8 @@ void StateMenu::updateDrawables(const float& elapsed)
         sprite->update(elapsed);
     }
 
-    m_text_Title->update(elapsed);
+    m_logo->update(elapsed);
+
     m_text_Explanation->update(elapsed);
     m_text_Credits->update(elapsed);
     m_overlay->update(elapsed);
@@ -213,7 +210,8 @@ void StateMenu::doInternalDraw() const
         backgroundSprite->draw(getGame()->getRenderTarget());
     }
 
-    m_text_Title->draw(getGame()->getRenderTarget());
+    m_logo->draw((getGame()->getRenderTarget()));
+
     m_text_Explanation->draw(getGame()->getRenderTarget());
     m_text_Credits->draw(getGame()->getRenderTarget());
 
