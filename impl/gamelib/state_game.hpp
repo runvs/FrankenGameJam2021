@@ -34,6 +34,7 @@ private:
     std::shared_ptr<jt::Animation> m_miniBirds;
     std::shared_ptr<jt::Animation> m_singleBird1;
     std::shared_ptr<jt::Animation> m_singleBird2;
+    std::shared_ptr<jt::Animation> m_trickyHeart;
 
     std::shared_ptr<jt::Shape> m_overlay;
     std::shared_ptr<jt::Sprite> m_vignette;
@@ -102,6 +103,7 @@ private:
     void loseLife();
     float m_loseLifeTimer { 1.0f };
     void createParticleSystems();
+    void triggerTrickyTween();
 };
 
 #endif

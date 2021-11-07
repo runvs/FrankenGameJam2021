@@ -62,6 +62,12 @@ void StateGame::doInternalCreate()
     m_singleBird2->play("idle");
     m_singleBird2->setPosition(jt::Vector2 { 25.0f, -170.0f });
 
+    m_trickyHeart = std::make_shared<jt::Animation>();
+    m_trickyHeart->add("assets/tricky_heart.png", "idle", jt::Vector2u { 56, 86 },
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 }, 0.1f);
+    m_trickyHeart->play("idle");
+    m_trickyHeart->setPosition(jt::Vector2 { 350.0f, -1600.0f });
+
     m_frog = std::make_shared<jt::Animation>();
     m_frog->add("assets/frog.png", "idle", jt::Vector2u { 14, 7 },
         jt::MathHelper::vectorBetween<unsigned int>(0U, 6U), 0.2f);
@@ -270,6 +276,7 @@ void StateGame::doInternalUpdate(float const elapsed)
             getGame()->getCamera()->move(jt::Vector2 { 0.0f, -100.0f });
         }
 
+        triggerTrickyTween();
         rotateCurrentBrick(elapsed);
         checkForGameOver();
         freezeBricks();
@@ -305,8 +312,18 @@ void StateGame::doInternalUpdate(float const elapsed)
     m_miniBirds->update(elapsed);
     m_singleBird1->update(elapsed);
     m_singleBird2->update(elapsed);
+    m_trickyHeart->update(elapsed);
     m_vignette->update(elapsed);
     m_overlay->update(elapsed);
+}
+
+void StateGame::triggerTrickyTween()
+{
+    if (m_trickyHeart->getPosition().x() == 350.0f) {
+        auto tween = jt::TweenPosition::create(m_trickyHeart, 10.0f, m_trickyHeart->getPosition(),
+            m_trickyHeart->getPosition() + jt::Vector2 { -400.0f, 0.0f });
+        add(tween);
+    }
 }
 
 void StateGame::moveCamera(float const elapsed)
@@ -411,6 +428,7 @@ void StateGame::doInternalDraw() const
     m_miniBirds->draw(getGame()->getRenderTarget());
     m_singleBird1->draw(getGame()->getRenderTarget());
     m_singleBird2->draw(getGame()->getRenderTarget());
+    m_trickyHeart->draw(getGame()->getRenderTarget());
     drawObjects();
     m_brickFixateParticles->draw();
     if (m_currentBrick != nullptr) {
