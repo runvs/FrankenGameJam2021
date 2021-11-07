@@ -186,7 +186,6 @@ void StateGame::doInternalUpdate(float const elapsed)
             //            std::cout << "update current brick alive? " << m_currentBrick->isAlive()
             //            << std::endl;
         }
-        spawnBricks();
         rotateCurrentBrick(elapsed);
         moveCamera(elapsed);
         checkForGameOver();
@@ -276,24 +275,6 @@ void StateGame::rotateCurrentBrick(float const elapsed)
     }
 }
 
-void StateGame::spawnBricks()
-{
-    if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
-        spawnNewBrick();
-    }
-    if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::N)) {
-        m_currentBrick
-            = BrickFactory::createBrickRectangle2x1(m_world, jt::Vector2 { 250.0f, 20.0f });
-        add(m_currentBrick);
-        m_bricks->push_back(m_currentBrick);
-    }
-    if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::L)) {
-        m_currentBrick
-            = BrickFactory::createBrickCuttingEdge(m_world, jt::Vector2 { 250.0f, 20.0f });
-        add(m_currentBrick);
-        m_bricks->push_back(m_currentBrick);
-    }
-}
 void StateGame::spawnNewBrick()
 {
     if (m_canSpawnNewBrick) {

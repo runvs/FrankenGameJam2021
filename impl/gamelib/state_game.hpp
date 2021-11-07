@@ -74,7 +74,6 @@ private:
     void checkForGameOver();
 
     void endGame();
-    void spawnBricks();
     void spawnNewBrick();
     void rotateCurrentBrick(float const elapsed);
 
