@@ -34,10 +34,15 @@ void StateGame::doInternalCreate()
     m_background->setPosition(jt::Vector2 { 0.0f, -600.0f });
     m_background->update(0.0f);
 
-    m_tiledBackground = std::make_shared<jt::Sprite>();
-    m_tiledBackground->loadSprite("assets/tiled_space.png");
-    m_tiledBackground->setPosition(jt::Vector2 { 0.0f, -1560.0f });
-    m_tiledBackground->update(0.0f);
+    m_tiledBackground1 = std::make_shared<jt::Sprite>();
+    m_tiledBackground1->loadSprite("assets/tiled_space.png");
+    m_tiledBackground1->setPosition(jt::Vector2 { 0.0f, -1560.0f });
+    m_tiledBackground1->update(0.0f);
+
+    m_tiledBackground2 = std::make_shared<jt::Sprite>();
+    m_tiledBackground2->loadSprite("assets/tiled_space.png");
+    m_tiledBackground2->setPosition(jt::Vector2 { 0.0f, -1560.0f - 480.0f });
+    m_tiledBackground2->update(0.0f);
 
     m_frog = std::make_shared<jt::Animation>();
     m_frog->add("assets/frog.png", "idle", jt::Vector2u { 14, 7 },
@@ -126,11 +131,22 @@ void StateGame::doInternalCreate()
     m_sound1Up = std::make_shared<jt::Sound>();
     m_sound1Up->load("assets/sfx/1up_pling.ogg");
 
+    createParticleSystems();
+
+    auto t = std::make_shared<jt::Timer>(
+        1.5f, [this]() { spawnNewBrick(); }, -1);
+    add(t);
+
+    m_hud->getObserverLife()->notify(m_extra_lifes);
+}
+
+void StateGame::createParticleSystems()
+{
     m_brickFixateParticles = jt::ParticleSystem<jt::Shape, 64>::createPS(
         []() {
             auto s = std::make_shared<jt::Shape>();
             s->makeRect(jt::Vector2 { 4, 4 });
-            auto const v = static_cast<std::uint8_t>(jt::Random::getInt(240, 255));
+            auto const v = static_cast<uint8_t>(jt::Random::getInt(240, 255));
             s->setColor(jt::Color(v, v, v, 255));
             s->setOrigin({ 2, 2 });
             return s;
@@ -139,7 +155,7 @@ void StateGame::doInternalCreate()
             s->setPosition(m_currentPendingBrick->getPosition());
 
             auto twa = jt::TweenAlpha::create(
-                s, 0.5f, static_cast<std::uint8_t>(jt::Random::getInt(220, 255)), 0);
+                s, 0.5f, static_cast<uint8_t>(jt::Random::getInt(220, 255)), 0);
             twa->setSkipFrames(1);
             add(twa);
 
@@ -159,11 +175,42 @@ void StateGame::doInternalCreate()
 
     add(m_brickFixateParticles);
 
-    auto t = std::make_shared<jt::Timer>(
-        1.5f, [this]() { spawnNewBrick(); }, -1);
-    add(t);
+    m_backgroundDustParticles = jt::ParticleSystem<jt::Shape, 128>::createPS(
+        []() {
+            auto s = std::make_shared<jt::Shape>();
+            s->makeRect(jt::Vector2 { 2, 2 });
+            auto const v = static_cast<uint8_t>(jt::Random::getInt(240, 255));
+            s->setColor(jt::Color(v, v, v, 255));
+            s->setOrigin({ 1, 1 });
+            return s;
+        },
+        [this](auto s) {
+            auto start = jt::Random::getRandomPointIn(jt::Rect { 0, -700, 240, 1000 });
+            s->setPosition(start);
+            auto col = s->getColor();
+            col.a() = 0;
+            s->setColor(col);
 
-    m_hud->getObserverLife()->notify(m_extra_lifes);
+            auto maxAlpha = static_cast<uint8_t>(jt::Random::getInt(30, 65));
+            auto twa1 = jt::TweenAlpha::create(s, 0.5f, 0, maxAlpha);
+            twa1->setSkipFrames(1);
+            add(twa1);
+
+            auto twa2 = jt::TweenAlpha::create(s, 0.5f, maxAlpha, 0);
+            twa2->setSkipFrames(1);
+            twa2->setStartDelay(4.5f);
+            add(twa2);
+
+            auto twp = jt::TweenPosition::create(s, 4.5f, start,
+                start + jt::Random::getRandomPointIn(jt::Rect { -200, -200, 200, 200 }));
+            add(twp);
+        });
+
+    add(m_backgroundDustParticles);
+    m_backgroundDustParticles->Fire(20);
+    auto dustTimer
+        = std::make_shared<jt::Timer>(0.5f, [this]() { m_backgroundDustParticles->Fire(4); });
+    add(dustTimer);
 }
 
 void StateGame::freezeBricks()
@@ -225,14 +272,17 @@ void StateGame::doInternalUpdate(float const elapsed)
     moveCamera(elapsed);
     m_background->update(elapsed);
 
-    auto tiledBackgroundPosition = m_tiledBackground->getPosition();
-    if (getGame()->getCamera()->getCamOffset().y() - tiledBackgroundPosition.y() >= 480.0f) {
-
-        m_tiledBackground->setPosition(
-            jt::Vector2 { tiledBackgroundPosition.x(), tiledBackgroundPosition.y() - 10.0f });
+    auto tiledBackgroundPosition = m_tiledBackground1->getPosition();
+    if (getGame()->getCamera()->getCamOffset().y() - tiledBackgroundPosition.y() <= -480.0f) {
+        m_tiledBackground1->setPosition(
+            jt::Vector2 { tiledBackgroundPosition.x(), tiledBackgroundPosition.y() - 960.0f });
     }
 
-    m_tiledBackground->update(elapsed);
+    m_tiledBackground2->setPosition(
+        m_tiledBackground1->getPosition() + jt::Vector2 { 0.0f, -480.0f });
+
+    m_tiledBackground1->update(elapsed);
+    m_tiledBackground2->update(elapsed);
     m_frog->update(elapsed);
     m_vignette->update(elapsed);
     m_overlay->update(elapsed);
@@ -333,7 +383,8 @@ void StateGame::spawnNewBrick()
 
 void StateGame::doInternalDraw() const
 {
-    m_tiledBackground->draw(getGame()->getRenderTarget());
+    m_tiledBackground1->draw(getGame()->getRenderTarget());
+    m_tiledBackground2->draw(getGame()->getRenderTarget());
     m_background->draw(getGame()->getRenderTarget());
     m_frog->draw(getGame()->getRenderTarget());
     drawObjects();
