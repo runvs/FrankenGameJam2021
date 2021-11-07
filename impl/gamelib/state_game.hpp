@@ -18,6 +18,7 @@
 namespace jt {
 class Shape;
 class Sprite;
+class Animation;
 } // namespace jt
 class b2World;
 
@@ -60,9 +61,15 @@ private:
     bool m_hasEnded { false };
 
     int m_score { 0 };
+    int m_lifeCounter { 0 };
+
     int m_extra_lifes { 1 };
 
     float m_maxHeight { 300 };
+
+    bool m_canSpawnNewBrick { true };
+
+    std::shared_ptr<jt::Animation> m_frog;
 
     void doInternalCreate() override;
     void doInternalUpdate(float const elapsed) override;
@@ -71,7 +78,6 @@ private:
     void checkForGameOver();
 
     void endGame();
-    void spawnBricks();
     void spawnNewBrick();
     void rotateCurrentBrick(float const elapsed);
 

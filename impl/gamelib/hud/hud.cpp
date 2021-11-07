@@ -3,6 +3,7 @@
 #include "color.hpp"
 #include "game_interface.hpp"
 #include "life_display.hpp"
+#include "random.hpp"
 #include "score_display.hpp"
 #include "texture_manager.hpp"
 
@@ -37,28 +38,30 @@ void Hud::doCreate()
     m_lifeDisplay = std::make_shared<LifeDisplay>(lifeSprites);
 }
 
-std::shared_ptr<jt::Sprite> Hud::setUpLife(int i)
+std::shared_ptr<jt::Animation> Hud::setUpLife(int i)
 {
-    auto sprite = std::make_shared<jt::Sprite>();
-    sprite->loadSprite("assets/brick_l.png");
-    sprite->setRotation(45);
-    sprite->setIgnoreCamMovement(true);
-    sprite->setPosition(jt::Vector2 { 210.0f - i * 28.0f, 10.0f });
-    sprite->setColor(jt::colors::Transparent);
-    return sprite;
+    auto animation = std::make_shared<jt::Animation>();
+    animation->add("assets/heart.png", "idle", jt::Vector2u { 16, 16 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+        0.075f + jt::Random::getFloatGauss(0, 0.01f));
+
+    animation->play("idle", jt::Random::getInt(0, 16));
+    animation->setIgnoreCamMovement(true);
+    animation->setPosition(jt::Vector2 { 210.0f - i * 28.0f, 10.0f });
+    animation->setColor(jt::colors::Transparent);
+    return animation;
 }
 
-jt::Sprite::Sptr Hud::setUpLifeShadow(int i)
+jt::Animation::Sptr Hud::setUpLifeShadow(int i)
 {
-    auto sprite = std::make_shared<jt::Sprite>();
-    sprite->fromTexture(
-        jt::TextureManager::get(jt::TextureManager::getFlashName("assets/brick_l.png")));
-    sprite->setRotation(45);
-    sprite->setColor(jt::Color { 75, 75, 75, 100 });
-    sprite->setIgnoreCamMovement(true);
-    sprite->setPosition(jt::Vector2 { 210.0f - i * 28.0f, 10.0f });
+    auto animation = std::make_shared<jt::Animation>();
+    animation->add("assets/heart.png", "idle", jt::Vector2u { 16, 16 }, { 0 }, 0.15f);
+    animation->play("idle");
+    animation->setColor(jt::Color { 75, 75, 75, 100 });
+    animation->setIgnoreCamMovement(true);
+    animation->setPosition(jt::Vector2 { 210.0f - i * 28.0f, 10.0f });
 
-    return sprite;
+    return animation;
 }
 
 void Hud::doUpdate(float const elapsed)

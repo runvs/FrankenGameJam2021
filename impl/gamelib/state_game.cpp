@@ -1,4 +1,5 @@
 ﻿#include "state_game.hpp"
+#include "animation.hpp"
 #include "brick_contact_listener.hpp"
 #include "bricks/brick_factory.hpp"
 #include "bricks/brick_provider_random.hpp"
@@ -37,6 +38,13 @@ void StateGame::doInternalCreate()
     m_tiledBackground->loadSprite("assets/tiled_space.png");
     m_tiledBackground->setPosition(jt::Vector2 { 0.0f, -1560.0f });
     m_tiledBackground->update(0.0f);
+
+    m_frog = std::make_shared<jt::Animation>();
+    m_frog->add("assets/frog.png", "idle", jt::Vector2u { 14, 7 },
+        jt::MathHelper::vectorBetween<unsigned int>(0U, 6U), 0.2f);
+    m_frog->play("idle");
+    m_frog->setPosition(jt::Vector2 { 140, 250 });
+    m_frog->update(0.0f);
 
     m_overlay = std::make_shared<Shape>();
     m_overlay->makeRect(jt::Vector2 { w, h });
@@ -119,27 +127,29 @@ void StateGame::doInternalCreate()
         []() {
             auto s = std::make_shared<jt::Shape>();
             s->makeRect(jt::Vector2 { 4, 4 });
+            auto const v = static_cast<std::uint8_t>(jt::Random::getInt(240, 255));
+            s->setColor(jt::Color(v, v, v, 255));
             s->setOrigin({ 2, 2 });
-            // TODO: Color of corresponding brick? Random rainbowy color?
             return s;
         },
         [this](auto s) {
             s->setPosition(m_currentPendingBrick->getPosition());
 
-            auto twa = jt::TweenAlpha::create(s, 0.5, 255, 0);
+            auto twa = jt::TweenAlpha::create(
+                s, 0.5f, static_cast<std::uint8_t>(jt::Random::getInt(220, 255)), 0);
             twa->setSkipFrames(1);
             add(twa);
 
             auto center = jt::Conversion::vec(m_currentPendingBrick->getB2Body()->GetWorldCenter());
-            float particleRadius = 3200.0f;
-            auto twp = jt::TweenPosition::create(s, 5, center,
+            float particleRadius = 450.0f;
+            auto twp = jt::TweenPosition::create(s, 1, center,
                 center
                     + jt::Random::getRandomPointIn(jt::Rect(-particleRadius / 2.0f,
                         -particleRadius / 2.0f, particleRadius, particleRadius)));
             add(twp);
 
-            auto tws = jt::TweenScale::create(
-                s, 0.5, jt::Vector2 { 2.0f, 2.0f }, jt::Vector2 { 0.0f, 0.0f });
+            auto tws = jt::TweenScale::create(s, jt::Random::getFloatGauss(0.5f, 0.07f),
+                jt::Vector2 { 2.5f, 2.5f }, jt::Vector2 { 0.0f, 0.0f });
             tws->setSkipFrames(1);
             add(tws);
         });
@@ -147,7 +157,7 @@ void StateGame::doInternalCreate()
     add(m_brickFixateParticles);
 
     auto t = std::make_shared<jt::Timer>(
-        1.5f, [this]() { spawnNewBrick(); }, 1);
+        1.5f, [this]() { spawnNewBrick(); }, -1);
     add(t);
 
     m_hud->getObserverLife()->notify(m_extra_lifes);
@@ -171,7 +181,7 @@ void StateGame::freezeBricks()
         }
 
         auto const pos = brick->getPosition();
-        if (pos.y() > m_maxHeight + 64.0f) {
+        if (pos.y() > m_maxHeight + 108.0f) {
             std::cout << "freeze brick at: " << pos.y() << std::endl;
             addRevoluteJointTo(brick);
             brick->freeze();
@@ -192,7 +202,6 @@ void StateGame::doInternalUpdate(float const elapsed)
             getGame()->getCamera()->move(jt::Vector2 { 0.0f, -100.0f });
         }
 
-        spawnBricks();
         rotateCurrentBrick(elapsed);
         moveCamera(elapsed);
         checkForGameOver();
@@ -210,6 +219,7 @@ void StateGame::doInternalUpdate(float const elapsed)
     }
 
     m_tiledBackground->update(elapsed);
+    m_frog->update(elapsed);
     m_vignette->update(elapsed);
     m_overlay->update(elapsed);
 }
@@ -218,7 +228,6 @@ void StateGame::moveCamera(float const elapsed)
 {
     float const camPosY = getGame()->getCamera()->getCamOffset().y();
     float const scrollTo = m_maxHeight - 220;
-    //    std::cout << camPosY << " " << scrollTo << std::endl;
     if (camPosY > scrollTo) {
         getGame()->getCamera()->move(jt::Vector2 { 0.0f, -elapsed * 4.0f });
     }
@@ -244,7 +253,7 @@ void StateGame::addDistanceJointsTo(std::shared_ptr<BrickInterface> brick, b2Bod
     {
         b2DistanceJointDef jointDef;
         jointDef.Initialize(other, brick->getB2Body(),
-            other->GetWorldCenter() + b2Vec2 { 16.0f, 0.0f },
+            other->GetWorldCenter() + b2Vec2 { 13.0f, 0.0f },
             brick->getB2Body()->GetWorldCenter() + b2Vec2 { -16.0f, 0.0f });
         jointDef.collideConnected = true;
         jointDef.frequencyHz = 15.0f;
@@ -255,7 +264,7 @@ void StateGame::addDistanceJointsTo(std::shared_ptr<BrickInterface> brick, b2Bod
     {
         b2DistanceJointDef jointDef;
         jointDef.Initialize(other, brick->getB2Body(),
-            other->GetWorldCenter() + b2Vec2 { -16.0f, 0.0f },
+            other->GetWorldCenter() + b2Vec2 { -13.0f, 0.0f },
             brick->getB2Body()->GetWorldCenter() + b2Vec2 { 16.0f, 0.0f });
         jointDef.collideConnected = true;
         jointDef.frequencyHz = 15.0f;
@@ -292,37 +301,24 @@ void StateGame::rotateCurrentBrick(float const elapsed)
     }
 }
 
-void StateGame::spawnBricks()
-{
-    if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
-        spawnNewBrick();
-    }
-    if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::N)) {
-        m_currentBrick
-            = BrickFactory::createBrickRectangle2x1(m_world, jt::Vector2 { 250.0f, 20.0f });
-        add(m_currentBrick);
-        m_bricks->push_back(m_currentBrick);
-    }
-    if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::L)) {
-        m_currentBrick
-            = BrickFactory::createBrickCuttingEdge(m_world, jt::Vector2 { 250.0f, 20.0f });
-        add(m_currentBrick);
-        m_bricks->push_back(m_currentBrick);
-    }
-}
 void StateGame::spawnNewBrick()
 {
-    m_currentBrick = m_brickProvider->getNextBrickFunction()(m_world, m_maxHeight - 280);
-    add(m_currentBrick);
-    m_bricks->push_back(m_currentBrick);
+    if (m_canSpawnNewBrick) {
+        m_currentBrick = m_brickProvider->getNextBrickFunction()(m_world, m_maxHeight - 280);
+        add(m_currentBrick);
+        m_bricks->push_back(m_currentBrick);
+        m_currentBrick->update(0.0f);
 
-    m_soundBrickSpawn->play();
+        m_soundBrickSpawn->play();
+        m_canSpawnNewBrick = false;
+    }
 }
 
 void StateGame::doInternalDraw() const
 {
     m_tiledBackground->draw(getGame()->getRenderTarget());
     m_background->draw(getGame()->getRenderTarget());
+    m_frog->draw(getGame()->getRenderTarget());
     drawObjects();
     m_brickFixateParticles->draw();
     if (m_currentBrick != nullptr) {
@@ -341,6 +337,10 @@ void StateGame::checkForGameOver()
         }
 
         auto brick = b.lock();
+
+        if (!brick->isAlive()) {
+            continue;
+        }
         auto position = brick->getPosition();
 
         if (position.y() > GP::GetScreenSize().y() + GP::RemoveBrickDeadzone()) {
@@ -351,7 +351,6 @@ void StateGame::checkForGameOver()
 }
 void StateGame::loseLife()
 {
-    std::cout << "loseLife: " << m_loseLifeTimer << " " << m_extra_lifes << std::endl;
     if (m_loseLifeTimer <= 0.0f) {
         m_loseLifeTimer = 0.5f;
         m_extra_lifes--;
@@ -359,9 +358,12 @@ void StateGame::loseLife()
         m_hud->getObserverLife()->notify(m_extra_lifes);
         if (m_extra_lifes < 0) {
             endGame();
+        } else {
+            m_canSpawnNewBrick = true;
         }
     }
 }
+
 void StateGame::endGame()
 {
     if (m_hasEnded) {
@@ -398,33 +400,45 @@ void StateGame::handleCurrentBrickCollision(b2Body* p1, b2Body* p2)
             },
             1);
         add(t2);
-
+        m_currentPendingBrick = m_currentBrick;
         m_currentBrick = nullptr;
         m_soundGroupBrickContact->play();
-
-        auto t = std::make_shared<jt::Timer>(
-            1.5f, [this]() { spawnNewBrick(); }, 1);
-        add(t);
     }
 }
 
 void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBrick, b2Body* other)
 {
-    m_currentPendingBrick = currentPendingBrick;
+    if (!currentPendingBrick->isAlive()) {
+        return;
+    }
     auto const v = currentPendingBrick->getVelocity() - m_platform->getVelocity();
     auto const l = jt::MathHelper::lengthSquared(v);
 
     if (l < GP::BrickFixVelocityThreshold()) {
-        float const ypos = currentPendingBrick->getPosition().y();
+        float const ypos = currentPendingBrick->getB2Body()->GetWorldCenter().y;
         if (ypos < m_maxHeight) {
+
             m_maxHeight = ypos;
+            auto oldscore = m_score;
             m_score = 280 - (int)m_maxHeight;
             m_hud->getObserverScore()->notify(m_score);
+
+            m_lifeCounter += (m_score - oldscore);
+            if (m_lifeCounter >= 100) {
+                m_lifeCounter = 0;
+                m_extra_lifes++;
+                if (m_extra_lifes >= 4) {
+                    m_extra_lifes = 4;
+                }
+                m_hud->getObserverLife()->notify(m_extra_lifes);
+            }
         }
-        currentPendingBrick->getDrawable()->flash(0.75f);
+        currentPendingBrick->getDrawable()->flash(1.25f);
         addDistanceJointsTo(currentPendingBrick, m_platform->getB2Body());
         addDistanceJointsTo(currentPendingBrick, other);
         currentPendingBrick->fixate();
+
+        m_canSpawnNewBrick = true;
 
         // Sorry, can't be bothered to do this right right now.
         int rnd = jt::Random::getInt(0, 3);
