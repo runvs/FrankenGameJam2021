@@ -15,7 +15,7 @@ void BrickOctagon::doCreate()
     m_drawable = sprite;
 
     b2FixtureDef fixtureDef;
-    fixtureDef.density = GP::PhysicsBrickDensity();
+    fixtureDef.density = GP::PhysicsBrickDensity() * 0.15f;
     fixtureDef.friction = 1.1f;
     fixtureDef.restitution = GP::PhysicsBrickRestitution();
 

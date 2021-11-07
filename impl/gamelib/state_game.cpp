@@ -176,8 +176,8 @@ void StateGame::freezeBricks()
         }
 
         auto const pos = brick->getPosition();
-        if (pos.y() > m_maxHeight + 64.0f) {
-            //            std::cout << "freeze brick at: " << pos.y() << std::endl;
+        if (pos.y() > m_maxHeight + 108.0f) {
+            std::cout << "freeze brick at: " << pos.y() << std::endl;
             addRevoluteJointTo(brick);
             brick->freeze();
         }
@@ -306,6 +306,7 @@ void StateGame::spawnNewBrick()
         m_currentBrick = m_brickProvider->getNextBrickFunction()(m_world, m_maxHeight - 280);
         add(m_currentBrick);
         m_bricks->push_back(m_currentBrick);
+        m_currentBrick->update(0.0f);
 
         m_soundBrickSpawn->play();
         m_canSpawnNewBrick = false;

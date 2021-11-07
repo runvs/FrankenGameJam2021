@@ -17,7 +17,7 @@ void BrickDiamond::doCreate()
     b2FixtureDef fixtureDef;
     fixtureDef.density = GP::PhysicsBrickDensity();
     fixtureDef.friction = 1.1f;
-    fixtureDef.restitution = GP::PhysicsBrickRestitution();
+    fixtureDef.restitution = GP::PhysicsBrickRestitution() * 0.75f;
 
     b2PolygonShape boxCollider {};
     b2Vec2 vertices[4];
