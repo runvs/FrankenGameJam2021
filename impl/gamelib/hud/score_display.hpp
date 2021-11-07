@@ -6,7 +6,7 @@
 
 class ScoreDisplay : public ObserverInterface<int> {
 public:
-    explicit ScoreDisplay(jt::Text::Sptr text, std::string const& prefix);
+    ScoreDisplay(jt::Text::Sptr text, std::string const& prefix);
     void notify(int value) override;
 
 private:

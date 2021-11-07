@@ -42,7 +42,7 @@ public:
 
     static float PlatformMovementSpeed();
     static float PhysicsBrickDensity();
-    static float const BrickFixVelocityThreshold();
+    static float BrickFixVelocityThreshold();
     static float PhysicsBrickRestitution();
 };
 

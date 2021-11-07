@@ -110,6 +110,8 @@ void StateGame::doInternalCreate()
     auto t = std::make_shared<jt::Timer>(
         1.5f, [this]() { spawnNewBrick(); }, 1);
     add(t);
+
+    m_hud->getObserverLife()->notify(m_extra_lifes);
 }
 
 void StateGame::freezeBricks()
@@ -284,11 +286,19 @@ void StateGame::checkForGameOver()
         auto position = brick->getPosition();
 
         if (position.y() > GP::GetScreenSize().y() + GP::RemoveBrickDeadzone()) {
-            endGame();
+
+            looseLife();
         }
     }
 }
-
+void StateGame::looseLife()
+{
+    m_extra_lifes--;
+    m_hud->getObserverLife()->notify(m_extra_lifes);
+    if (m_extra_lifes < 0) {
+        endGame();
+    }
+}
 void StateGame::endGame()
 {
     if (m_hasEnded) {
