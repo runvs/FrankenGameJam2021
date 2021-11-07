@@ -33,6 +33,11 @@ void StateGame::doInternalCreate()
     m_background->setPosition(jt::Vector2 { 0.0f, -600.0f });
     m_background->update(0.0f);
 
+    m_tiledBackground = std::make_shared<jt::Sprite>();
+    m_tiledBackground->loadSprite("assets/tiled_space.png");
+    m_tiledBackground->setPosition(jt::Vector2 { 0.0f, -1560.0f });
+    m_tiledBackground->update(0.0f);
+
     m_overlay = std::make_shared<Shape>();
     m_overlay->makeRect(jt::Vector2 { w, h });
     m_overlay->setColor(jt::Color { 0, 0, 0 });
@@ -180,6 +185,13 @@ void StateGame::doInternalUpdate(float const elapsed)
         m_world->step(elapsed, GP::PhysicVelocityIterations(), GP::PhysicPositionIterations());
         // update game logic here
 
+        // TODO remove this
+        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::F9)
+            && getGame()->input()->keyboard()->pressed(jt::KeyCode::LShift)
+            && getGame()->input()->keyboard()->pressed(jt::KeyCode::LControl)) {
+            getGame()->getCamera()->move(jt::Vector2 { 0.0f, -100.0f });
+        }
+
         spawnBricks();
         rotateCurrentBrick(elapsed);
         moveCamera(elapsed);
@@ -189,6 +201,15 @@ void StateGame::doInternalUpdate(float const elapsed)
     }
 
     m_background->update(elapsed);
+
+    auto tiledBackgroundPosition = m_tiledBackground->getPosition();
+    if (getGame()->getCamera()->getCamOffset().y() - tiledBackgroundPosition.y() >= 480.0f) {
+
+        m_tiledBackground->setPosition(
+            jt::Vector2 { tiledBackgroundPosition.x(), tiledBackgroundPosition.y() - 10.0f });
+    }
+
+    m_tiledBackground->update(elapsed);
     m_vignette->update(elapsed);
     m_overlay->update(elapsed);
 }
@@ -300,6 +321,7 @@ void StateGame::spawnNewBrick()
 
 void StateGame::doInternalDraw() const
 {
+    m_tiledBackground->draw(getGame()->getRenderTarget());
     m_background->draw(getGame()->getRenderTarget());
     drawObjects();
     m_brickFixateParticles->draw();
