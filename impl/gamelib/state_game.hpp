@@ -28,7 +28,8 @@ class StateGame : public jt::GameState {
 
 private:
     std::shared_ptr<jt::Sprite> m_background;
-    std::shared_ptr<jt::Sprite> m_tiledBackground;
+    std::shared_ptr<jt::Sprite> m_tiledBackground1;
+    std::shared_ptr<jt::Sprite> m_tiledBackground2;
     std::shared_ptr<jt::Shape> m_overlay;
     std::shared_ptr<jt::Sprite> m_vignette;
     std::shared_ptr<Hud> m_hud;
