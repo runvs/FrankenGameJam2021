@@ -201,7 +201,7 @@ void StateGame::doInternalUpdate(float const elapsed)
 void StateGame::moveCamera(float const elapsed)
 {
     float const camPosY = getGame()->getCamera()->getCamOffset().y();
-    float const scrollTo = m_maxHeight - 220;
+    float const scrollTo = m_maxHeight - 120;
     if (camPosY > scrollTo) {
         getGame()->getCamera()->move(jt::Vector2 { 0.0f, -elapsed * 4.0f });
     }
@@ -312,11 +312,16 @@ void StateGame::checkForGameOver()
         if (!brick->isAlive()) {
             continue;
         }
-        auto position = brick->getPosition();
-
-        if (position.y() > GP::GetScreenSize().y() + GP::RemoveBrickDeadzone()) {
-            brick->kill();
-            loseLife();
+        if (brick == m_currentBrick || brick == m_currentPendingBrick) {
+            auto position = brick->getPosition();
+            float killThreshold = GP::GetScreenSize().y() + GP::RemoveBrickDeadzone();
+            auto camOff = getGame()->getCamera()->getCamOffset().y();
+            std::cout << "pos " << position.y() << " camOff " << camOff << " threshold "
+                      << killThreshold << std::endl;
+            if (position.y() - camOff > killThreshold) {
+                brick->kill();
+                loseLife();
+            }
         }
     }
 }
