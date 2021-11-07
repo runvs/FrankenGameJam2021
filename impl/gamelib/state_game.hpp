@@ -18,6 +18,7 @@
 namespace jt {
 class Shape;
 class Sprite;
+class Animation;
 } // namespace jt
 class b2World;
 
@@ -66,6 +67,8 @@ private:
     float m_maxHeight { 300 };
 
     bool m_canSpawnNewBrick { true };
+
+    std::shared_ptr<jt::Animation> m_frog;
 
     void doInternalCreate() override;
     void doInternalUpdate(float const elapsed) override;

@@ -1,4 +1,5 @@
 ﻿#include "state_game.hpp"
+#include "animation.hpp"
 #include "brick_contact_listener.hpp"
 #include "bricks/brick_factory.hpp"
 #include "bricks/brick_provider_random.hpp"
@@ -32,6 +33,13 @@ void StateGame::doInternalCreate()
 
     m_background->setPosition(jt::Vector2 { 0.0f, -600.0f });
     m_background->update(0.0f);
+
+    m_frog = std::make_shared<jt::Animation>();
+    m_frog->add("assets/frog.png", "idle", jt::Vector2u { 14, 7 },
+        jt::MathHelper::vectorBetween<unsigned int>(0U, 6U), 0.2f);
+    m_frog->play("idle");
+    m_frog->setPosition(jt::Vector2 { 140, 250 });
+    m_frog->update(0.0f);
 
     m_overlay = std::make_shared<Shape>();
     m_overlay->makeRect(jt::Vector2 { w, h });
@@ -182,10 +190,7 @@ void StateGame::doInternalUpdate(float const elapsed)
         m_world->step(elapsed, GP::PhysicVelocityIterations(), GP::PhysicPositionIterations());
         // update game logic here
 
-        if (m_currentBrick) {
-            //            std::cout << "update current brick alive? " << m_currentBrick->isAlive()
-            //            << std::endl;
-        }
+        if (m_currentBrick) { }
         spawnBricks();
         rotateCurrentBrick(elapsed);
         moveCamera(elapsed);
@@ -195,6 +200,7 @@ void StateGame::doInternalUpdate(float const elapsed)
     }
 
     m_background->update(elapsed);
+    m_frog->update(elapsed);
     m_vignette->update(elapsed);
     m_overlay->update(elapsed);
 }
@@ -309,6 +315,7 @@ void StateGame::spawnNewBrick()
 void StateGame::doInternalDraw() const
 {
     m_background->draw(getGame()->getRenderTarget());
+    m_frog->draw(getGame()->getRenderTarget());
     drawObjects();
     m_brickFixateParticles->draw();
     if (m_currentBrick != nullptr) {
