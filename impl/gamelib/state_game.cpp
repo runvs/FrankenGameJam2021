@@ -423,7 +423,7 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
             break;
         }
 
-        m_brickFixateParticles->Fire(8);
+        m_brickFixateParticles->Fire(20);
     }
 
     else {
