@@ -123,11 +123,22 @@ void StateGame::doInternalCreate()
     m_soundBrickFreeze4 = std::make_shared<jt::Sound>();
     m_soundBrickFreeze4->load("assets/sfx/block_freeze_4_high.wav");
 
+    createParticleSystems();
+
+    auto t = std::make_shared<jt::Timer>(
+        1.5f, [this]() { spawnNewBrick(); }, -1);
+    add(t);
+
+    m_hud->getObserverLife()->notify(m_extra_lifes);
+}
+
+void StateGame::createParticleSystems()
+{
     m_brickFixateParticles = jt::ParticleSystem<jt::Shape, 64>::createPS(
         []() {
             auto s = std::make_shared<jt::Shape>();
             s->makeRect(jt::Vector2 { 4, 4 });
-            auto const v = static_cast<std::uint8_t>(jt::Random::getInt(240, 255));
+            auto const v = static_cast<uint8_t>(jt::Random::getInt(240, 255));
             s->setColor(jt::Color(v, v, v, 255));
             s->setOrigin({ 2, 2 });
             return s;
@@ -136,7 +147,7 @@ void StateGame::doInternalCreate()
             s->setPosition(m_currentPendingBrick->getPosition());
 
             auto twa = jt::TweenAlpha::create(
-                s, 0.5f, static_cast<std::uint8_t>(jt::Random::getInt(220, 255)), 0);
+                s, 0.5f, static_cast<uint8_t>(jt::Random::getInt(220, 255)), 0);
             twa->setSkipFrames(1);
             add(twa);
 
@@ -156,11 +167,42 @@ void StateGame::doInternalCreate()
 
     add(m_brickFixateParticles);
 
-    auto t = std::make_shared<jt::Timer>(
-        1.5f, [this]() { spawnNewBrick(); }, -1);
-    add(t);
+    m_backgroundDustParticles = jt::ParticleSystem<jt::Shape, 128>::createPS(
+        []() {
+            auto s = std::make_shared<jt::Shape>();
+            s->makeRect(jt::Vector2 { 2, 2 });
+            auto const v = static_cast<uint8_t>(jt::Random::getInt(240, 255));
+            s->setColor(jt::Color(v, v, v, 255));
+            s->setOrigin({ 1, 1 });
+            return s;
+        },
+        [this](auto s) {
+            auto start = jt::Random::getRandomPointIn(jt::Rect { 0, -700, 240, 1000 });
+            s->setPosition(start);
+            auto col = s->getColor();
+            col.a() = 0;
+            s->setColor(col);
 
-    m_hud->getObserverLife()->notify(m_extra_lifes);
+            auto maxAlpha = static_cast<uint8_t>(jt::Random::getInt(30, 65));
+            auto twa1 = jt::TweenAlpha::create(s, 0.5f, 0, maxAlpha);
+            twa1->setSkipFrames(1);
+            add(twa1);
+
+            auto twa2 = jt::TweenAlpha::create(s, 0.5f, maxAlpha, 0);
+            twa2->setSkipFrames(1);
+            twa2->setStartDelay(4.5f);
+            add(twa2);
+
+            auto twp = jt::TweenPosition::create(s, 4.5f, start,
+                start + jt::Random::getRandomPointIn(jt::Rect { -200, -200, 200, 200 }));
+            add(twp);
+        });
+
+    add(m_backgroundDustParticles);
+    m_backgroundDustParticles->Fire(20);
+    auto dustTimer
+        = std::make_shared<jt::Timer>(0.5f, [this]() { m_backgroundDustParticles->Fire(4); });
+    add(dustTimer);
 }
 
 void StateGame::freezeBricks()
