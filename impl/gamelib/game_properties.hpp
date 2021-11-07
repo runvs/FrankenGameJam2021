@@ -9,10 +9,10 @@ class GP {
 public:
     GP() = delete;
 
-    static std::string GameName() { return "MyAwesomeGame"; }
-    static std::string AuthorName() { return "TODO"; }
-    static std::string JamName() { return "TODO"; }
-    static std::string JamDate() { return "TODO"; }
+    static std::string GameName() { return "Gemga"; }
+    static std::string AuthorName() { return "adkiem, Aneira, BloodyOrange,\nLaguna, Synchronleuchter, Thunraz\n"; }
+    static std::string JamName() { return "Frankengamejam 2021"; }
+    static std::string JamDate() { return "November 2021"; }
 
     static jt::Vector2 GetWindowSize() { return jt::Vector2 { 720, 900 }; }
     static float GetZoom() { return 3.0f; }
@@ -20,16 +20,16 @@ public:
 
     static jt::Color PaletteBackground() { return GP::PaletteColor6(); }
     static jt::Color PaletteFontFront() { return GP::PaletteColor4(); }
-    static jt::Color PaletteFontShadow() { return GP::PaletteColor7(); }
+    static jt::Color PaletteFontShadow();
 
     static jt::Color PaletteColor1() { return jt::Color { 5, 64, 71 }; }
     static jt::Color PaletteColor2() { return jt::Color { 32, 142, 68 }; }
-    static jt::Color PaletteColor3() { return jt::Color { 133, 225, 66 }; }
-    static jt::Color PaletteColor4() { return jt::Color { 239, 255, 124 }; }
-    static jt::Color PaletteColor5() { return jt::Color { 251, 114, 48 }; }
-    static jt::Color PaletteColor6() { return jt::Color { 184, 39, 45 }; }
-    static jt::Color PaletteColor7() { return jt::Color { 64, 23, 58 }; }
-    static jt::Color PaletteColor8() { return jt::Color { 157, 64, 43 }; }
+    static jt::Color PaletteColor3() { return jt::Color { 223, 123, 0 }; }
+    static jt::Color PaletteColor4();
+    static jt::Color PaletteColor5();
+    static jt::Color PaletteColor6();
+    static jt::Color PaletteColor7();
+    static jt::Color PaletteColor8();
 
     static int PhysicVelocityIterations();
     static int PhysicPositionIterations();

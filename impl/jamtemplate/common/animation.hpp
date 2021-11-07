@@ -43,6 +43,10 @@ public:
     /// continue if already playing
     void play(std::string const& animationName, size_t startFrameIndex = 0, bool restart = false);
 
+    // TODO test and document
+    void setLooping(bool isLooping);
+    bool getIsLooping() const;
+
     void setColor(jt::Color const& col) override;
     jt::Color getColor() const override;
 
@@ -98,6 +102,8 @@ private:
     jt::Vector2 m_position { 0.0f, 0.0f };
 
     float m_frameTime { 0.0f };
+
+    bool m_isLooping { true };
 
     void doDrawShadow(std::shared_ptr<jt::renderTarget> const sptr) const override;
     void doDraw(std::shared_ptr<jt::renderTarget> const sptr) const override;
