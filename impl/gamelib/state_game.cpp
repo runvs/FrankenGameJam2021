@@ -115,13 +115,13 @@ void StateGame::doInternalCreate()
     m_soundAtmospheric3->play();
 
     m_soundBrickFreeze1 = std::make_shared<jt::Sound>();
-    m_soundBrickFreeze1->load("assets/sfx/block_freeze_1_high.wav");
+    m_soundBrickFreeze1->load("assets/sfx/block_freeze_1_high.ogg");
     m_soundBrickFreeze2 = std::make_shared<jt::Sound>();
-    m_soundBrickFreeze2->load("assets/sfx/block_freeze_2_high.wav");
+    m_soundBrickFreeze2->load("assets/sfx/block_freeze_2_high.ogg");
     m_soundBrickFreeze3 = std::make_shared<jt::Sound>();
-    m_soundBrickFreeze3->load("assets/sfx/block_freeze_3_high.wav");
+    m_soundBrickFreeze3->load("assets/sfx/block_freeze_3_high.ogg");
     m_soundBrickFreeze4 = std::make_shared<jt::Sound>();
-    m_soundBrickFreeze4->load("assets/sfx/block_freeze_4_high.wav");
+    m_soundBrickFreeze4->load("assets/sfx/block_freeze_4_high.ogg");
 
     m_sound1Up = std::make_shared<jt::Sound>();
     m_sound1Up->load("assets/sfx/1up_pling.ogg");
