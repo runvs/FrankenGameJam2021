@@ -190,8 +190,6 @@ void StateGame::doInternalUpdate(float const elapsed)
         m_world->step(elapsed, GP::PhysicVelocityIterations(), GP::PhysicPositionIterations());
         // update game logic here
 
-        if (m_currentBrick) { }
-        spawnBricks();
         rotateCurrentBrick(elapsed);
         moveCamera(elapsed);
         checkForGameOver();
@@ -282,24 +280,6 @@ void StateGame::rotateCurrentBrick(float const elapsed)
     }
 }
 
-void StateGame::spawnBricks()
-{
-    if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
-        spawnNewBrick();
-    }
-    if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::N)) {
-        m_currentBrick
-            = BrickFactory::createBrickRectangle2x1(m_world, jt::Vector2 { 250.0f, 20.0f });
-        add(m_currentBrick);
-        m_bricks->push_back(m_currentBrick);
-    }
-    if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::L)) {
-        m_currentBrick
-            = BrickFactory::createBrickCuttingEdge(m_world, jt::Vector2 { 250.0f, 20.0f });
-        add(m_currentBrick);
-        m_bricks->push_back(m_currentBrick);
-    }
-}
 void StateGame::spawnNewBrick()
 {
     if (m_canSpawnNewBrick) {
@@ -350,7 +330,6 @@ void StateGame::checkForGameOver()
 
 void StateGame::loseLife()
 {
-    //    std::cout << "loseLife: " << m_loseLifeTimer << " " << m_extra_lifes << std::endl;
     if (m_loseLifeTimer <= 0.0f) {
         m_loseLifeTimer = 0.5f;
         m_extra_lifes--;
