@@ -82,6 +82,7 @@ private:
     float m_maxHeight { 300 };
 
     bool m_canSpawnNewBrick { true };
+    bool m_gameOverCamDone { false };
 
     std::shared_ptr<jt::Animation> m_frog;
 
