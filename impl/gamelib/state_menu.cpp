@@ -26,6 +26,8 @@ void StateMenu::doInternalCreate()
     createVignette();
 
     createTweens();
+
+    getGame()->getMusicPlayer()->PlayMusic("assets/music/complete.ogg");
 }
 
 void StateMenu::createVignette()
