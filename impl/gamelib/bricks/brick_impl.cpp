@@ -1,6 +1,9 @@
 #include "brick_impl.hpp"
 #include "game_interface.hpp"
+#include "game_properties.hpp"
 #include "math_helper.hpp"
+#include "random.hpp"
+#include "timer.hpp"
 #include <algorithm>
 
 BrickImpl::BrickImpl(std::shared_ptr<jt::Box2DWorldInterface> world, const b2BodyDef* def)
@@ -35,6 +38,13 @@ void BrickImpl::doUpdate(float const elapsed)
     m_drawable->setPosition(getPosition());
     m_drawable->setRotation(-jt::MathHelper::rad2deg(getRotation()));
     m_drawable->update(elapsed);
+
+    m_shineTimer -= elapsed;
+    if (m_shineTimer <= 0) {
+        m_lastShine = getAge();
+        m_drawable->play("shine", 0, true);
+        m_shineTimer = jt::Random::getFloat(GP::GemDelayMin(), GP::GemDelayMax());
+    }
 }
 
 void BrickImpl::doDraw() const { m_drawable->draw(getGame()->getRenderTarget()); }

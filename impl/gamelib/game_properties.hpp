@@ -44,6 +44,9 @@ public:
     static float PhysicsBrickDensity();
     static float BrickFixVelocityThreshold();
     static float PhysicsBrickRestitution();
+
+    static float GemDelayMin();
+    static float GemDelayMax();
 };
 
 #endif

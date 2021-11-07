@@ -12,6 +12,8 @@ float GP::AtmosphericSoundBreakpoint1() { return 0.0f; }
 float GP::AtmosphericSoundBreakpoint2() { return -300.0f; }
 float GP::AtmosphericSoundBreakpoint3() { return -600.0f; }
 
+float GP::GemDelayMin() { return 0.8f; }
+float GP::GemDelayMax() { return 10.0f; }
 jt::Color GP::PaletteFontShadow() { return GP::PaletteColor7(); }
 jt::Color GP::PaletteColor4() { return jt::Color { 239, 255, 124 }; }
 jt::Color GP::PaletteColor5() { return jt::Color { 220, 220, 220 }; }
