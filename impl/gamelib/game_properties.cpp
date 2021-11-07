@@ -11,3 +11,10 @@ float GP::PhysicsBrickRestitution() { return -0.4f; }
 float GP::AtmosphericSoundBreakpoint1() { return 0.0f; }
 float GP::AtmosphericSoundBreakpoint2() { return -300.0f; }
 float GP::AtmosphericSoundBreakpoint3() { return -600.0f; }
+
+jt::Color GP::PaletteFontShadow() { return GP::PaletteColor7(); }
+jt::Color GP::PaletteColor4() { return jt::Color { 239, 255, 124 }; }
+jt::Color GP::PaletteColor5() { return jt::Color { 220, 220, 220 }; }
+jt::Color GP::PaletteColor6() { return jt::Color { 184, 39, 45 }; }
+jt::Color GP::PaletteColor7() { return jt::Color { 64, 64, 64 }; }
+jt::Color GP::PaletteColor8() { return jt::Color { 157, 64, 43 }; }
