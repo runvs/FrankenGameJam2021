@@ -123,6 +123,9 @@ void StateGame::doInternalCreate()
     m_soundBrickFreeze4 = std::make_shared<jt::Sound>();
     m_soundBrickFreeze4->load("assets/sfx/block_freeze_4_high.wav");
 
+    m_sound1Up = std::make_shared<jt::Sound>();
+    m_sound1Up->load("assets/sfx/1up_pling.ogg");
+
     m_brickFixateParticles = jt::ParticleSystem<jt::Shape, 64>::createPS(
         []() {
             auto s = std::make_shared<jt::Shape>();
@@ -203,12 +206,23 @@ void StateGame::doInternalUpdate(float const elapsed)
         }
 
         rotateCurrentBrick(elapsed);
-        moveCamera(elapsed);
         checkForGameOver();
         freezeBricks();
         m_loseLifeTimer -= elapsed;
+    } else if (m_hasEnded) {
+        auto camOff = getGame()->getCamera()->getCamOffset().y();
+        static bool first = true;
+        if (camOff >= -32.0f && first) {
+            auto tw
+                = jt::TweenAlpha::create(m_overlay, 3.2f, std::uint8_t { 0 }, std::uint8_t { 255 });
+            tw->setSkipFrames();
+            tw->addCompleteCallback(
+                [this]() { getGame()->switchState(std::make_shared<StateMenu>()); });
+            add(tw);
+            first = false;
+        }
     }
-
+    moveCamera(elapsed);
     m_background->update(elapsed);
 
     auto tiledBackgroundPosition = m_tiledBackground->getPosition();
@@ -228,7 +242,10 @@ void StateGame::moveCamera(float const elapsed)
 {
     float const camPosY = getGame()->getCamera()->getCamOffset().y();
     float const scrollTo = m_maxHeight - 120;
-    if (camPosY > scrollTo) {
+
+    if (m_hasEnded && camPosY < 0.0f) {
+        getGame()->getCamera()->move(jt::Vector2 { 0.0f, -elapsed * 4.0f + elapsed * 40.0f });
+    } else if (!m_hasEnded && camPosY > scrollTo) {
         getGame()->getCamera()->move(jt::Vector2 { 0.0f, -elapsed * 4.0f });
     }
 
@@ -345,8 +362,6 @@ void StateGame::checkForGameOver()
             auto position = brick->getPosition();
             float killThreshold = GP::GetScreenSize().y() + GP::RemoveBrickDeadzone();
             auto camOff = getGame()->getCamera()->getCamOffset().y();
-            std::cout << "pos " << position.y() << " camOff " << camOff << " threshold "
-                      << killThreshold << std::endl;
             if (position.y() - camOff > killThreshold) {
                 brick->kill();
                 loseLife();
@@ -378,11 +393,6 @@ void StateGame::endGame()
     m_soundGameOver->play();
     m_hasEnded = true;
     m_running = false;
-
-    auto tw = jt::TweenAlpha::create(m_overlay, 3.2f, std::uint8_t { 0 }, std::uint8_t { 255 });
-    tw->setSkipFrames();
-    tw->addCompleteCallback([this]() { getGame()->switchState(std::make_shared<StateMenu>()); });
-    add(tw);
 }
 
 bool StateGame::isCurrentBrick(b2Body const* const bodyPtr) const
@@ -434,6 +444,8 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
                 m_extra_lifes++;
                 if (m_extra_lifes >= 4) {
                     m_extra_lifes = 4;
+                } else {
+                    m_sound1Up->play();
                 }
                 m_hud->getObserverLife()->notify(m_extra_lifes);
             }

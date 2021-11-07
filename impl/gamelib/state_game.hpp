@@ -55,6 +55,8 @@ private:
     std::shared_ptr<jt::Sound> m_soundBrickFreeze3;
     std::shared_ptr<jt::Sound> m_soundBrickFreeze4;
 
+    std::shared_ptr<jt::Sound> m_sound1Up;
+
     std::shared_ptr<jt::ParticleSystem<jt::Shape, 64>> m_brickFixateParticles;
 
     bool m_running { false };
