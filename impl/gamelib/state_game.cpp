@@ -203,7 +203,6 @@ void StateGame::moveCamera(float const elapsed)
 {
     float const camPosY = getGame()->getCamera()->getCamOffset().y();
     float const scrollTo = m_maxHeight - 220;
-    //    std::cout << camPosY << " " << scrollTo << std::endl;
     if (camPosY > scrollTo) {
         getGame()->getCamera()->move(jt::Vector2 { 0.0f, -elapsed * 4.0f });
     }
@@ -299,8 +298,6 @@ void StateGame::spawnNewBrick()
 {
     if (m_canSpawnNewBrick) {
         m_currentBrick = m_brickProvider->getNextBrickFunction()(m_world, m_maxHeight - 280);
-        //        std::cout.setf(std::ios::boolalpha);
-        //        std::cout << "new brick alive? " << m_currentBrick->isAlive() << std::endl;
         add(m_currentBrick);
         m_bricks->push_back(m_currentBrick);
 
@@ -410,11 +407,23 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
     auto const l = jt::MathHelper::lengthSquared(v);
 
     if (l < GP::BrickFixVelocityThreshold()) {
-        float const ypos = currentPendingBrick->getPosition().y();
+        float const ypos = currentPendingBrick->getB2Body()->GetWorldCenter().y;
         if (ypos < m_maxHeight) {
+
             m_maxHeight = ypos;
+            auto oldscore = m_score;
             m_score = 280 - (int)m_maxHeight;
             m_hud->getObserverScore()->notify(m_score);
+
+            m_lifeCounter += (m_score - oldscore);
+            if (m_lifeCounter >= 100) {
+                m_lifeCounter = 0;
+                m_extra_lifes++;
+                if (m_extra_lifes >= 4) {
+                    m_extra_lifes = 4;
+                }
+                m_hud->getObserverLife()->notify(m_extra_lifes);
+            }
         }
         currentPendingBrick->getDrawable()->flash(0.75f);
         addDistanceJointsTo(currentPendingBrick, m_platform->getB2Body());

@@ -59,6 +59,8 @@ private:
     bool m_hasEnded { false };
 
     int m_score { 0 };
+    int m_lifeCounter { 0 };
+
     int m_extra_lifes { 1 };
 
     float m_maxHeight { 300 };
