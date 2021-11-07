@@ -59,6 +59,7 @@ private:
     bool m_hasEnded { false };
 
     int m_score { 0 };
+    int m_extra_lifes { 1 };
 
     float m_maxHeight { 300 };
 
@@ -81,6 +82,8 @@ private:
     void moveCamera(float const elapsed);
     void addRevoluteJointTo(std::shared_ptr<BrickInterface> brick);
     void freezeBricks();
+    void looseLife();
+    float m_looseLifeTimer { 1.0f };
 };
 
 #endif

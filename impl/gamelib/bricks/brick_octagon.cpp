@@ -35,12 +35,3 @@ void BrickOctagon::doCreate()
     fixtureDef.shape = &boxCollider;
     getB2Body()->CreateFixture(&fixtureDef);
 }
-
-void BrickOctagon::doUpdate(float const elapsed)
-{
-    m_drawable->setPosition(getPosition());
-    m_drawable->setRotation(-jt::MathHelper::rad2deg(getRotation()));
-    m_drawable->update(elapsed);
-}
-
-void BrickOctagon::doDraw() const { m_drawable->draw(getGame()->getRenderTarget()); }
