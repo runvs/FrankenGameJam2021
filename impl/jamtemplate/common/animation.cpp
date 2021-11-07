@@ -199,6 +199,7 @@ void Animation::doFlash(float t, jt::Color col)
 
 void Animation::doUpdate(float elapsed)
 {
+
     // check if valid
     if (m_frames.count(m_currentAnimName) == 0) {
         std::cout << "Warning: Update Animation with invalid animName: '" + m_currentAnimName
@@ -220,6 +221,7 @@ void Animation::doUpdate(float elapsed)
         for (auto& spr : kvp.second) {
             spr->setPosition(m_position + getShakeOffset() + getOffset());
             spr->update(elapsed);
+            spr->setIgnoreCamMovement(DrawableImpl::getIgnoreCamMovement());
         }
     }
 }

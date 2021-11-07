@@ -232,7 +232,7 @@ void StateGame::addDistanceJointsTo(std::shared_ptr<BrickInterface> brick, b2Bod
     {
         b2DistanceJointDef jointDef;
         jointDef.Initialize(other, brick->getB2Body(),
-            other->GetWorldCenter() + b2Vec2 { 16.0f, 0.0f },
+            other->GetWorldCenter() + b2Vec2 { 13.0f, 0.0f },
             brick->getB2Body()->GetWorldCenter() + b2Vec2 { -16.0f, 0.0f });
         jointDef.collideConnected = true;
         jointDef.frequencyHz = 15.0f;
@@ -243,7 +243,7 @@ void StateGame::addDistanceJointsTo(std::shared_ptr<BrickInterface> brick, b2Bod
     {
         b2DistanceJointDef jointDef;
         jointDef.Initialize(other, brick->getB2Body(),
-            other->GetWorldCenter() + b2Vec2 { -16.0f, 0.0f },
+            other->GetWorldCenter() + b2Vec2 { -13.0f, 0.0f },
             brick->getB2Body()->GetWorldCenter() + b2Vec2 { 16.0f, 0.0f });
         jointDef.collideConnected = true;
         jointDef.frequencyHz = 15.0f;
@@ -412,7 +412,7 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
                 m_hud->getObserverLife()->notify(m_extra_lifes);
             }
         }
-        currentPendingBrick->getDrawable()->flash(0.75f);
+        currentPendingBrick->getDrawable()->flash(1.25f);
         addDistanceJointsTo(currentPendingBrick, m_platform->getB2Body());
         addDistanceJointsTo(currentPendingBrick, other);
         currentPendingBrick->fixate();
