@@ -114,27 +114,29 @@ void StateGame::doInternalCreate()
         []() {
             auto s = std::make_shared<jt::Shape>();
             s->makeRect(jt::Vector2 { 4, 4 });
+            auto const v = static_cast<std::uint8_t>(jt::Random::getInt(240, 255));
+            s->setColor(jt::Color(v, v, v, 255));
             s->setOrigin({ 2, 2 });
-            // TODO: Color of corresponding brick? Random rainbowy color?
             return s;
         },
         [this](auto s) {
             s->setPosition(m_currentPendingBrick->getPosition());
 
-            auto twa = jt::TweenAlpha::create(s, 0.5, 255, 0);
+            auto twa = jt::TweenAlpha::create(
+                s, 0.5f, static_cast<std::uint8_t>(jt::Random::getInt(220, 255)), 0);
             twa->setSkipFrames(1);
             add(twa);
 
             auto center = jt::Conversion::vec(m_currentPendingBrick->getB2Body()->GetWorldCenter());
-            float particleRadius = 3200.0f;
-            auto twp = jt::TweenPosition::create(s, 5, center,
+            float particleRadius = 450.0f;
+            auto twp = jt::TweenPosition::create(s, 1, center,
                 center
                     + jt::Random::getRandomPointIn(jt::Rect(-particleRadius / 2.0f,
                         -particleRadius / 2.0f, particleRadius, particleRadius)));
             add(twp);
 
-            auto tws = jt::TweenScale::create(
-                s, 0.5, jt::Vector2 { 2.0f, 2.0f }, jt::Vector2 { 0.0f, 0.0f });
+            auto tws = jt::TweenScale::create(s, jt::Random::getFloatGauss(0.5f, 0.07f),
+                jt::Vector2 { 2.5f, 2.5f }, jt::Vector2 { 0.0f, 0.0f });
             tws->setSkipFrames(1);
             add(tws);
         });
@@ -142,7 +144,7 @@ void StateGame::doInternalCreate()
     add(m_brickFixateParticles);
 
     auto t = std::make_shared<jt::Timer>(
-        1.5f, [this]() { spawnNewBrick(); }, 1);
+        1.5f, [this]() { spawnNewBrick(); }, -1);
     add(t);
 
     m_hud->getObserverLife()->notify(m_extra_lifes);
@@ -167,7 +169,7 @@ void StateGame::freezeBricks()
 
         auto const pos = brick->getPosition();
         if (pos.y() > m_maxHeight + 64.0f) {
-            std::cout << "freeze brick at: " << pos.y() << std::endl;
+            //            std::cout << "freeze brick at: " << pos.y() << std::endl;
             addRevoluteJointTo(brick);
             brick->freeze();
         }
@@ -180,6 +182,10 @@ void StateGame::doInternalUpdate(float const elapsed)
         m_world->step(elapsed, GP::PhysicVelocityIterations(), GP::PhysicPositionIterations());
         // update game logic here
 
+        if (m_currentBrick) {
+            //            std::cout << "update current brick alive? " << m_currentBrick->isAlive()
+            //            << std::endl;
+        }
         spawnBricks();
         rotateCurrentBrick(elapsed);
         moveCamera(elapsed);
@@ -291,11 +297,16 @@ void StateGame::spawnBricks()
 }
 void StateGame::spawnNewBrick()
 {
-    m_currentBrick = m_brickProvider->getNextBrickFunction()(m_world, m_maxHeight - 280);
-    add(m_currentBrick);
-    m_bricks->push_back(m_currentBrick);
+    if (m_canSpawnNewBrick) {
+        m_currentBrick = m_brickProvider->getNextBrickFunction()(m_world, m_maxHeight - 280);
+        //        std::cout.setf(std::ios::boolalpha);
+        //        std::cout << "new brick alive? " << m_currentBrick->isAlive() << std::endl;
+        add(m_currentBrick);
+        m_bricks->push_back(m_currentBrick);
 
-    m_soundBrickSpawn->play();
+        m_soundBrickSpawn->play();
+        m_canSpawnNewBrick = false;
+    }
 }
 
 void StateGame::doInternalDraw() const
@@ -319,6 +330,10 @@ void StateGame::checkForGameOver()
         }
 
         auto brick = b.lock();
+
+        if (!brick->isAlive()) {
+            continue;
+        }
         auto position = brick->getPosition();
 
         if (position.y() > GP::GetScreenSize().y() + GP::RemoveBrickDeadzone()) {
@@ -330,7 +345,7 @@ void StateGame::checkForGameOver()
 
 void StateGame::loseLife()
 {
-    std::cout << "loseLife: " << m_loseLifeTimer << " " << m_extra_lifes << std::endl;
+    //    std::cout << "loseLife: " << m_loseLifeTimer << " " << m_extra_lifes << std::endl;
     if (m_loseLifeTimer <= 0.0f) {
         m_loseLifeTimer = 0.5f;
         m_extra_lifes--;
@@ -339,9 +354,7 @@ void StateGame::loseLife()
         if (m_extra_lifes < 0) {
             endGame();
         } else {
-            auto t = std::make_shared<jt::Timer>(
-                0.2f, [this]() { spawnNewBrick(); }, 1);
-            add(t);
+            m_canSpawnNewBrick = true;
         }
     }
 }
@@ -382,19 +395,17 @@ void StateGame::handleCurrentBrickCollision(b2Body* p1, b2Body* p2)
             },
             1);
         add(t2);
-
+        m_currentPendingBrick = m_currentBrick;
         m_currentBrick = nullptr;
         m_soundGroupBrickContact->play();
-
-        auto t = std::make_shared<jt::Timer>(
-            1.5f, [this]() { spawnNewBrick(); }, 1);
-        add(t);
     }
 }
 
 void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBrick, b2Body* other)
 {
-    m_currentPendingBrick = currentPendingBrick;
+    if (!currentPendingBrick->isAlive()) {
+        return;
+    }
     auto const v = currentPendingBrick->getVelocity() - m_platform->getVelocity();
     auto const l = jt::MathHelper::lengthSquared(v);
 
@@ -409,6 +420,8 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
         addDistanceJointsTo(currentPendingBrick, m_platform->getB2Body());
         addDistanceJointsTo(currentPendingBrick, other);
         currentPendingBrick->fixate();
+
+        m_canSpawnNewBrick = true;
 
         // Sorry, can't be bothered to do this right right now.
         int rnd = jt::Random::getInt(0, 3);

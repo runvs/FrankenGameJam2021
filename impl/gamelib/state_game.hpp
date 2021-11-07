@@ -63,6 +63,8 @@ private:
 
     float m_maxHeight { 300 };
 
+    bool m_canSpawnNewBrick { true };
+
     void doInternalCreate() override;
     void doInternalUpdate(float const elapsed) override;
     void doInternalDraw() const override;
