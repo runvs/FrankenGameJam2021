@@ -13,8 +13,9 @@ void BrickDroplet::doCreate()
     m_drawable = std::make_shared<jt::Animation>();
     m_drawable->add("assets/gems/ruby.png", "idle", jt::Vector2u { 12, 16 }, { 0 }, 0.1f);
     m_drawable->add(
-        "assets/gems/ruby.png", "shine", jt::Vector2u { 12, 16 }, { 0, 1, 2, 3, 4, 5, 6 }, 0.1f);
+        "assets/gems/ruby.png", "shine", jt::Vector2u { 12, 16 }, { 0, 1, 2, 3, 4, 5, 6, 0 }, 0.1f);
     m_drawable->play("idle");
+    m_drawable->setLooping(false);
 
     b2FixtureDef fixtureDef;
     fixtureDef.density = GP::PhysicsBrickDensity() * 2.5f;

@@ -14,8 +14,9 @@ void BrickQuadratic::doCreate()
     m_drawable = std::make_shared<jt::Animation>();
     m_drawable->add("assets/gems/amethyst.png", "idle", jt::Vector2u { 16, 16 }, { 0 }, 0.1f);
     m_drawable->add("assets/gems/amethyst.png", "shine", jt::Vector2u { 16, 16 },
-        { 0, 1, 2, 3, 4, 5, 6 }, 0.1f);
+        { 0, 1, 2, 3, 4, 5, 6, 0 }, 0.1f);
     m_drawable->play("idle");
+    m_drawable->setLooping(false);
 
     b2FixtureDef fixtureDef;
     fixtureDef.density = GP::PhysicsBrickDensity();
