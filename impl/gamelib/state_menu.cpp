@@ -167,7 +167,7 @@ void StateMenu::updateDrawables(const float& elapsed)
         const auto sprite = m_backgroundSprites.at(i);
         const jt::Vector2 currentPosition = sprite->getPosition();
 
-        float newX = currentPosition.x() - 0.2f * i;
+        float newX = currentPosition.x() - 0.1f * i;
         newX = newX <= -240.0f ? newX + 240.0f : newX;
         sprite->setPosition(jt::Vector2 { newX, currentPosition.y() });
         sprite->update(elapsed);
