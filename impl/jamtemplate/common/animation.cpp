@@ -213,7 +213,11 @@ void Animation::doUpdate(float elapsed)
         m_frameTime -= m_time[m_currentAnimName];
         m_currentIdx++;
         if (m_currentIdx >= m_frames.at(m_currentAnimName).size()) {
-            m_currentIdx = 0;
+            if (m_isLooping) {
+                m_currentIdx = 0;
+            } else {
+                m_currentIdx = m_frames.at(m_currentAnimName).size() - 1;
+            }
         }
     }
     // set position
@@ -244,5 +248,8 @@ std::size_t Animation::getNumberOfFramesInCurrentAnimation() const
     return m_frames.at(m_currentAnimName).size();
 }
 std::string Animation::getCurrentAnimationName() const { return m_currentAnimName; }
+
+bool Animation::getIsLooping() const { return m_isLooping; }
+void Animation::setLooping(bool isLooping) { m_isLooping = isLooping; }
 
 } // namespace jt
