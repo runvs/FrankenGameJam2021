@@ -22,7 +22,8 @@ public:
 private:
     std::vector<std::shared_ptr<jt::Sprite>> m_backgroundSprites;
 
-    std::shared_ptr<jt::Text> m_text_Title;
+    std::shared_ptr<jt::Animation> m_logo;
+
     std::shared_ptr<jt::Text> m_text_Explanation;
     std::shared_ptr<jt::Text> m_text_Credits;
 
@@ -35,16 +36,16 @@ private:
 
     void createVignette();
     void createShapes();
+    void createBackground();
 
     void createMenuText();
     void createTextCredits();
     void createTextExplanation();
-    void createTextTitle();
+    void createLogo();
 
     void createTweens();
     void createInstructionTweenScaleUp();
     void createInstructionTweenScaleDown();
-    void createTweenTitleAlpha();
     void createTweenOverlayAlpha();
     void createTweenCreditsPosition();
     void createTweenExplanationScale();
