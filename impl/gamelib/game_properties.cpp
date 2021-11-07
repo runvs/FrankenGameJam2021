@@ -1,6 +1,6 @@
 ﻿#include "game_properties.hpp"
 
-int GP::RemoveBrickDeadzone() { return 16; }
+int GP::RemoveBrickDeadzone() { return 32; }
 int GP::PhysicPositionIterations() { return 10; }
 int GP::PhysicVelocityIterations() { return 6; }
 
