@@ -56,7 +56,11 @@ private:
     std::shared_ptr<jt::Sound> m_soundBrickFreeze3;
     std::shared_ptr<jt::Sound> m_soundBrickFreeze4;
 
+    std::shared_ptr<jt::Sound> m_sound1Up;
+
     std::shared_ptr<jt::ParticleSystem<jt::Shape, 64>> m_brickFixateParticles;
+
+    std::shared_ptr<jt::ParticleSystem<jt::Shape, 128>> m_backgroundDustParticles;
 
     bool m_running { false };
     bool m_hasEnded { false };
@@ -92,6 +96,7 @@ private:
     void freezeBricks();
     void loseLife();
     float m_loseLifeTimer { 1.0f };
+    void createParticleSystems();
 };
 
 #endif

@@ -128,11 +128,25 @@ void StateGame::doInternalCreate()
     m_soundBrickFreeze4 = std::make_shared<jt::Sound>();
     m_soundBrickFreeze4->load("assets/sfx/block_freeze_4_high.wav");
 
+    m_sound1Up = std::make_shared<jt::Sound>();
+    m_sound1Up->load("assets/sfx/1up_pling.ogg");
+
+    createParticleSystems();
+
+    auto t = std::make_shared<jt::Timer>(
+        1.5f, [this]() { spawnNewBrick(); }, -1);
+    add(t);
+
+    m_hud->getObserverLife()->notify(m_extra_lifes);
+}
+
+void StateGame::createParticleSystems()
+{
     m_brickFixateParticles = jt::ParticleSystem<jt::Shape, 64>::createPS(
         []() {
             auto s = std::make_shared<jt::Shape>();
             s->makeRect(jt::Vector2 { 4, 4 });
-            auto const v = static_cast<std::uint8_t>(jt::Random::getInt(240, 255));
+            auto const v = static_cast<uint8_t>(jt::Random::getInt(240, 255));
             s->setColor(jt::Color(v, v, v, 255));
             s->setOrigin({ 2, 2 });
             return s;
@@ -141,7 +155,7 @@ void StateGame::doInternalCreate()
             s->setPosition(m_currentPendingBrick->getPosition());
 
             auto twa = jt::TweenAlpha::create(
-                s, 0.5f, static_cast<std::uint8_t>(jt::Random::getInt(220, 255)), 0);
+                s, 0.5f, static_cast<uint8_t>(jt::Random::getInt(220, 255)), 0);
             twa->setSkipFrames(1);
             add(twa);
 
@@ -161,11 +175,42 @@ void StateGame::doInternalCreate()
 
     add(m_brickFixateParticles);
 
-    auto t = std::make_shared<jt::Timer>(
-        1.5f, [this]() { spawnNewBrick(); }, -1);
-    add(t);
+    m_backgroundDustParticles = jt::ParticleSystem<jt::Shape, 128>::createPS(
+        []() {
+            auto s = std::make_shared<jt::Shape>();
+            s->makeRect(jt::Vector2 { 2, 2 });
+            auto const v = static_cast<uint8_t>(jt::Random::getInt(240, 255));
+            s->setColor(jt::Color(v, v, v, 255));
+            s->setOrigin({ 1, 1 });
+            return s;
+        },
+        [this](auto s) {
+            auto start = jt::Random::getRandomPointIn(jt::Rect { 0, -700, 240, 1000 });
+            s->setPosition(start);
+            auto col = s->getColor();
+            col.a() = 0;
+            s->setColor(col);
 
-    m_hud->getObserverLife()->notify(m_extra_lifes);
+            auto maxAlpha = static_cast<uint8_t>(jt::Random::getInt(30, 65));
+            auto twa1 = jt::TweenAlpha::create(s, 0.5f, 0, maxAlpha);
+            twa1->setSkipFrames(1);
+            add(twa1);
+
+            auto twa2 = jt::TweenAlpha::create(s, 0.5f, maxAlpha, 0);
+            twa2->setSkipFrames(1);
+            twa2->setStartDelay(4.5f);
+            add(twa2);
+
+            auto twp = jt::TweenPosition::create(s, 4.5f, start,
+                start + jt::Random::getRandomPointIn(jt::Rect { -200, -200, 200, 200 }));
+            add(twp);
+        });
+
+    add(m_backgroundDustParticles);
+    m_backgroundDustParticles->Fire(20);
+    auto dustTimer
+        = std::make_shared<jt::Timer>(0.5f, [this]() { m_backgroundDustParticles->Fire(4); });
+    add(dustTimer);
 }
 
 void StateGame::freezeBricks()
@@ -208,12 +253,23 @@ void StateGame::doInternalUpdate(float const elapsed)
         }
 
         rotateCurrentBrick(elapsed);
-        moveCamera(elapsed);
         checkForGameOver();
         freezeBricks();
         m_loseLifeTimer -= elapsed;
+    } else if (m_hasEnded) {
+        auto camOff = getGame()->getCamera()->getCamOffset().y();
+        static bool first = true;
+        if (camOff >= -32.0f && first) {
+            auto tw
+                = jt::TweenAlpha::create(m_overlay, 3.2f, std::uint8_t { 0 }, std::uint8_t { 255 });
+            tw->setSkipFrames();
+            tw->addCompleteCallback(
+                [this]() { getGame()->switchState(std::make_shared<StateMenu>()); });
+            add(tw);
+            first = false;
+        }
     }
-
+    moveCamera(elapsed);
     m_background->update(elapsed);
 
     auto tiledBackgroundPosition = m_tiledBackground1->getPosition();
@@ -222,7 +278,8 @@ void StateGame::doInternalUpdate(float const elapsed)
             jt::Vector2 { tiledBackgroundPosition.x(), tiledBackgroundPosition.y() - 960.0f });
     }
 
-    m_tiledBackground2->setPosition(m_tiledBackground1->getPosition() + jt::Vector2{0.0f, -480.0f});
+    m_tiledBackground2->setPosition(
+        m_tiledBackground1->getPosition() + jt::Vector2 { 0.0f, -480.0f });
 
     m_tiledBackground1->update(elapsed);
     m_tiledBackground2->update(elapsed);
@@ -235,7 +292,10 @@ void StateGame::moveCamera(float const elapsed)
 {
     float const camPosY = getGame()->getCamera()->getCamOffset().y();
     float const scrollTo = m_maxHeight - 120;
-    if (camPosY > scrollTo) {
+
+    if (m_hasEnded && camPosY < 0.0f) {
+        getGame()->getCamera()->move(jt::Vector2 { 0.0f, -elapsed * 4.0f + elapsed * 40.0f });
+    } else if (!m_hasEnded && camPosY > scrollTo) {
         getGame()->getCamera()->move(jt::Vector2 { 0.0f, -elapsed * 4.0f });
     }
 
@@ -353,8 +413,6 @@ void StateGame::checkForGameOver()
             auto position = brick->getPosition();
             float killThreshold = GP::GetScreenSize().y() + GP::RemoveBrickDeadzone();
             auto camOff = getGame()->getCamera()->getCamOffset().y();
-            std::cout << "pos " << position.y() << " camOff " << camOff << " threshold "
-                      << killThreshold << std::endl;
             if (position.y() - camOff > killThreshold) {
                 brick->kill();
                 loseLife();
@@ -386,11 +444,6 @@ void StateGame::endGame()
     m_soundGameOver->play();
     m_hasEnded = true;
     m_running = false;
-
-    auto tw = jt::TweenAlpha::create(m_overlay, 3.2f, std::uint8_t { 0 }, std::uint8_t { 255 });
-    tw->setSkipFrames();
-    tw->addCompleteCallback([this]() { getGame()->switchState(std::make_shared<StateMenu>()); });
-    add(tw);
 }
 
 bool StateGame::isCurrentBrick(b2Body const* const bodyPtr) const
@@ -442,6 +495,8 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
                 m_extra_lifes++;
                 if (m_extra_lifes >= 4) {
                     m_extra_lifes = 4;
+                } else {
+                    m_sound1Up->play();
                 }
                 m_hud->getObserverLife()->notify(m_extra_lifes);
             }
