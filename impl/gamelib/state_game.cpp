@@ -151,6 +151,7 @@ void StateGame::doInternalUpdate(float const elapsed)
         moveCamera(elapsed);
         checkForGameOver();
         freezeBricks();
+        m_looseLifeTimer -= elapsed;
     }
 
     m_background->update(elapsed);
@@ -286,17 +287,22 @@ void StateGame::checkForGameOver()
         auto position = brick->getPosition();
 
         if (position.y() > GP::GetScreenSize().y() + GP::RemoveBrickDeadzone()) {
-
+            brick->kill();
             looseLife();
         }
     }
 }
 void StateGame::looseLife()
 {
-    m_extra_lifes--;
-    m_hud->getObserverLife()->notify(m_extra_lifes);
-    if (m_extra_lifes < 0) {
-        endGame();
+    std::cout << "looseLife: " << m_looseLifeTimer << " " << m_extra_lifes << std::endl;
+    if (m_looseLifeTimer <= 0.0f) {
+        m_looseLifeTimer = 0.5f;
+        m_extra_lifes--;
+
+        m_hud->getObserverLife()->notify(m_extra_lifes);
+        if (m_extra_lifes < 0) {
+            endGame();
+        }
     }
 }
 void StateGame::endGame()

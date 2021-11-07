@@ -80,6 +80,7 @@ private:
     void addRevoluteJointTo(std::shared_ptr<BrickInterface> brick);
     void freezeBricks();
     void looseLife();
+    float m_looseLifeTimer { 1.0f };
 };
 
 #endif
