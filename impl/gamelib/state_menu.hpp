@@ -23,6 +23,7 @@ private:
     std::vector<std::shared_ptr<jt::Sprite>> m_backgroundSprites;
 
     std::shared_ptr<jt::Animation> m_logo;
+    std::shared_ptr<jt::Sprite> m_logoGlow;
 
     std::shared_ptr<jt::Text> m_text_Explanation;
     std::shared_ptr<jt::Text> m_text_Credits;
