@@ -64,12 +64,11 @@ void StateMenu::createMenuText()
 void StateMenu::createTextCredits()
 {
     m_text_Credits = jt::dh::createText(getGame()->getRenderTarget(),
-        "Created by " + GP::AuthorName() + " for " + GP::JamName() + "\n" + GP::JamDate()
-            + "\n\nThis game uses OpenAl, licensed under LGPL v2.\nPlease see "
-              "https://openal.org/",
+        "Created by " + GP::AuthorName() + "for " + GP::JamName()
+            + "\nThis game uses OpenAl, licensed under\nLGPL v2. Please see https://openal.org",
         10U, GP::PaletteColor5());
     m_text_Credits->setTextAlign(jt::Text::TextAlign::LEFT);
-    m_text_Credits->setPosition({ 10, GP::GetScreenSize().y() - 70 });
+    m_text_Credits->setPosition({ 5, GP::GetScreenSize().y() - 70 });
     m_text_Credits->setShadow(GP::PaletteFontShadow(), jt::Vector2 { 1, 1 });
 }
 
@@ -77,9 +76,9 @@ void StateMenu::createTextExplanation()
 {
     float half_width = GP::GetScreenSize().x() / 2;
     m_text_Explanation = jt::dh::createText(
-        getGame()->getRenderTarget(), "Press Space to start the game", 16U, GP::PaletteColor8());
+        getGame()->getRenderTarget(), "Press Space to start the game", 12U, GP::PaletteColor3());
     m_text_Explanation->setPosition({ half_width, 150 });
-    m_text_Explanation->setShadow(GP::PaletteFontShadow(), jt::Vector2 { 3, 3 });
+    m_text_Explanation->setShadow(jt::colors::Black, jt::Vector2 { 1, 1 });
 }
 
 void StateMenu::createLogo()
