@@ -90,6 +90,11 @@ void StateMenu::createLogo()
     m_logo->add("assets/logo.png", "idle", jt::Vector2u { 125, 50 }, { 0, 1, 2, 3, 4, 5, 6 }, 0.2f);
     m_logo->play("idle");
     m_logo->setPosition({ half_width - 62.5f, 20 });
+
+
+    m_logoGlow = std::make_shared<jt::Sprite>();
+    m_logoGlow->loadSprite("assets/logo_blur.png");
+    m_logoGlow->setPosition({ half_width - 71.5f, 10 });
 }
 
 void StateMenu::createTweens()
@@ -170,6 +175,7 @@ void StateMenu::updateDrawables(const float& elapsed)
     }
 
     m_logo->update(elapsed);
+    m_logoGlow->update(elapsed);
 
     m_text_Explanation->update(elapsed);
     m_text_Credits->update(elapsed);
@@ -210,7 +216,8 @@ void StateMenu::doInternalDraw() const
         backgroundSprite->draw(getGame()->getRenderTarget());
     }
 
-    m_logo->draw((getGame()->getRenderTarget()));
+    m_logoGlow->draw(getGame()->getRenderTarget());
+    m_logo->draw(getGame()->getRenderTarget());
 
     m_text_Explanation->draw(getGame()->getRenderTarget());
     m_text_Credits->draw(getGame()->getRenderTarget());
