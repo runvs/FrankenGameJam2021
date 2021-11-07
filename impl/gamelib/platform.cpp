@@ -13,7 +13,8 @@ Platform::Platform(std::shared_ptr<jt::Box2DWorldInterface> world, b2BodyDef con
 
 void Platform::doCreate()
 {
-    m_shape = jt::dh::createRectShape(m_platformSize);
+    m_sprite = std::make_shared<jt::Sprite>();
+    m_sprite->loadSprite("assets/platform_gold.png");
 
     b2FixtureDef fixtureDef;
     fixtureDef.density = 1000.0f;
@@ -37,10 +38,10 @@ void Platform::doUpdate(float const elapsed)
     }
     auto pos = getPosition();
     pos -= m_platformSize * 0.5f;
-    m_shape->setPosition(pos);
-    m_shape->update(elapsed);
+    m_sprite->setPosition(pos);
+    m_sprite->update(elapsed);
 }
 
-void Platform::doDraw() const { m_shape->draw(getGame()->getRenderTarget()); }
+void Platform::doDraw() const { m_sprite->draw(getGame()->getRenderTarget()); }
 void Platform::doKill() { }
 void Platform::doDestroy() { }

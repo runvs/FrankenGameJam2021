@@ -5,6 +5,7 @@
 #include "game_object.hpp"
 #include "shape.hpp"
 #include <memory>
+#include "sprite.hpp"
 
 class Platform : public jt::Box2DObject {
 public:
@@ -12,7 +13,7 @@ public:
 
 private:
     jt::Vector2 m_platformSize { 64, 6 };
-    std::shared_ptr<jt::Shape> m_shape;
+    std::shared_ptr<jt::Sprite> m_sprite;
 
     void doCreate() override;
     void doUpdate(float const /*elapsed*/) override;
