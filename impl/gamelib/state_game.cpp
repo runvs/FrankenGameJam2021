@@ -34,10 +34,15 @@ void StateGame::doInternalCreate()
     m_background->setPosition(jt::Vector2 { 0.0f, -600.0f });
     m_background->update(0.0f);
 
-    m_tiledBackground = std::make_shared<jt::Sprite>();
-    m_tiledBackground->loadSprite("assets/tiled_space.png");
-    m_tiledBackground->setPosition(jt::Vector2 { 0.0f, -1560.0f });
-    m_tiledBackground->update(0.0f);
+    m_tiledBackground1 = std::make_shared<jt::Sprite>();
+    m_tiledBackground1->loadSprite("assets/tiled_space.png");
+    m_tiledBackground1->setPosition(jt::Vector2 { 0.0f, -1560.0f });
+    m_tiledBackground1->update(0.0f);
+
+    m_tiledBackground2 = std::make_shared<jt::Sprite>();
+    m_tiledBackground2->loadSprite("assets/tiled_space.png");
+    m_tiledBackground2->setPosition(jt::Vector2 { 0.0f, -1560.0f - 480.0f });
+    m_tiledBackground2->update(0.0f);
 
     m_frog = std::make_shared<jt::Animation>();
     m_frog->add("assets/frog.png", "idle", jt::Vector2u { 14, 7 },
@@ -211,14 +216,16 @@ void StateGame::doInternalUpdate(float const elapsed)
 
     m_background->update(elapsed);
 
-    auto tiledBackgroundPosition = m_tiledBackground->getPosition();
-    if (getGame()->getCamera()->getCamOffset().y() - tiledBackgroundPosition.y() >= 480.0f) {
-
-        m_tiledBackground->setPosition(
-            jt::Vector2 { tiledBackgroundPosition.x(), tiledBackgroundPosition.y() - 10.0f });
+    auto tiledBackgroundPosition = m_tiledBackground1->getPosition();
+    if (getGame()->getCamera()->getCamOffset().y() - tiledBackgroundPosition.y() <= -480.0f) {
+        m_tiledBackground1->setPosition(
+            jt::Vector2 { tiledBackgroundPosition.x(), tiledBackgroundPosition.y() - 960.0f });
     }
 
-    m_tiledBackground->update(elapsed);
+    m_tiledBackground2->setPosition(m_tiledBackground1->getPosition() + jt::Vector2{0.0f, -480.0f});
+
+    m_tiledBackground1->update(elapsed);
+    m_tiledBackground2->update(elapsed);
     m_frog->update(elapsed);
     m_vignette->update(elapsed);
     m_overlay->update(elapsed);
@@ -316,7 +323,8 @@ void StateGame::spawnNewBrick()
 
 void StateGame::doInternalDraw() const
 {
-    m_tiledBackground->draw(getGame()->getRenderTarget());
+    m_tiledBackground1->draw(getGame()->getRenderTarget());
+    m_tiledBackground2->draw(getGame()->getRenderTarget());
     m_background->draw(getGame()->getRenderTarget());
     m_frog->draw(getGame()->getRenderTarget());
     drawObjects();
