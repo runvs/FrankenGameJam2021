@@ -26,12 +26,3 @@ void BrickQuadratic::doCreate()
     fixtureDef.shape = &boxCollider;
     getB2Body()->CreateFixture(&fixtureDef);
 }
-
-void BrickQuadratic::doUpdate(float const elapsed)
-{
-    m_drawable->setPosition(getPosition());
-    m_drawable->setRotation(-jt::MathHelper::rad2deg(getRotation()));
-    m_drawable->update(elapsed);
-}
-
-void BrickQuadratic::doDraw() const { m_drawable->draw(getGame()->getRenderTarget()); }

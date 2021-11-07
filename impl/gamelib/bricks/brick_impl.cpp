@@ -1,5 +1,6 @@
 #include "brick_impl.hpp"
 #include "game_interface.hpp"
+#include "math_helper.hpp"
 #include <algorithm>
 
 BrickImpl::BrickImpl(std::shared_ptr<jt::Box2DWorldInterface> world, const b2BodyDef* def)
@@ -9,7 +10,9 @@ BrickImpl::BrickImpl(std::shared_ptr<jt::Box2DWorldInterface> world, const b2Bod
 
 void BrickImpl::drawPreview() const
 {
-    const float previewOffset = std::max(m_drawable->getLocalBounds().width(), m_drawable->getLocalBounds().height()) + 10.0f;
+    const float previewOffset
+        = std::max(m_drawable->getLocalBounds().width(), m_drawable->getLocalBounds().height())
+        + 10.0f;
     auto const initialPosition = m_drawable->getPosition();
     auto const initialColor = m_drawable->getColor();
 
@@ -26,6 +29,15 @@ void BrickImpl::drawPreview() const
     m_drawable->setColor(initialColor);
 }
 std::shared_ptr<jt::DrawableInterface> BrickImpl::getDrawable() { return m_drawable; }
+
+void BrickImpl::doUpdate(float const elapsed)
+{
+    m_drawable->setPosition(getPosition());
+    m_drawable->setRotation(-jt::MathHelper::rad2deg(getRotation()));
+    m_drawable->update(elapsed);
+}
+
+void BrickImpl::doDraw() const { m_drawable->draw(getGame()->getRenderTarget()); }
 
 bool BrickImpl::isFrozen() const { return m_isFrozen; }
 void BrickImpl::freeze() { m_isFrozen = true; }

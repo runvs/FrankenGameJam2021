@@ -31,12 +31,3 @@ void BrickDiamond::doCreate()
     fixtureDef.shape = &boxCollider;
     getB2Body()->CreateFixture(&fixtureDef);
 }
-
-void BrickDiamond::doUpdate(float const elapsed)
-{
-    m_drawable->setPosition(getPosition());
-    m_drawable->setRotation(-jt::MathHelper::rad2deg(getRotation()));
-    m_drawable->update(elapsed);
-}
-
-void BrickDiamond::doDraw() const { m_drawable->draw(getGame()->getRenderTarget()); }

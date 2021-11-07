@@ -10,8 +10,6 @@ public:
 
 private:
     void doCreate() override;
-    void doUpdate(float const /*elapsed*/) override;
-    void doDraw() const override;
 };
 
 #endif // MYAWESOMEGAME_BRICK_TRIANGLE_HPP
