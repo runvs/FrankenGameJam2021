@@ -1,8 +1,7 @@
-#include "game_object.hpp"
-
 #ifndef GUARD_JAMTEMPLATE_BOX2DOBJECT_HPP_INCLUDEGUARD
 #define GUARD_JAMTEMPLATE_BOX2DOBJECT_HPP_INCLUDEGUARD
 
+#include "game_object.hpp"
 #include "box2d_wrapper.hpp"
 #include "conversions.hpp"
 #include "game_object.hpp"

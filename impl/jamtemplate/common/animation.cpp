@@ -199,7 +199,6 @@ void Animation::doFlash(float t, jt::Color col)
 
 void Animation::doUpdate(float elapsed)
 {
-
     // check if valid
     if (m_frames.count(m_currentAnimName) == 0) {
         std::cout << "Warning: Update Animation with invalid animName: '" + m_currentAnimName

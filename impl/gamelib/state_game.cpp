@@ -114,14 +114,9 @@ void StateGame::doInternalCreate()
     m_soundAtmospheric3->setVolume(0.0f);
     m_soundAtmospheric3->play();
 
-    m_soundBrickFreeze1 = std::make_shared<jt::Sound>();
-    m_soundBrickFreeze1->load("assets/sfx/block_freeze_1_high.ogg");
-    m_soundBrickFreeze2 = std::make_shared<jt::Sound>();
-    m_soundBrickFreeze2->load("assets/sfx/block_freeze_2_high.ogg");
-    m_soundBrickFreeze3 = std::make_shared<jt::Sound>();
-    m_soundBrickFreeze3->load("assets/sfx/block_freeze_3_high.ogg");
-    m_soundBrickFreeze4 = std::make_shared<jt::Sound>();
-    m_soundBrickFreeze4->load("assets/sfx/block_freeze_4_high.ogg");
+    m_soundBrickFreeze = std::make_shared<jt::SoundGroup>(std::vector<std::string> {
+        "assets/sfx/block_freeze_1_high.ogg", "assets/sfx/block_freeze_2_high.ogg",
+        "assets/sfx/block_freeze_3_high.ogg", "assets/sfx/block_freeze_4_high.ogg" });
 
     m_sound1Up = std::make_shared<jt::Sound>();
     m_sound1Up->load("assets/sfx/1up_pling.ogg");
@@ -578,24 +573,7 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
 
         m_canSpawnNewBrick = true;
 
-        // Sorry, can't be bothered to do this right right now.
-        int rnd = jt::Random::getInt(0, 3);
-        switch (rnd) {
-        case 0:
-            m_soundBrickFreeze1->play();
-            break;
-        case 1:
-            m_soundBrickFreeze2->play();
-            break;
-        case 2:
-            m_soundBrickFreeze3->play();
-            break;
-        case 3:
-            m_soundBrickFreeze4->play();
-            break;
-        default:
-            break;
-        }
+        m_soundBrickFreeze->play();
 
         m_brickFixateParticles->Fire(20);
     }
