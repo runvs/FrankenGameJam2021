@@ -27,7 +27,7 @@ void StateMenu::doInternalCreate()
 
     createTweens();
 
-    getGame()->getMusicPlayer()->PlayMusic("assets/music/complete.ogg");
+    getGame()->getMusicPlayer()->PlayMusic("assets/music/gemga_theme.ogg");
 }
 
 void StateMenu::createVignette()
