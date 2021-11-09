@@ -1,6 +1,7 @@
 ﻿#ifndef GAME_STATE_GAME_HPP_INCLUDEGUARD
 #define GAME_STATE_GAME_HPP_INCLUDEGUARD
 
+#include "atmospheric_sounds.hpp"
 #include "box2d_wrapper.hpp"
 #include "bricks/brick_interface.hpp"
 #include "bricks/brick_provider_interface.hpp"
@@ -56,13 +57,12 @@ private:
     std::shared_ptr<jt::Sound> m_soundBrickSpawn;
     std::shared_ptr<jt::SoundGroup> m_soundGroupBrickContact;
     std::shared_ptr<jt::Sound> m_soundGameOver;
-    std::shared_ptr<jt::Sound> m_soundAtmospheric1;
-    std::shared_ptr<jt::Sound> m_soundAtmospheric2;
-    std::shared_ptr<jt::Sound> m_soundAtmospheric3;
 
     std::shared_ptr<jt::SoundGroup> m_soundBrickFreeze;
 
     std::shared_ptr<jt::Sound> m_sound1Up;
+
+    std::shared_ptr<AtmosphericSounds> m_atmosphericSound;
 
     std::shared_ptr<jt::ParticleSystem<jt::Shape, 64>> m_brickFixateParticles;
 
@@ -106,6 +106,8 @@ private:
     void createParticleSystems();
     void triggerTrickyTween();
     void createVisualCandy();
+    void loadAtmosphericSounds();
+    void handleAtmosphericSoundsVolume(float const camPosY);
 };
 
 #endif
