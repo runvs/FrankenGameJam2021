@@ -32,14 +32,6 @@ private:
     std::shared_ptr<jt::Sprite> m_tiledBackground1;
     std::shared_ptr<jt::Sprite> m_tiledBackground2;
 
-    std::shared_ptr<jt::Animation> m_miniBirds;
-    std::shared_ptr<jt::Animation> m_singleBird1;
-    std::shared_ptr<jt::Animation> m_singleBird2;
-    std::shared_ptr<jt::Animation> m_trickyHeart;
-    std::shared_ptr<jt::Animation> m_sparklyStar1;
-    std::shared_ptr<jt::Animation> m_sparklyStar2;
-    std::shared_ptr<jt::Animation> m_sparklyStar3;
-
     std::shared_ptr<jt::Shape> m_overlay;
     std::shared_ptr<jt::Sprite> m_vignette;
     std::shared_ptr<Hud> m_hud;
@@ -74,14 +66,13 @@ private:
     int m_score { 0 };
     int m_lifeCounter { 0 };
 
+    float m_loseLifeTimer { 1.0f };
     int m_extra_lifes { 1 };
 
     float m_maxHeight { 300 };
 
     bool m_canSpawnNewBrick { true };
     bool m_gameOverCamDone { false };
-
-    std::shared_ptr<jt::Animation> m_frog;
 
     void doInternalCreate() override;
     void doInternalUpdate(float const elapsed) override;
@@ -102,12 +93,12 @@ private:
     void addRevoluteJointTo(std::shared_ptr<BrickInterface> brick);
     void freezeBricks();
     void loseLife();
-    float m_loseLifeTimer { 1.0f };
+
     void createParticleSystems();
     void triggerTrickyTween();
     void createVisualCandy();
-    void loadAtmosphericSounds();
-    void handleAtmosphericSoundsVolume(float const camPosY);
+    void checkAddExtraLife(int oldscore);
+    void addExtraLife();
 };
 
 #endif

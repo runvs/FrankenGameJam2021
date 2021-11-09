@@ -3,7 +3,7 @@
 
 namespace jt {
 
-Tween::Sptr TweenPosition::create(
+std::shared_ptr<Tween> TweenPosition::create(
     std::weak_ptr<DrawableInterface> obj, float time, jt::Vector2 valueStart, jt::Vector2 valueEnd)
 {
     return std::make_shared<TweenPosition>(obj, time, valueStart, valueEnd);

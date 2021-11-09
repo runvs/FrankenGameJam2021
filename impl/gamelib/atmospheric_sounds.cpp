@@ -1,7 +1,3 @@
-//
-// Created by Laguna_HP on 09.11.2021.
-//
-
 #include "atmospheric_sounds.hpp"
 #include "game_properties.hpp"
 void AtmosphericSounds::doCreate()
