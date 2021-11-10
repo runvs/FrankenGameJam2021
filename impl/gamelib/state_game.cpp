@@ -503,11 +503,10 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
 
             checkAddExtraLife(oldscore);
         }
-        currentPendingBrick->getDrawable()->flash(1.25f);
-        if (m_maxHeight <= 500) {
-            addDistanceJointsTo(currentPendingBrick, m_platform->getB2Body());
-        }
+
+        addDistanceJointsTo(currentPendingBrick, m_platform->getB2Body());
         addDistanceJointsTo(currentPendingBrick, other);
+
         currentPendingBrick->fixate();
 
         m_canSpawnNewBrick = true;
