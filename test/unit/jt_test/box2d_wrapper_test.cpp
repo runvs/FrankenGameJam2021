@@ -1,4 +1,4 @@
-﻿#include "box2d_wrapper.hpp"
+﻿#include "box2d_world_interface.hpp"
 #include "conversions.hpp"
 #include <gtest/gtest.h>
 

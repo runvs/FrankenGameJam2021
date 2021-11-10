@@ -54,3 +54,13 @@ void BrickImpl::freeze() { m_isFrozen = true; }
 
 bool BrickImpl::isFixated() const { return m_isFixated; }
 void BrickImpl::fixate() { m_isFixated = true; }
+
+std::vector<std::shared_ptr<jt::Box2DJoint>> BrickImpl::getJoints() { return m_joints; }
+void BrickImpl::addJoint(std::shared_ptr<jt::Box2DJoint> joint)
+{
+    if (!joint) {
+        return;
+    }
+    m_joints.push_back(joint);
+}
+void BrickImpl::clearJoints() { m_joints.clear(); }
