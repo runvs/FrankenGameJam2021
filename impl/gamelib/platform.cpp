@@ -6,8 +6,10 @@
 
 using namespace jt::Conversion;
 
-Platform::Platform(std::shared_ptr<jt::Box2DWorldInterface> world, b2BodyDef const* def)
+Platform::Platform(
+    std::shared_ptr<jt::Box2DWorldInterface> world, b2BodyDef const* def, const bool anchor)
     : Box2DObject(world, def)
+    , m_anchor(anchor)
 {
 }
 
@@ -36,7 +38,9 @@ void Platform::doUpdate(float const elapsed)
     } else if (kbd->pressed(jt::KeyCode::D) || kbd->pressed(jt::KeyCode::Right)) {
         getB2Body()->SetLinearVelocity(vec(jt::Vector2 { GP::PlatformMovementSpeed(), 0.0f }));
     }
+    // TODO: Anchors should be their own class if they work.
     auto pos = getPosition();
+    if (!m_anchor) { }
     pos -= m_platformSize * 0.5f;
     m_sprite->setPosition(pos);
     m_sprite->update(elapsed);

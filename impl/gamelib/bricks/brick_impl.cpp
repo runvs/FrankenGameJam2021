@@ -67,4 +67,10 @@ void BrickImpl::addJoint(std::shared_ptr<jt::Box2DJoint> joint)
     }
     m_joints.push_back(joint);
 }
-void BrickImpl::clearJoints() { m_joints.clear(); }
+void BrickImpl::clearJoints()
+{
+    for (auto joint : m_joints) {
+        joint->destroy();
+    }
+    m_joints.clear();
+}

@@ -10,7 +10,10 @@ public:
     GP() = delete;
 
     static std::string GameName() { return "Gemga"; }
-    static std::string AuthorName() { return "adkiem, Aneira, BloodyOrange,\nLaguna, Synchronleuchter, Thunraz\n"; }
+    static std::string AuthorName()
+    {
+        return "adkiem, Aneira, BloodyOrange,\nLaguna, Synchronleuchter, Thunraz\n";
+    }
     static std::string JamName() { return "Frankengamejam 2021"; }
     static std::string JamDate() { return "November 2021"; }
 
@@ -47,6 +50,8 @@ public:
 
     static float GemDelayMin();
     static float GemDelayMax();
+
+    static int AnchorHeight();
 };
 
 #endif

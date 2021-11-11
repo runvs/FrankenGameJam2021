@@ -60,6 +60,8 @@ private:
 
     std::shared_ptr<jt::ParticleSystem<jt::Shape, 128>> m_backgroundDustParticles;
 
+    std::vector<std::shared_ptr<jt::Box2DObject>> m_anchors;
+
     bool m_running { false };
     bool m_hasEnded { false };
 
@@ -93,9 +95,11 @@ private:
     void fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBrick, b2Body* other);
     void moveCamera(float const elapsed);
     void addRevoluteJointTo(std::shared_ptr<BrickInterface> brick);
+    std::shared_ptr<jt::Box2DObject> getClosestFrozenBrickAnchor(
+        std::shared_ptr<BrickInterface> brick);
+    void addAnchorsUpTo(int anchorIndex);
     void freezeBricks();
     void loseLife();
-
     void createParticleSystems();
     void triggerTrickyTween();
     void createVisualCandy();
