@@ -1,6 +1,7 @@
 ﻿#ifndef GAME_STATE_GAME_HPP_INCLUDEGUARD
 #define GAME_STATE_GAME_HPP_INCLUDEGUARD
 
+#include "anchor.hpp"
 #include "atmospheric_sounds.hpp"
 #include "box2d_world_interface.hpp"
 #include "bricks/brick_interface.hpp"
@@ -60,7 +61,7 @@ private:
 
     std::shared_ptr<jt::ParticleSystem<jt::Shape, 128>> m_backgroundDustParticles;
 
-    std::vector<std::shared_ptr<jt::Box2DObject>> m_anchors;
+    std::vector<std::shared_ptr<Anchor>> m_anchors;
 
     bool m_running { false };
     bool m_hasEnded { false };

@@ -385,7 +385,7 @@ void StateGame::addAnchorsUpTo(int anchorIndex)
         bodyDef.fixedRotation = true;
         bodyDef.type = b2_kinematicBody;
         bodyDef.position.Set(-300.0f, anchorY);
-        auto platform = std::make_shared<Platform>(m_world, &bodyDef, true);
+        auto platform = std::make_shared<Anchor>(m_world, &bodyDef);
         add(platform);
         platform->update(0.01f);
         m_anchors.push_back(platform);
