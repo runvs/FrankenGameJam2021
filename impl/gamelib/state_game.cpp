@@ -355,7 +355,6 @@ void StateGame::addDistanceJointsTo(std::shared_ptr<BrickInterface> brick, b2Bod
 void StateGame::addRevoluteJointTo(std::shared_ptr<BrickInterface> brick)
 {
     brick->clearJoints();
-    std::cerr << "freezing brick " << brick << std::endl;
     b2RevoluteJointDef jointDef;
     jointDef.Initialize(m_platform->getB2Body(), brick->getB2Body(),
         getClosestFrozenBrickAnchor(brick)->getB2Body()->GetWorldCenter());
@@ -373,7 +372,6 @@ std::shared_ptr<jt::Box2DObject> StateGame::getClosestFrozenBrickAnchor(
 {
     int y = static_cast<int>(std::abs(300.0f - brick->getPosition().y()));
     int anchorIndex = y / GP::AnchorHeight();
-    std::cerr << "called for index " << anchorIndex << std::endl;
     addAnchorsUpTo(anchorIndex);
 
     return m_anchors.at(anchorIndex);
@@ -391,7 +389,6 @@ void StateGame::addAnchorsUpTo(int anchorIndex)
         add(platform);
         platform->update(0.01f);
         m_anchors.push_back(platform);
-        std::cerr << "created platform at " << anchorY << std::endl;
     }
 }
 
