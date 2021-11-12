@@ -15,8 +15,11 @@ Platform::Platform(
 
 void Platform::doCreate()
 {
+    // TODO: Anchors should be their own class if they work.
     m_sprite = std::make_shared<jt::Sprite>();
-    m_sprite->loadSprite("assets/platform_gold.png");
+    if (!m_anchor) {
+        m_sprite->loadSprite("assets/platform_gold.png");
+    }
 
     b2FixtureDef fixtureDef;
     fixtureDef.density = 1000.0f;
@@ -24,7 +27,9 @@ void Platform::doCreate()
     fixtureDef.restitution = 0.0f;
 
     b2PolygonShape boxCollider {};
-    boxCollider.SetAsBox(m_platformSize.x() * 0.5f, m_platformSize.y() * 0.5f);
+    if (!m_anchor) {
+        boxCollider.SetAsBox(m_platformSize.x() * 0.5f, m_platformSize.y() * 0.5f);
+    }
     fixtureDef.shape = &boxCollider;
     getB2Body()->CreateFixture(&fixtureDef);
 }
@@ -39,11 +44,12 @@ void Platform::doUpdate(float const elapsed)
         getB2Body()->SetLinearVelocity(vec(jt::Vector2 { GP::PlatformMovementSpeed(), 0.0f }));
     }
     // TODO: Anchors should be their own class if they work.
-    auto pos = getPosition();
-    if (!m_anchor) { }
-    pos -= m_platformSize * 0.5f;
-    m_sprite->setPosition(pos);
-    m_sprite->update(elapsed);
+    if (!m_anchor) {
+        auto pos = getPosition();
+        pos -= m_platformSize * 0.5f;
+        m_sprite->setPosition(pos);
+        m_sprite->update(elapsed);
+    }
 }
 
 void Platform::doDraw() const { m_sprite->draw(getGame()->getRenderTarget()); }
