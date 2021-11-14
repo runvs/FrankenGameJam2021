@@ -23,6 +23,8 @@ public:
     bool isOpen() const override;
     void checkForClose() override;
 
+    bool hasFocus() override;
+
     jt::Vector2 getSize() const override;
 
     void draw(std::unique_ptr<jt::Sprite>&) override;
@@ -36,6 +38,8 @@ public:
 private:
     std::shared_ptr<sf::RenderWindow> m_window;
     bool m_isMouseCursorVisible { true };
+
+    bool m_hasFocus { true };
 };
 } // namespace jt
 

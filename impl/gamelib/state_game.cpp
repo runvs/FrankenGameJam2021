@@ -223,10 +223,12 @@ void StateGame::freezeBricks()
 void StateGame::doInternalUpdate(float const elapsed)
 {
     if (m_running) {
+
         if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::P)) {
             m_paused = !m_paused;
         }
-        if (!m_paused) {
+
+        if (!m_paused && getGame()->getRenderWindow()->hasFocus()) {
             m_world->step(elapsed, GP::PhysicVelocityIterations(), GP::PhysicPositionIterations());
             // update game logic here
 

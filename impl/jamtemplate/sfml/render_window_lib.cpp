@@ -24,6 +24,10 @@ void RenderWindow::checkForClose()
     while (m_window->pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             m_window->close();
+        } else if (event.type == sf::Event::GainedFocus) {
+            m_hasFocus = true;
+        } else if (event.type == sf::Event::LostFocus) {
+            m_hasFocus = false;
         }
     }
 }
@@ -56,5 +60,7 @@ void RenderWindow::setMouseCursorVisible(bool visible)
     m_isMouseCursorVisible = visible;
 }
 bool RenderWindow::getMouseCursorVisible(void) const { return m_isMouseCursorVisible; }
+
+bool RenderWindow::hasFocus() { return m_hasFocus; }
 
 } // namespace jt

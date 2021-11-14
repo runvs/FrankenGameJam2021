@@ -15,6 +15,8 @@ public:
     virtual bool isOpen() const override;
     virtual void checkForClose() override;
 
+    bool hasFocus() override;
+
     virtual jt::Vector2 getSize() const override;
 
     virtual void draw(std::unique_ptr<jt::Sprite>&) override;

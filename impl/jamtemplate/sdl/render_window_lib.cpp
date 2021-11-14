@@ -49,6 +49,8 @@ void RenderWindow::checkForClose()
 #endif
 }
 
+bool hasFocus() override { return true; }
+
 jt::Vector2 RenderWindow::getSize() const { return m_size; }
 
 void RenderWindow::draw(std::unique_ptr<jt::Sprite>& spr)

@@ -21,6 +21,8 @@ public:
     /// Check if window was closed
     virtual void checkForClose() = 0;
 
+    virtual bool hasFocus() = 0;
+
     /// Create the renderTarget to render to
     /// \return shared pointer to render target
     virtual std::shared_ptr<jt::renderTarget> createRenderTarget() = 0;
