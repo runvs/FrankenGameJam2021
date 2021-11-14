@@ -496,7 +496,7 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
 void StateGame::checkAddExtraLife(int oldscore)
 {
     m_lifeCounter += (m_score - oldscore);
-    if (m_lifeCounter >= 100) {
+    if (m_lifeCounter >= 100 || (m_score > 1580 && oldscore < 1580)) {
         m_lifeCounter = 0;
         addExtraLife();
     }
