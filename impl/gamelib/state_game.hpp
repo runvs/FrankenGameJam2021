@@ -62,6 +62,7 @@ private:
 
     bool m_running { false };
     bool m_hasEnded { false };
+    bool m_paused { false };
 
     int m_score { 0 };
     int m_lifeCounter { 0 };
@@ -95,7 +96,6 @@ private:
     void loseLife();
 
     void createParticleSystems();
-    void triggerTrickyTween();
     void createVisualCandy();
     void checkAddExtraLife(int oldscore);
     void addExtraLife();
