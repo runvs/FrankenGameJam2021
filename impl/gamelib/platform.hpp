@@ -4,8 +4,8 @@
 #include "box2d_object.hpp"
 #include "game_object.hpp"
 #include "shape.hpp"
-#include <memory>
 #include "sprite.hpp"
+#include <memory>
 
 class Platform : public jt::Box2DObject {
 public:
@@ -20,6 +20,9 @@ private:
     void doDraw() const override;
     void doKill() override;
     void doDestroy() override;
+
+    bool mouseLeft();
+    bool mouseRight();
 };
 
 #endif // MYAWESOMEGAME_PLATFORM_HPP

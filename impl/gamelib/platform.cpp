@@ -31,9 +31,10 @@ void Platform::doUpdate(float const elapsed)
 {
     getB2Body()->SetLinearVelocity(vec(jt::Vector2 { 0.0f, 0.0f }));
     auto kbd = getGame()->input()->keyboard();
-    if (kbd->pressed(jt::KeyCode::A) || kbd->pressed(jt::KeyCode::Left)) {
+
+    if (kbd->pressed(jt::KeyCode::A) || kbd->pressed(jt::KeyCode::Left) || mouseLeft()) {
         getB2Body()->SetLinearVelocity(vec(jt::Vector2 { -GP::PlatformMovementSpeed(), 0.0f }));
-    } else if (kbd->pressed(jt::KeyCode::D) || kbd->pressed(jt::KeyCode::Right)) {
+    } else if (kbd->pressed(jt::KeyCode::D) || kbd->pressed(jt::KeyCode::Right) || mouseRight()) {
         getB2Body()->SetLinearVelocity(vec(jt::Vector2 { GP::PlatformMovementSpeed(), 0.0f }));
     }
     auto pos = getPosition();
@@ -45,3 +46,18 @@ void Platform::doUpdate(float const elapsed)
 void Platform::doDraw() const { m_sprite->draw(getGame()->getRenderTarget()); }
 void Platform::doKill() { }
 void Platform::doDestroy() { }
+
+bool Platform::mouseLeft()
+{
+    auto const mps = getGame()->input()->mouse()->getMousePositionScreen();
+
+    return getGame()->input()->mouse()->pressed(jt::MouseButtonCode::MBLeft)
+        && mps.x() < 0.5f * GP::GetScreenSize().x() && mps.y() > 0.5f * GP::GetScreenSize().y();
+}
+
+bool Platform::mouseRight()
+{
+    auto const mps = getGame()->input()->mouse()->getMousePositionScreen();
+    return getGame()->input()->mouse()->pressed(jt::MouseButtonCode::MBLeft)
+        && mps.x() > 0.5f * GP::GetScreenSize().x() && mps.y() > 0.5f * GP::GetScreenSize().y();
+}

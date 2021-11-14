@@ -334,10 +334,18 @@ void StateGame::rotateCurrentBrick(float const elapsed)
         return;
     }
 
-    if (getGame()->input()->keyboard()->pressed(jt::KeyCode::Q)) {
+    auto mps = getGame()->input()->mouse()->getMousePositionScreen();
+
+    if (getGame()->input()->keyboard()->pressed(jt::KeyCode::Q)
+        || (getGame()->input()->mouse()->pressed(jt::MouseButtonCode::MBLeft)
+            && mps.x() < 0.5f * GP::GetScreenSize().x()
+            && mps.y() < 0.5f * GP::GetScreenSize().y())) {
         m_currentBrick->getB2Body()->ApplyTorque(-5000000.0f * elapsed, true);
     }
-    if (getGame()->input()->keyboard()->pressed(jt::KeyCode::E)) {
+    if (getGame()->input()->keyboard()->pressed(jt::KeyCode::E)
+        || (getGame()->input()->mouse()->pressed(jt::MouseButtonCode::MBLeft)
+            && mps.x() > 0.5f * GP::GetScreenSize().x()
+            && mps.y() < 0.5f * GP::GetScreenSize().y())) {
         m_currentBrick->getB2Body()->ApplyTorque(5000000.0f * elapsed, true);
     }
 }

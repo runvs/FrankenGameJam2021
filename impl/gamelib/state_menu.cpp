@@ -92,7 +92,6 @@ void StateMenu::createLogo()
     m_logo->play("idle");
     m_logo->setPosition({ half_width - 62.5f, 20 });
 
-
     m_logoGlow = std::make_shared<jt::Sprite>();
     m_logoGlow->loadSprite("assets/logo_blur.png");
     m_logoGlow->setPosition({ half_width - 71.5f, 10 });
@@ -188,7 +187,8 @@ void StateMenu::checkForTransitionToStateGame()
 {
     auto const keysToTriggerTransition = { jt::KeyCode::Space, jt::KeyCode::Enter };
 
-    if (std::any_of(keysToTriggerTransition.begin(), keysToTriggerTransition.end(),
+    if (getGame()->input()->mouse()->justPressed(jt::MouseButtonCode::MBLeft)
+        || std::any_of(keysToTriggerTransition.begin(), keysToTriggerTransition.end(),
             [this](auto const k) { return getGame()->input()->keyboard()->justPressed(k); })) {
         startTransitionToStateGame();
     }
