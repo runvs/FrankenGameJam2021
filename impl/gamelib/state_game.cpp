@@ -223,30 +223,32 @@ void StateGame::freezeBricks()
 void StateGame::doInternalUpdate(float const elapsed)
 {
     if (m_running) {
-
-        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::P)) {
-            m_paused = !m_paused;
-        }
-
-        if (!m_paused && getGame()->getRenderWindow()->hasFocus()) {
-            m_world->step(elapsed, GP::PhysicVelocityIterations(), GP::PhysicPositionIterations());
-            // update game logic here
-
-            if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::F9)
-                && getGame()->input()->keyboard()->pressed(jt::KeyCode::LShift)
-                && getGame()->input()->keyboard()->pressed(jt::KeyCode::LControl)) {
-                getGame()->getCamera()->move(jt::Vector2 { 0.0f, -100.0f });
-            }
-            if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::F5)
-                && getGame()->input()->keyboard()->pressed(jt::KeyCode::LShift)
-                && getGame()->input()->keyboard()->pressed(jt::KeyCode::LControl)) {
-                addExtraLife();
+        if (getGame()->getRenderWindow()->hasFocus()) {
+            if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::P)) {
+                m_paused = !m_paused;
             }
 
-            rotateCurrentBrick(elapsed);
-            checkForGameOver();
-            freezeBricks();
-            m_loseLifeTimer -= elapsed;
+            if (!m_paused) {
+                m_world->step(
+                    elapsed, GP::PhysicVelocityIterations(), GP::PhysicPositionIterations());
+                // update game logic here
+
+                if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::F9)
+                    && getGame()->input()->keyboard()->pressed(jt::KeyCode::LShift)
+                    && getGame()->input()->keyboard()->pressed(jt::KeyCode::LControl)) {
+                    getGame()->getCamera()->move(jt::Vector2 { 0.0f, -100.0f });
+                }
+                if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::F5)
+                    && getGame()->input()->keyboard()->pressed(jt::KeyCode::LShift)
+                    && getGame()->input()->keyboard()->pressed(jt::KeyCode::LControl)) {
+                    addExtraLife();
+                }
+
+                rotateCurrentBrick(elapsed);
+                checkForGameOver();
+                freezeBricks();
+                m_loseLifeTimer -= elapsed;
+            }
         }
     } else if (m_hasEnded) {
         auto camOff = getGame()->getCamera()->getCamOffset().y();
