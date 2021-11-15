@@ -28,6 +28,8 @@ void StateMenu::doInternalCreate()
     createTweens();
 
     getGame()->getMusicPlayer()->PlayMusic("assets/music/gemga_theme.ogg");
+    float musicVolume = GP::MuteAudio() ? 0.0f : GP::MaxMusicVolume();
+    getGame()->getMusicPlayer()->SetMusicVolume(musicVolume);
 }
 
 void StateMenu::createVignette()
@@ -160,6 +162,13 @@ void StateMenu::doInternalUpdate(float const elapsed)
 {
     updateDrawables(elapsed);
     checkForTransitionToStateGame();
+
+    if(getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
+        GP::MuteAudio() = !GP::MuteAudio();
+
+        float musicVolume = GP::MuteAudio() ? 0.0f : GP::MaxMusicVolume();
+        getGame()->getMusicPlayer()->SetMusicVolume(musicVolume);
+    }
 }
 
 void StateMenu::updateDrawables(const float& elapsed)

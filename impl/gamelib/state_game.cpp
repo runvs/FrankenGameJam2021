@@ -114,6 +114,8 @@ void StateGame::doInternalCreate()
     add(t);
 
     m_hud->getObserverLife()->notify(m_extra_lifes);
+    float musicVolume = GP::MuteAudio() ? 0.0f : GP::MaxMusicVolume();
+    getGame()->getMusicPlayer()->SetMusicVolume(musicVolume);
 }
 void StateGame::createVisualCandy()
 {
@@ -243,6 +245,13 @@ void StateGame::doInternalUpdate(float const elapsed)
                     && getGame()->input()->keyboard()->pressed(jt::KeyCode::LControl)) {
                     addExtraLife();
                 }
+                
+		        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
+		            GP::MuteAudio() = !GP::MuteAudio();
+		
+		            float musicVolume = GP::MuteAudio() ? 0.0f : GP::MaxMusicVolume();
+		            getGame()->getMusicPlayer()->SetMusicVolume(musicVolume);
+		        }
 
                 rotateCurrentBrick(elapsed);
                 checkForGameOver();
@@ -362,7 +371,9 @@ void StateGame::spawnNewBrick()
         m_bricks->push_back(m_currentBrick);
         m_currentBrick->update(0.0f);
 
-        m_soundBrickSpawn->play();
+        if (!GP::MuteAudio()) {
+            m_soundBrickSpawn->play();
+        }
         m_canSpawnNewBrick = false;
     }
 }
@@ -427,7 +438,9 @@ void StateGame::endGame()
         // trigger this function only once
         return;
     }
-    m_soundGameOver->play();
+    if (!GP::MuteAudio()) {
+        m_soundGameOver->play();
+    }
     m_hasEnded = true;
     m_running = false;
 }
@@ -454,7 +467,9 @@ void StateGame::handleCurrentBrickCollision(b2Body* p1, b2Body* p2)
         add(timer);
         m_currentPendingBrick = m_currentBrick;
         m_currentBrick = nullptr;
-        m_soundGroupBrickContact->play();
+        if (!GP::MuteAudio()) {
+            m_soundGroupBrickContact->play();
+        }
     }
 }
 
@@ -483,7 +498,9 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
         currentPendingBrick->fixate();
 
         m_canSpawnNewBrick = true;
-        m_soundBrickFreeze->play();
+        if (!GP::MuteAudio()) {
+            m_soundBrickFreeze->play();
+        }
         m_brickFixateParticles->Fire(20);
     }
 
@@ -511,7 +528,9 @@ void StateGame::addExtraLife()
     if (m_extra_lifes >= 4) {
         m_extra_lifes = 4;
     } else {
-        m_sound1Up->play();
+        if (!GP::MuteAudio()) {
+            m_sound1Up->play();
+        }
     }
     m_hud->getObserverLife()->notify(m_extra_lifes);
 }

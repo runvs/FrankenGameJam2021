@@ -47,6 +47,9 @@ public:
 
     static float GemDelayMin();
     static float GemDelayMax();
+
+    static bool& MuteAudio();
+    static float MaxMusicVolume();
 };
 
 #endif

@@ -20,3 +20,7 @@ jt::Color GP::PaletteColor5() { return jt::Color { 220, 220, 220 }; }
 jt::Color GP::PaletteColor6() { return jt::Color { 184, 39, 45 }; }
 jt::Color GP::PaletteColor7() { return jt::Color { 64, 64, 64 }; }
 jt::Color GP::PaletteColor8() { return jt::Color { 157, 64, 43 }; }
+
+bool muteAudio { false };
+bool& GP::MuteAudio() { return muteAudio; }
+float GP::MaxMusicVolume() { return 100.0f; }
