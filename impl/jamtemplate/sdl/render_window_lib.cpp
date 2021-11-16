@@ -49,7 +49,7 @@ void RenderWindow::checkForClose()
 #endif
 }
 
-bool hasFocus() override { return true; }
+bool RenderWindow::hasFocus() { return true; }
 
 jt::Vector2 RenderWindow::getSize() const { return m_size; }
 

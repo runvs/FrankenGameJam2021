@@ -163,7 +163,7 @@ void StateMenu::doInternalUpdate(float const elapsed)
     updateDrawables(elapsed);
     checkForTransitionToStateGame();
 
-    if(getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
+    if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
         GP::MuteAudio() = !GP::MuteAudio();
 
         float musicVolume = GP::MuteAudio() ? 0.0f : GP::MaxMusicVolume();
@@ -196,7 +196,13 @@ void StateMenu::checkForTransitionToStateGame()
 {
     auto const keysToTriggerTransition = { jt::KeyCode::Space, jt::KeyCode::Enter };
 
-    if (getGame()->input()->mouse()->justPressed(jt::MouseButtonCode::MBLeft)
+#ifdef ENABLE_WEB
+    bool const mousePressed = getGame()->input()->mouse()->justPressed(jt::MouseButtonCode::MBLeft);
+#else
+    bool const mousePressed = false;
+#endif
+
+    if (mousePressed
         || std::any_of(keysToTriggerTransition.begin(), keysToTriggerTransition.end(),
             [this](auto const k) { return getGame()->input()->keyboard()->justPressed(k); })) {
         startTransitionToStateGame();
