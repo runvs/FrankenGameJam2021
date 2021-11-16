@@ -1,8 +1,9 @@
 ﻿#ifndef GAME_STATE_MENU_HPP_INCLUDEGUARD
 #define GAME_STATE_MENU_HPP_INCLUDEGUARD
 
-#include "game_state.hpp"
 #include "animation.hpp"
+#include "game_state.hpp"
+#include "parallax_background.hpp"
 
 namespace jt {
 
@@ -20,8 +21,7 @@ public:
     void setScore(int /*s*/) {};
 
 private:
-    std::vector<std::shared_ptr<jt::Sprite>> m_backgroundSprites;
-
+    std::shared_ptr<ParallaxBackground> m_background;
     std::shared_ptr<jt::Animation> m_logo;
     std::shared_ptr<jt::Sprite> m_logoGlow;
 

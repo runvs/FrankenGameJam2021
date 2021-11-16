@@ -127,6 +127,7 @@ void StateGame::doInternalCreate()
 
     m_screenRecorder = std::make_unique<jt::ScreenRecorder>();
 }
+
 void StateGame::createVisualCandy()
 {
     auto visualCandy = std::make_shared<VisualCandy>();
@@ -275,7 +276,10 @@ void StateGame::doInternalUpdate(float const elapsed)
                 = jt::TweenAlpha::create(m_overlay, 1.6f, std::uint8_t { 0 }, std::uint8_t { 255 });
             tw->setSkipFrames();
             tw->addCompleteCallback([this]() {
-                m_screenRecorder->stopRecording();
+                if (m_score != 0) {
+                    m_screenRecorder->stopRecording();
+                }
+
                 getGame()->switchState(std::make_shared<StateMenu>());
             });
             add(tw);
