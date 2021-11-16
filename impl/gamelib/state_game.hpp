@@ -1,8 +1,9 @@
 ﻿#ifndef GAME_STATE_GAME_HPP_INCLUDEGUARD
 #define GAME_STATE_GAME_HPP_INCLUDEGUARD
 
+#include "anchor.hpp"
 #include "atmospheric_sounds.hpp"
-#include "box2d_wrapper.hpp"
+#include "box2d_world_interface.hpp"
 #include "bricks/brick_interface.hpp"
 #include "bricks/brick_provider_interface.hpp"
 #include "game_state.hpp"
@@ -12,6 +13,7 @@
 #include "sound.hpp"
 #include "sound_group.hpp"
 #include "timer.hpp"
+#include <fstream>
 #include <memory>
 #include <vector>
 
@@ -35,7 +37,6 @@ private:
     std::shared_ptr<jt::Shape> m_overlay;
     std::shared_ptr<jt::Sprite> m_vignette;
     std::shared_ptr<Hud> m_hud;
-    std::shared_ptr<b2World> m_worldImpl { nullptr };
     std::shared_ptr<jt::Box2DWorldInterface> m_world { nullptr };
 
     std::shared_ptr<Platform> m_platform { nullptr };
@@ -60,6 +61,8 @@ private:
 
     std::shared_ptr<jt::ParticleSystem<jt::Shape, 128>> m_backgroundDustParticles;
 
+    std::vector<std::shared_ptr<Anchor>> m_anchors;
+
     bool m_running { false };
     bool m_hasEnded { false };
     bool m_paused { false };
@@ -74,6 +77,8 @@ private:
 
     bool m_canSpawnNewBrick { true };
     bool m_gameOverCamDone { false };
+
+    std::ofstream m_file;
 
     void doInternalCreate() override;
     void doInternalUpdate(float const elapsed) override;
@@ -92,13 +97,17 @@ private:
     void fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBrick, b2Body* other);
     void moveCamera(float const elapsed);
     void addRevoluteJointTo(std::shared_ptr<BrickInterface> brick);
+    std::shared_ptr<jt::Box2DObject> getClosestFrozenBrickAnchor(
+        std::shared_ptr<BrickInterface> brick);
+    void addAnchorsUpTo(int anchorIndex);
     void freezeBricks();
     void loseLife();
-
     void createParticleSystems();
     void createVisualCandy();
     void checkAddExtraLife(int oldscore);
     void addExtraLife();
+    void calculateJointForces(float elapsed);
+    bool m_writeForceFile { false };
 };
 
 #endif
