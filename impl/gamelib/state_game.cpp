@@ -1,4 +1,5 @@
 ﻿#include "state_game.hpp"
+#include "box2d_world_impl.hpp"
 #include "brick_contact_listener.hpp"
 #include "bricks/brick_factory.hpp"
 #include "bricks/brick_provider_random.hpp"
@@ -16,11 +17,16 @@
 #include "tweens/tween_position.hpp"
 #include "tweens/tween_scale.hpp"
 #include "visual_candy.hpp"
+#include <numeric>
 
 void StateGame::doInternalCreate()
 {
-    m_worldImpl = std::make_shared<b2World>(b2Vec2 { 0.0f, 100.0f });
-    m_world = std::make_shared<jt::Box2DWorldWrapper>(m_worldImpl);
+    m_file = std::ofstream { "physics_forces.dat" };
+
+    m_file << "#_1 age #_2 m_bricks->size() #_3 forces.size() #_4 avg_force #_5 min_force #_6 "
+              "max_force\n";
+
+    m_world = std::make_shared<jt::Box2DWorldImpl>(jt::Vector2 { 0.0f, 100.0f });
 
     float const w = static_cast<float>(GP::GetWindowSize().x());
     float const h = static_cast<float>(GP::GetWindowSize().y());
@@ -116,6 +122,7 @@ void StateGame::doInternalCreate()
     m_hud->getObserverLife()->notify(m_extra_lifes);
     float musicVolume = GP::MuteAudio() ? 0.0f : GP::MaxMusicVolume();
     getGame()->getMusicPlayer()->SetMusicVolume(musicVolume);
+    addAnchorsUpTo(10);
 }
 void StateGame::createVisualCandy()
 {
@@ -215,7 +222,6 @@ void StateGame::freezeBricks()
 
         auto const pos = brick->getPosition();
         if (pos.y() > m_maxHeight + 108.0f) {
-            std::cout << "freeze brick at: " << pos.y() << std::endl;
             addRevoluteJointTo(brick);
             brick->freeze();
         }
@@ -245,13 +251,13 @@ void StateGame::doInternalUpdate(float const elapsed)
                     && getGame()->input()->keyboard()->pressed(jt::KeyCode::LControl)) {
                     addExtraLife();
                 }
-                
-		        if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
-		            GP::MuteAudio() = !GP::MuteAudio();
-		
-		            float musicVolume = GP::MuteAudio() ? 0.0f : GP::MaxMusicVolume();
-		            getGame()->getMusicPlayer()->SetMusicVolume(musicVolume);
-		        }
+
+                if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
+                    GP::MuteAudio() = !GP::MuteAudio();
+
+                    float musicVolume = GP::MuteAudio() ? 0.0f : GP::MaxMusicVolume();
+                    getGame()->getMusicPlayer()->SetMusicVolume(musicVolume);
+                }
 
                 rotateCurrentBrick(elapsed);
                 checkForGameOver();
@@ -312,7 +318,7 @@ void StateGame::addDistanceJointsTo(std::shared_ptr<BrickInterface> brick, b2Bod
         jointDef.collideConnected = true;
         jointDef.frequencyHz = 15.0f;
         jointDef.dampingRatio = 0.04f;
-        m_world->createJoint(&jointDef);
+        brick->addJoint(std::make_shared<jt::Box2DJoint>(m_world, &jointDef));
     }
 
     {
@@ -323,15 +329,16 @@ void StateGame::addDistanceJointsTo(std::shared_ptr<BrickInterface> brick, b2Bod
         jointDef.collideConnected = true;
         jointDef.frequencyHz = 15.0f;
         jointDef.dampingRatio = 0.04f;
-        m_world->createJoint(&jointDef);
+        brick->addJoint(std::make_shared<jt::Box2DJoint>(m_world, &jointDef));
     }
 }
 
 void StateGame::addRevoluteJointTo(std::shared_ptr<BrickInterface> brick)
 {
+    brick->clearJoints();
     b2RevoluteJointDef jointDef;
-    jointDef.Initialize(
-        m_platform->getB2Body(), brick->getB2Body(), m_platform->getB2Body()->GetWorldCenter());
+    jointDef.Initialize(m_platform->getB2Body(), brick->getB2Body(),
+        getClosestFrozenBrickAnchor(brick)->getB2Body()->GetWorldCenter());
     jointDef.lowerAngle = -0.001f;
     jointDef.upperAngle = 0.001f;
     jointDef.enableLimit = true;
@@ -339,6 +346,31 @@ void StateGame::addRevoluteJointTo(std::shared_ptr<BrickInterface> brick)
     jointDef.motorSpeed = 0.0f;
     jointDef.enableMotor = true;
     m_world->createJoint(&jointDef);
+}
+
+std::shared_ptr<jt::Box2DObject> StateGame::getClosestFrozenBrickAnchor(
+    std::shared_ptr<BrickInterface> brick)
+{
+    int y = static_cast<int>(std::abs(300.0f - brick->getPosition().y()));
+    int anchorIndex = y / GP::AnchorHeight();
+    addAnchorsUpTo(anchorIndex);
+
+    return m_anchors.at(anchorIndex);
+}
+
+void StateGame::addAnchorsUpTo(int anchorIndex)
+{
+    while (anchorIndex >= m_anchors.size()) {
+        float anchorY = static_cast<float>(300.0f - (m_anchors.size() * GP::AnchorHeight()));
+        b2BodyDef bodyDef;
+        bodyDef.fixedRotation = true;
+        bodyDef.type = b2_kinematicBody;
+        bodyDef.position.Set(-300.0f, anchorY);
+        auto platform = std::make_shared<Anchor>(m_world, &bodyDef);
+        add(platform);
+        platform->update(0.01f);
+        m_anchors.push_back(platform);
+    }
 }
 
 void StateGame::rotateCurrentBrick(float const elapsed)
@@ -492,9 +524,10 @@ void StateGame::fixCurrentBrick(std::shared_ptr<BrickInterface> currentPendingBr
 
             checkAddExtraLife(oldscore);
         }
-        currentPendingBrick->getDrawable()->flash(1.25f);
+
         addDistanceJointsTo(currentPendingBrick, m_platform->getB2Body());
         addDistanceJointsTo(currentPendingBrick, other);
+
         currentPendingBrick->fixate();
 
         m_canSpawnNewBrick = true;

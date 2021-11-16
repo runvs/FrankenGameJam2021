@@ -47,7 +47,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ${{github.workspace}}/release/release_win.zip
-  
+
   LinuxSFML:
     runs-on: ubuntu-latest
     steps:
@@ -62,7 +62,7 @@ jobs:
 
       - name: CMake
         run: cmake -B ${{github.workspace}}/build -DENABLE_UNITTESTS=OFF -DCMAKE_BUILD_TYPE=Release -DENABLE_DEMOS=OFF .
-      
+
       - name: Build
         working-directory: ${{github.workspace}}/build
         run: cmake --build . --config Release
@@ -128,6 +128,7 @@ jobs:
           mkdir ${{github.workspace}}/release
           mkdir ${{github.workspace}}/release/release_web
           cp ${{github.workspace}}/index.html ${{github.workspace}}/release/release_web/
+          cp ${{github.workspace}}/assets_src/recorder.js ${{github.workspace}}/release/release_web/
           cp ${{github.workspace}}/reset.css ${{github.workspace}}/release/release_web/
           cp ${{github.workspace}}/build/impl/game/*.data ${{github.workspace}}/release/release_web/
           cp ${{github.workspace}}/build/impl/game/*.js ${{github.workspace}}/release/release_web/
