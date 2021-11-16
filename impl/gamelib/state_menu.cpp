@@ -16,6 +16,10 @@
 #include "tweens/tween_scale.hpp"
 #include <algorithm>
 
+#ifdef ENABLE_WEB
+#include <emscripten.h>
+#endif
+
 StateMenu::StateMenu() = default;
 
 void StateMenu::doInternalCreate()
