@@ -10,7 +10,7 @@
 #include <iostream>
 
 namespace {
-void horizontalFlip(std::unique_ptr<jt::Sprite> const& spr, float zoom, float window_size_y)
+void flipUpsideDown(std::unique_ptr<jt::Sprite> const& spr, float zoom, float window_size_y)
 {
     spr->setScale(jt::Vector2 { zoom, -zoom });
     spr->setPosition({ spr->getPosition().x(), spr->getPosition().y() + window_size_y });
@@ -122,7 +122,7 @@ void Game::doDraw() const
     auto const shakeOffset = getCamera()->getShakeOffset();
     m_sprite_for_drawing->setPosition(shakeOffset);
     // Note: RenderTexture has a bug and is displayed upside down.
-    horizontalFlip(m_sprite_for_drawing, getCamera()->getZoom(), m_window->getSize().y());
+    flipUpsideDown(m_sprite_for_drawing, getCamera()->getZoom(), m_window->getSize().y());
 
     // draw the sprite
     m_window->draw(m_sprite_for_drawing);

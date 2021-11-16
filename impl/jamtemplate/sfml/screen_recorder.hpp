@@ -6,8 +6,11 @@
 namespace jt {
 class ScreenRecorder : public ScreenRecorderInterface {
 public:
+    /// currently not supported by native build
     void toggleRecording() override;
+    /// currently not supported by native build
     void startRecording() override;
+    /// currently not supported by native build
     void stopRecording() override;
 
 private:
