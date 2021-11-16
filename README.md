@@ -1,6 +1,6 @@
 # JamTemplateCppSFML
 
-[![Build Status](https://github.com/runvs/FrankenGameJam2021/actions/workflows/test_verification.yml/badge.svg)](https://github.com/runvs/FrankenGameJam2021/actions/workflows/unittests.yml)
+[![Build Status](https://github.com/runvs/FrankenGameJam2021/actions/workflows/deploy.yml/badge.svg)](https://github.com/runvs/FrankenGameJam2021/actions/workflows/unittests.yml)
 
 ## About
 

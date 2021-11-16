@@ -4,6 +4,7 @@
 #include "game_object.hpp"
 #include "sprite.hpp"
 #include <memory>
+#include <vector>
 
 class ParallaxBackground : public jt::GameObject {
     void doCreate() override;

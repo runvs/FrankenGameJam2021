@@ -1,5 +1,7 @@
 #include "atmospheric_sounds.hpp"
 #include "game_properties.hpp"
+#include <cmath>
+
 void AtmosphericSounds::doCreate()
 {
     m_soundAtmospheric1 = std::make_shared<jt::Sound>();
@@ -23,7 +25,7 @@ void AtmosphericSounds::doCreate()
 
 void AtmosphericSounds::handleVolumes(float camPosY)
 {
-    if(GP::MuteAudio()) {
+    if (GP::MuteAudio()) {
         m_soundAtmospheric1->setVolume(0.0f);
         m_soundAtmospheric2->setVolume(0.0f);
         m_soundAtmospheric3->setVolume(0.0f);
