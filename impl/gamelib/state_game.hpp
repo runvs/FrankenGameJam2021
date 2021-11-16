@@ -15,6 +15,7 @@
 #include "timer.hpp"
 #include <fstream>
 #include <memory>
+#include <screen_recorder_interface.hpp>
 #include <vector>
 
 // fwd decls
@@ -108,6 +109,8 @@ private:
     void addExtraLife();
     void calculateJointForces(float elapsed);
     bool m_writeForceFile { false };
+
+    std::unique_ptr<jt::ScreenRecorderInterface> m_screenRecorder;
 };
 
 #endif

@@ -10,6 +10,7 @@
 #include "hud/hud.hpp"
 #include "math_helper.hpp"
 #include "random.hpp"
+#include "screen_recorder.hpp"
 #include "shape.hpp"
 #include "sprite.hpp"
 #include "state_menu.hpp"
@@ -123,7 +124,10 @@ void StateGame::doInternalCreate()
     float musicVolume = GP::MuteAudio() ? 0.0f : GP::MaxMusicVolume();
     getGame()->getMusicPlayer()->SetMusicVolume(musicVolume);
     addAnchorsUpTo(10);
+
+    m_screenRecorder = std::make_unique<jt::ScreenRecorder>();
 }
+
 void StateGame::createVisualCandy()
 {
     auto visualCandy = std::make_shared<VisualCandy>();
@@ -271,8 +275,13 @@ void StateGame::doInternalUpdate(float const elapsed)
             auto tw
                 = jt::TweenAlpha::create(m_overlay, 1.6f, std::uint8_t { 0 }, std::uint8_t { 255 });
             tw->setSkipFrames();
-            tw->addCompleteCallback(
-                [this]() { getGame()->switchState(std::make_shared<StateMenu>()); });
+            tw->addCompleteCallback([this]() {
+                if (m_score != 0) {
+                    m_screenRecorder->stopRecording();
+                }
+
+                getGame()->switchState(std::make_shared<StateMenu>());
+            });
             add(tw);
             m_gameOverCamDone = true;
         }
@@ -475,6 +484,8 @@ void StateGame::endGame()
     }
     m_hasEnded = true;
     m_running = false;
+
+    m_screenRecorder->startRecording();
 }
 
 bool StateGame::isCurrentBrick(b2Body const* const bodyPtr) const
