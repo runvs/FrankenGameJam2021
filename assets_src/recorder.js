@@ -136,10 +136,10 @@ class Recorder {
     }
 }
 
-let canvas;
-let recorder;
+var game_canvas;
+var recorder;
 
 (function () {
     canvas = document.getElementById('canvas');
     recorder = new Recorder(canvas);
-}())
+}());
