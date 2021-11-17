@@ -111,6 +111,7 @@ private:
     bool m_writeForceFile { false };
 
     std::unique_ptr<jt::ScreenRecorderInterface> m_screenRecorder;
+    void switchToHighscore();
 };
 
 #endif

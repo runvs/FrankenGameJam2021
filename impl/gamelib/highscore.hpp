@@ -3,7 +3,7 @@
 
 #include <vector>
 
-std::vector<float> loadHighscores();
-void saveHighscores(std::vector<float> const& scores);
+std::vector<int> loadHighscores();
+void saveHighscores(std::vector<int> const& scores);
 
 #endif

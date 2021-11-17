@@ -13,6 +13,7 @@
 #include "screen_recorder.hpp"
 #include "shape.hpp"
 #include "sprite.hpp"
+#include "state_highscore.hpp"
 #include "state_menu.hpp"
 #include "tweens/tween_alpha.hpp"
 #include "tweens/tween_position.hpp"
@@ -256,6 +257,13 @@ void StateGame::doInternalUpdate(float const elapsed)
                     addExtraLife();
                 }
 
+                if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::F10)
+                    && getGame()->input()->keyboard()->pressed(jt::KeyCode::LShift)
+                    && getGame()->input()->keyboard()->pressed(jt::KeyCode::LControl)) {
+                    m_score = jt::Random::getInt(50, 300);
+                    switchToHighscore();
+                }
+
                 if (getGame()->input()->keyboard()->justPressed(jt::KeyCode::M)) {
                     GP::MuteAudio() = !GP::MuteAudio();
 
@@ -280,7 +288,7 @@ void StateGame::doInternalUpdate(float const elapsed)
                     m_screenRecorder->stopRecording();
                 }
 
-                getGame()->switchState(std::make_shared<StateMenu>());
+                switchToHighscore();
             });
             add(tw);
             m_gameOverCamDone = true;
@@ -302,6 +310,13 @@ void StateGame::doInternalUpdate(float const elapsed)
     m_tiledBackground2->update(elapsed);
     m_vignette->update(elapsed);
     m_overlay->update(elapsed);
+}
+
+void StateGame::switchToHighscore()
+{
+    std::shared_ptr<StateHighscore> const highscore_state = std::make_shared<StateHighscore>();
+    highscore_state->setScore(m_score);
+    getGame()->switchState(highscore_state);
 }
 
 void StateGame::moveCamera(float const elapsed)

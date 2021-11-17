@@ -21,7 +21,6 @@ public:
     void setScore(int /*s*/) {};
 
 private:
-    std::shared_ptr<ParallaxBackground> m_background;
     std::shared_ptr<jt::Animation> m_logo;
     std::shared_ptr<jt::Sprite> m_logoGlow;
 
