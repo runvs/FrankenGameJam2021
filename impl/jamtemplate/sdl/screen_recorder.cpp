@@ -34,6 +34,6 @@ void ScreenRecorder::takeScreenshot()
 #endif
 }
 
-void ScreenRecorder::isRecording() { return m_isRecording; }
+bool ScreenRecorder::isRecording() { return m_isRecording; }
 
 } // namespace jt
