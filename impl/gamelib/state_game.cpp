@@ -278,6 +278,19 @@ void StateGame::doInternalUpdate(float const elapsed)
             }
         }
     } else if (m_hasEnded) {
+
+        float const platformPositionX = m_platform->getPosition().x();
+        if (platformPositionX <= 80.0f) {
+            std::cout << "Moving right\n";
+            m_platform->moveRight();
+        } else if (platformPositionX >= GP::GetScreenSize().x() - 80.0f) {
+            std::cout << "Moving left\n";
+            m_platform->moveLeft();
+        }
+        m_platform->updatePosition(elapsed);
+
+        m_world->step(elapsed, GP::PhysicVelocityIterations(), GP::PhysicPositionIterations());
+
         auto camOff = getGame()->getCamera()->getCamOffset().y();
         if (camOff >= -32.0f && !m_gameOverCamDone) {
             auto tw
@@ -499,6 +512,7 @@ void StateGame::endGame()
     }
     m_hasEnded = true;
     m_running = false;
+    m_platform->disableInput();
 
     float const camPosY = getGame()->getCamera()->getCamOffset().y();
     if (camPosY == 0.0f) {

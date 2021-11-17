@@ -12,6 +12,11 @@ public:
     Platform(std::shared_ptr<jt::Box2DWorldInterface> world, const b2BodyDef* def,
         const bool anchor = false);
 
+    void moveLeft();
+    void moveRight();
+    void updatePosition(const float elapsed);
+    void disableInput();
+
 private:
     jt::Vector2 m_platformSize { 64, 6 };
     std::shared_ptr<jt::Sprite> m_sprite;
@@ -25,6 +30,7 @@ private:
 
     bool mouseLeft();
     bool mouseRight();
+    bool m_disableInput { false };
 };
 
 #endif // MYAWESOMEGAME_PLATFORM_HPP
