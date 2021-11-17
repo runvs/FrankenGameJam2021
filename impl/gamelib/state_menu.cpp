@@ -20,8 +20,7 @@ StateMenu::StateMenu() = default;
 
 void StateMenu::doInternalCreate()
 {
-    m_background = std::make_shared<ParallaxBackground>();
-    add(m_background);
+    add(std::make_shared<ParallaxBackground>());
 
     createMenuText();
     createShapes();
