@@ -6,12 +6,12 @@ class Recorder {
      * @param {Number} bitsPerSecond (optional) bit rate of the resulting video,
      *      default is 18000000 (18000 kBit)
      */
-    constructor(canvas, filename, bitsPerSecond) {
+    constructor(canvas, outputName, bitsPerSecond) {
         if (!canvas || !(canvas instanceof HTMLElement)) {
-            throw new Error('Parameter canvas has not been supplied or is of the wrong type.');
+            throw new Error('Parameter canvas has not been supplied or is of the wrong type');
         }
         this.canvas = canvas;
-        this.filename = filename || 'output.webm';
+        this.outputName = outputName || 'output';
         this.bitsPerSecond = bitsPerSecond || null;
         this.isRecording = false;
     }
@@ -24,15 +24,15 @@ class Recorder {
     determineBestType() {
         const bitrate = 18e6;
         const codecs = [
-            { mime: 'video/webm;codecs=vp8,vp9,opus', bitrate },
-            { mime: 'video/webm;codecs=vp9,opus', bitrate },
-            { mime: 'video/webm;codecs=VP8,OPUS', bitrate },
-            { mime: 'video/webm;codecs=vp8,pcm', bitrate },
-            { mime: 'video/webm;codecs=vp8,opus', bitrate },
-            { mime: 'video/webm;codecs=vp9.0', bitrate },
-            { mime: 'video/webm;codecs=vp8.0', bitrate },
-            { mime: 'video/webm;codecs=vp9', bitrate },
-            { mime: 'video/webm;codecs=vp8', bitrate },
+            { mime: 'video/webm;codecs:vp8,vp9,opus', bitrate },
+            { mime: 'video/webm;codecs:vp9,opus', bitrate },
+            { mime: 'video/webm;codecs:VP8,OPUS', bitrate },
+            { mime: 'video/webm;codecs:vp8,pcm', bitrate },
+            { mime: 'video/webm;codecs:vp8,opus', bitrate },
+            { mime: 'video/webm;codecs:vp9.0', bitrate },
+            { mime: 'video/webm;codecs:vp8.0', bitrate },
+            { mime: 'video/webm;codecs:vp9', bitrate },
+            { mime: 'video/webm;codecs:vp8', bitrate },
             { mime: 'video/webm', bitrate },
         ];
 
@@ -66,7 +66,7 @@ class Recorder {
      */
     startRecording() {
         if (this.isRecording) {
-            throw new Error('Already recording! Can\'t start recording.');
+            throw new Error('Already recording! Can\'t start recording');
         }
 
         /* eslint-disable-next-line */
@@ -104,12 +104,12 @@ class Recorder {
     }
 
     /**
-     * Stops the current recording
+     * Stops the current recording. Does not download the recording.
      * @returns {void}
      */
     stopRecording() {
         if (!this.isRecording) {
-            throw new Error('Can\'t stop recording, no recording running right now.');
+            throw new Error('Can\'t stop recording, no recording running right now');
         }
 
         /* eslint-disable-next-line */
@@ -124,7 +124,28 @@ class Recorder {
         const anchor = document.createElement('a');
         anchor.style.display = 'none';
         anchor.href = url;
-        anchor.download = this.filename;
+        anchor.download = `${this.outputName}.webm`;
+        document.body.appendChild(anchor);
+        anchor.click();
+
+        // Remove anchor again after a small timeout
+        setTimeout(() => {
+            document.body.removeChild(anchor);
+            window.URL.revokeObjectURL(url);
+        }, 100);
+    }
+
+    /**
+     * Takes a screenshot of the canvas
+     */
+    takeScreenshot() {
+        const url = this.canvas.toDataURL('png');
+
+        // Create anchor to download the file
+        const anchor = document.createElement('a');
+        anchor.style.display = 'none';
+        anchor.href = url;
+        anchor.download = `${this.outputName}.png`;
         document.body.appendChild(anchor);
         anchor.click();
 
