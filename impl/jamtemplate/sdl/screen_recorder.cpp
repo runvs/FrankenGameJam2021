@@ -25,4 +25,10 @@ void ScreenRecorder::stopRecording()
 #endif
 }
 
+void ScreenRecorder::takeScreenshot() {
+#ifdef ENABLE_WEB
+    emscripten_run_script("recorder.takeScreenshot()");
+#endif
+}
+
 } // namespace jt

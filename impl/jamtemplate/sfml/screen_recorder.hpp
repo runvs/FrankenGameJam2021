@@ -12,6 +12,8 @@ public:
     void startRecording() override;
     /// currently not supported by native build
     void stopRecording() override;
+    /// currently not supported by native build
+    void takeScreenshot() override;
 
 private:
     bool m_isRecording { false };
