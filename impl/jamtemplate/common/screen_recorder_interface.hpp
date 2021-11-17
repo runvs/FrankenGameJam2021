@@ -10,6 +10,7 @@ public:
     virtual void startRecording() = 0;
     virtual void stopRecording() = 0;
     virtual void takeScreenshot() = 0;
+    virtual bool isRecording() = 0;
 };
 } // namespace jt
 

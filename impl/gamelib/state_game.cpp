@@ -276,7 +276,7 @@ void StateGame::doInternalUpdate(float const elapsed)
                 = jt::TweenAlpha::create(m_overlay, 1.6f, std::uint8_t { 0 }, std::uint8_t { 255 });
             tw->setSkipFrames();
             tw->addCompleteCallback([this]() {
-                if (m_score != 0) {
+                if (m_score != 0 && m_screenRecorder->isRecording()) {
                     m_screenRecorder->stopRecording();
                 }
 
@@ -485,7 +485,12 @@ void StateGame::endGame()
     m_hasEnded = true;
     m_running = false;
 
-    m_screenRecorder->startRecording();
+    float const camPosY = getGame()->getCamera()->getCamOffset().y();
+    if (camPosY == 0.0f) {
+        m_screenRecorder->takeScreenshot();
+    } else {
+        m_screenRecorder->startRecording();
+    }
 }
 
 bool StateGame::isCurrentBrick(b2Body const* const bodyPtr) const

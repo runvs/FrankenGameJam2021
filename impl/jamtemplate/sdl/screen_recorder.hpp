@@ -10,6 +10,7 @@ public:
     virtual void startRecording() override;
     virtual void stopRecording() override;
     virtual void takeScreenshot() override;
+    virtual bool isRecording() override;
 
 private:
     bool m_isRecording { false };

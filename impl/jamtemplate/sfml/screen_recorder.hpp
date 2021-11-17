@@ -14,9 +14,9 @@ public:
     void stopRecording() override;
     /// currently not supported by native build
     void takeScreenshot() override;
-
-private:
-    bool m_isRecording { false };
+    /// currently not supported by native build
+    /// \return false
+    bool isRecording() override;
 };
 
 } // namespace jt

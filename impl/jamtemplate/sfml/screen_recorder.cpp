@@ -2,9 +2,10 @@
 
 namespace jt {
 
-void ScreenRecorder::toggleRecording() { m_isRecording = !m_isRecording; }
+void ScreenRecorder::toggleRecording() { }
 void ScreenRecorder::startRecording() { }
 void ScreenRecorder::stopRecording() { }
 void ScreenRecorder::takeScreenshot() { }
+bool ScreenRecorder::isRecording() { return false; }
 
 } // namespace jt
