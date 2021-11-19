@@ -3,6 +3,7 @@
 
 #include "game_object.hpp"
 #include "sound.hpp"
+#include "sound_group.hpp"
 
 class AtmosphericSounds : public jt::GameObject {
 private:
@@ -10,7 +11,11 @@ private:
     std::shared_ptr<jt::Sound> m_soundAtmospheric2;
     std::shared_ptr<jt::Sound> m_soundAtmospheric3;
 
-    virtual void doCreate();
+    std::shared_ptr<jt::SoundGroup> m_soundCrows;
+
+    void doCreate() override;
+    void doUpdate(float elapsed) override;
+    float m_crowTimer { 0 };
 
 public:
     void handleVolumes(float yPos);

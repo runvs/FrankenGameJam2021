@@ -1,5 +1,6 @@
 #include "atmospheric_sounds.hpp"
 #include "game_properties.hpp"
+#include "random.hpp"
 #include <cmath>
 
 void AtmosphericSounds::doCreate()
@@ -21,6 +22,14 @@ void AtmosphericSounds::doCreate()
     m_soundAtmospheric3->setLoop(true);
     m_soundAtmospheric3->setVolume(0.0f);
     m_soundAtmospheric3->play();
+
+    m_soundCrows = std::make_shared<jt::SoundGroup>();
+    m_soundCrows->load("assets/sfx/crow1.ogg");
+    m_soundCrows->load("assets/sfx/crow2.ogg");
+    m_soundCrows->load("assets/sfx/crow3.ogg");
+    m_soundCrows->load("assets/sfx/crow4.ogg");
+    m_soundCrows->load("assets/sfx/crow5.ogg");
+    m_soundCrows->setVolume(0.0f);
 }
 
 void AtmosphericSounds::handleVolumes(float camPosY)
@@ -29,6 +38,7 @@ void AtmosphericSounds::handleVolumes(float camPosY)
         m_soundAtmospheric1->setVolume(0.0f);
         m_soundAtmospheric2->setVolume(0.0f);
         m_soundAtmospheric3->setVolume(0.0f);
+        m_soundCrows->setVolume(0.0f);
         return;
     }
 
@@ -41,9 +51,20 @@ void AtmosphericSounds::handleVolumes(float camPosY)
     if (volume < 0.0f)
         volume = 0.0f;
     m_soundAtmospheric2->setVolume(volume);
+    m_soundCrows->setVolume(volume / 2.0f);
 
     volume = (1.0f - fabs(GP::AtmosphericSoundBreakpoint3() - camPosY) / 300.0f) * 50.0f;
     if (volume < 0.0f)
         volume = 0.0f;
     m_soundAtmospheric3->setVolume(volume);
+}
+
+void AtmosphericSounds::doUpdate(float elapsed)
+{
+    m_crowTimer -= elapsed;
+
+    if (m_crowTimer <= 0.0f) {
+        m_crowTimer += jt::Random::getFloatGauss(6.0f, 1.0f);
+        m_soundCrows->play();
+    }
 }
