@@ -14,6 +14,7 @@ private:
     std::shared_ptr<jt::Animation> m_sparklyStar1;
     std::shared_ptr<jt::Animation> m_sparklyStar2;
     std::shared_ptr<jt::Animation> m_sparklyStar3;
+    std::shared_ptr<jt::Sprite> m_shootingStar;
 
     virtual void doCreate();
     virtual void doUpdate(float const elapsed);

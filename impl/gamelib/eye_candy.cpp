@@ -55,6 +55,11 @@ void EyeCandy::doCreate()
         "assets/sparkle3.png", "idle", jt::Vector2u { 7, 15 }, { 0, 1, 2, 3 }, 0.25f);
     m_sparklyStar3->play("idle");
     m_sparklyStar3->setPosition(jt::Vector2 { 230, -700 });
+
+    m_shootingStar = std::make_shared<jt::Sprite>();
+    m_shootingStar->loadSprite("assets/shooting_star.png");
+    m_shootingStar->setPosition(jt::Vector2{ 550, -1500 });
+
 }
 void EyeCandy::doUpdate(float const elapsed)
 {
@@ -94,6 +99,15 @@ void EyeCandy::doUpdate(float const elapsed)
     }
     m_trickyHeart->setPosition(p);
 
+    p = m_shootingStar->getPosition();
+    p+= elapsed * jt::Vector2{ -120.0f, 120.0f };
+    if (p.x() <= -50) {
+        p.x() = GP::GetScreenSize().x() + 250.0f;
+        p.y() = -1500.0f;
+    }
+    m_shootingStar->setPosition(p);
+    m_shootingStar->update(elapsed);
+
     m_trickyHeart->update(elapsed);
     m_sparklyStar1->update(elapsed);
     m_sparklyStar2->update(elapsed);
@@ -109,4 +123,5 @@ void EyeCandy::doDraw() const
     m_sparklyStar1->draw(getGame()->getRenderTarget());
     m_sparklyStar2->draw(getGame()->getRenderTarget());
     m_sparklyStar3->draw(getGame()->getRenderTarget());
+    m_shootingStar->draw(getGame()->getRenderTarget());
 }
