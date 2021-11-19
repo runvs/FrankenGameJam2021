@@ -42,6 +42,8 @@ public:
     static float AtmosphericSoundBreakpoint1();
     static float AtmosphericSoundBreakpoint2();
     static float AtmosphericSoundBreakpoint3();
+    static float AtmosphericSoundBreakpoint4();
+    static float AtmosphericSoundBreakpoint5();
 
     static float PlatformMovementSpeed();
     static float PhysicsBrickDensity();

@@ -10,7 +10,9 @@ float GP::BrickFixVelocityThreshold() { return 42.0f; }
 float GP::PhysicsBrickRestitution() { return 0.0f; }
 float GP::AtmosphericSoundBreakpoint1() { return 0.0f; }
 float GP::AtmosphericSoundBreakpoint2() { return -300.0f; }
-float GP::AtmosphericSoundBreakpoint3() { return -600.0f; }
+float GP::AtmosphericSoundBreakpoint3() { return -450.0f; }
+float GP::AtmosphericSoundBreakpoint4() { return -800.0f; }
+float GP::AtmosphericSoundBreakpoint5() { return -1200.0f; }
 
 float GP::GemDelayMin() { return 0.8f; }
 float GP::GemDelayMax() { return 10.0f; }
