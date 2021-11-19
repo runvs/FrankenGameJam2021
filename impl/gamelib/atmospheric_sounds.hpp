@@ -12,10 +12,15 @@ private:
     std::shared_ptr<jt::Sound> m_soundAtmospheric3;
 
     std::shared_ptr<jt::SoundGroup> m_soundCrows;
+    std::shared_ptr<jt::SoundGroup> m_soundSatelliteBeeps;
+    std::shared_ptr<jt::SoundGroup> m_soundIntercom;
 
     void doCreate() override;
     void doUpdate(float elapsed) override;
-    float m_crowTimer { 0 };
+
+    float m_crowTimer { 0.0f };
+    float m_satelliteBeepTimer { 0.0f };
+    float m_intercomTimer { 0.0f };
 
 public:
     void handleVolumes(float yPos);
