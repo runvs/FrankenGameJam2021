@@ -157,10 +157,8 @@ class Recorder {
     }
 }
 
-var game_canvas;
 var recorder;
 
 (function () {
-    canvas = document.getElementById('canvas');
-    recorder = new Recorder(canvas);
+    recorder = new Recorder(document.getElementById('canvas'));
 }());
