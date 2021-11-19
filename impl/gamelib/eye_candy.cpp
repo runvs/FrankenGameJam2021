@@ -1,7 +1,9 @@
 #include "eye_candy.hpp"
 #include "game_interface.hpp"
+#include "game_properties.hpp"
 #include <math_helper.hpp>
 #include <tweens/tween_position.hpp>
+#include "random.hpp"
 
 void EyeCandy::doCreate()
 {
@@ -57,14 +59,38 @@ void EyeCandy::doCreate()
 void EyeCandy::doUpdate(float const elapsed)
 {
     m_frog->update(elapsed);
+
+    auto p = m_miniBirds->getPosition();
+    p += elapsed * jt::Vector2 { 10.0f, 0.0 };
+    if (p.x() >= GP::GetScreenSize().x() + 50.0f) {
+        p.x() = -50.0f;
+        p.y() = -240.0f + jt::Random::getFloat(-32.0f, 32.0f);
+    }
+    m_miniBirds->setPosition(p);
     m_miniBirds->update(elapsed);
+
+    p = m_singleBird1->getPosition();
+    p += elapsed * jt::Vector2 { 20.0f, 0.0 };
+    if (p.x() >= GP::GetScreenSize().x() + 50.0f) {
+        p.x() = -50.0f;
+        p.y() = -200.0f + jt::Random::getFloat(-24.0f, 24.0f);
+    }
+    m_singleBird1->setPosition(p);
     m_singleBird1->update(elapsed);
+
+    p = m_singleBird2->getPosition();
+    p += elapsed * jt::Vector2 { 30.0f, 0.0 };
+    if (p.x() >= GP::GetScreenSize().x() + 50.0f) {
+        p.x() = -50.0f;
+        p.y() = -170.0f + jt::Random::getFloat(-24.0f, 24.0f);
+    }
+    m_singleBird2->setPosition(p);
     m_singleBird2->update(elapsed);
 
-    auto p = m_trickyHeart->getPosition();
+    p = m_trickyHeart->getPosition();
     p += elapsed * jt::Vector2 { -40.0f, 0.0 };
     if (p.x() <= -50) {
-        p.x() = 350;
+        p.x() = GP::GetScreenSize().x() + 50.0f;
     }
     m_trickyHeart->setPosition(p);
 
