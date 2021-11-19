@@ -5,6 +5,7 @@
 #include "bricks/brick_provider_random.hpp"
 #include "color.hpp"
 #include "conversions.hpp"
+#include "eye_candy.hpp"
 #include "game_interface.hpp"
 #include "game_properties.hpp"
 #include "hud/hud.hpp"
@@ -18,7 +19,6 @@
 #include "tweens/tween_alpha.hpp"
 #include "tweens/tween_position.hpp"
 #include "tweens/tween_scale.hpp"
-#include "visual_candy.hpp"
 #include <numeric>
 
 void StateGame::doInternalCreate()
@@ -131,7 +131,7 @@ void StateGame::doInternalCreate()
 
 void StateGame::createVisualCandy()
 {
-    auto visualCandy = std::make_shared<VisualCandy>();
+    auto visualCandy = std::make_shared<EyeCandy>();
     add(visualCandy);
 }
 
